@@ -237,9 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 Dengan penuh rasa syukur dan sukacita, perkenankan kami mengundang Anda untuk menghadiri perayaan Wisuda Sarjana *Dyah Kusumaningrum, S.P.* yang akan diselenggarakan pada:
 
-📅 *Hari/Tanggal:* Sabtu, 24 Oktober 2026
+📅 *Hari/Tanggal:* Sabtu, 19 September 2026
 ⏰ *Waktu:* Pukul 08.00 WIB s/d Selesai
-📍 *Tempat:* Gedung Auditorium Universitas Andalas (UNAND), Padang
+📍 *Tempat:* Gedung Auditorium Universitas Andalas, Padang
 
 Untuk informasi jadwal lengkap dan petunjuk denah lokasi acara, silakan kunjungi tautan undangan resmi Anda berikut ini:
 ${link}

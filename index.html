@@ -101,25 +101,21 @@
   </div>
 
   <!-- ==========================================================================
-       NAVIGATION BAR
+       FLOATING ISLAND NAVIGATION DOCK (EDITORIAL MONOGRAM & CAPSULE DOCK)
        ========================================================================== -->
   <header class="site-nav">
     <div class="nav-container">
-      <a href="#beranda" class="nav-brand">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-          <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-        </svg>
-        <span>Graduation Day</span>
+      <a href="#beranda" class="nav-brand" aria-label="Beranda Dyah Kusumaningrum">
+        <span class="nav-monogram">DK</span>
+        <span class="nav-brand-text">Dyah Kusumaningrum</span>
       </a>
       <nav aria-label="Menu Utama">
         <ul class="nav-links">
           <li><a href="#beranda" class="nav-link">Beranda</a></li>
-          <li><a href="#jadwal" class="nav-link">Jadwal Acara</a></li>
+          <li><a href="#jadwal" class="nav-link">Jadwal</a></li>
           <li><a href="#lokasi" class="nav-link">Lokasi</a></li>
           <li><a href="#cerita" class="nav-link">Perjalanan</a></li>
           <li><a href="#galeri" class="nav-link">Galeri</a></li>
-          <li><a href="#ucapan" class="nav-link">Ucapan</a></li>
         </ul>
       </nav>
     </div>
@@ -507,47 +503,6 @@
       </div>
     </section>
 
-    <!-- ==========================================================================
-         SECTION 6: BUKU UCAPAN & DOA (IVORY BACKGROUND SECTION)
-         ========================================================================== -->
-    <section id="ucapan" class="section section-ivory">
-      <div class="container">
-        <header class="section-header reveal-on-scroll">
-          <span class="section-tag">Doa & Harapan</span>
-          <h2 class="section-title">Kirimkan Ucapan Selamat</h2>
-          <div class="section-divider"></div>
-        </header>
-
-        <div class="wishes-card reveal-on-scroll">
-          <form id="wishes-form" class="wishes-form">
-            <div class="form-group">
-              <label for="wish-name" class="form-label">Nama Anda</label>
-              <input type="text" id="wish-name" class="form-input" placeholder="Tuliskan nama lengkap Anda" required>
-            </div>
-
-            <div class="form-group">
-              <label for="wish-message" class="form-label">Pesan Ucapan & Doa</label>
-              <textarea id="wish-message" class="form-textarea" placeholder="Tuliskan doa serta ucapan selamat untuk wisudawati..." required></textarea>
-            </div>
-
-            <button type="submit" class="btn-gold">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-              </svg>
-              <span>Kirimkan Ucapan</span>
-            </button>
-          </form>
-
-          <h3 class="font-serif text-burgundy" style="font-size: 1.35rem; margin-bottom: 16px;">
-            Daftar Doa & Ucapan:
-          </h3>
-          <div id="wishes-list" class="wishes-list" aria-live="polite">
-            <!-- Populated via JavaScript from localStorage -->
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- ==========================================================================
