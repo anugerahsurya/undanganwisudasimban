@@ -1,53 +1,58 @@
 /* ==========================================================================
-   UNDANGAN WISUDA ELEGAN - WHITE & GOLD THEME DENGAN ELEMEN NAVY
-   Design System: Luxury Academic Celebration (Light Mode Edition)
+   UNDANGAN WISUDA ELEGAN - WHITE, GOLD & BURGUNDY THEME
+   Design System: Luxury Academic Celebration
+   Editorial Bespoke Card + Alternating Burgundy/Ivory Sections
    ========================================================================== */
 
 :root {
-  /* Base Light Backgrounds */
+  /* Light Page Backgrounds */
   --bg-page: #fbfbf9;
-  --bg-page-gradient: radial-gradient(circle at 50% 0%, #fffbf0 0%, #f9f8f4 45%, #f1f4f8 100%);
-  --bg-card: rgba(255, 255, 255, 0.94);
-  --bg-card-hover: rgba(255, 255, 255, 1);
-  --bg-subtle: #f8fafc;
-  --bg-navy-element: #0a192f;
-  --bg-navy-element-hover: #0e2445;
+  --bg-page-gradient: radial-gradient(circle at 50% 0%, #fffbf0 0%, #faf8f4 45%, #f4f2eb 100%);
+  --bg-card: rgba(255, 255, 255, 0.96);
+  --bg-card-hover: #ffffff;
+  --bg-subtle: #f9f8f5;
 
-  /* Gold Palette (Vibrant & Legible on Light Background) */
+  /* Burgundy Royal Palette (Replacing Navy) */
+  --burgundy-darkest: #2a060c;
+  --burgundy-deep: #3b0a11;
+  --burgundy-primary: #4a0e17;
+  --burgundy-medium: #5c121e;
+  --burgundy-rich: #6e1825;
+  --burgundy-light: #852030;
+  --burgundy-soft: #fdf2f4;
+  --burgundy-gradient: linear-gradient(135deg, #4a0e17 0%, #6e1825 50%, #3b0a11 100%);
+  --burgundy-gradient-card: linear-gradient(135deg, #5c121e 0%, #4a0e17 100%);
+
+  /* Gold Palette */
   --gold-primary: #b8860b;
   --gold-vibrant: #c59b27;
-  --gold-light: #fdf5e6;
+  --gold-light: #fef8eb;
+  --gold-shimmer: #f5e0a0;
   --gold-dark: #8c6506;
-  --gold-border: rgba(184, 134, 11, 0.28);
-  --gold-border-bright: rgba(184, 134, 11, 0.7);
-  --gold-glow: rgba(184, 134, 11, 0.15);
+  --gold-border: rgba(184, 134, 11, 0.32);
+  --gold-border-bright: rgba(184, 134, 11, 0.75);
+  --gold-glow: rgba(184, 134, 11, 0.2);
   --gold-gradient: linear-gradient(135deg, #d4af37 0%, #aa771c 100%);
-  --gold-gradient-soft: linear-gradient(135deg, rgba(253, 245, 230, 0.8) 0%, rgba(212, 175, 55, 0.15) 100%);
+  --gold-gradient-soft: linear-gradient(135deg, rgba(253, 245, 230, 0.9) 0%, rgba(212, 175, 55, 0.2) 100%);
 
-  /* Royal Navy Palette (Elements, Headings, Text) */
-  --navy-darkest: #060d17;
-  --navy-primary: #0a192f;
-  --navy-deep: #0e2344;
-  --navy-medium: #17325c;
-  --navy-accent: #1e3a8a;
-  
-  /* Text Colors (High Contrast WCAG AA/AAA) */
-  --text-main: #0a192f;
-  --text-heading: #071324;
-  --text-body: #1e293b;
-  --text-muted: #475569;
-  --text-dim: #64748b;
-  --border-light: rgba(10, 25, 47, 0.1);
+  /* Text Colors */
+  --text-main: #4a0e17;
+  --text-heading: #2a060c;
+  --text-body: #2d2426;
+  --text-muted: #5e5254;
+  --text-dim: #7d6f72;
+  --border-light: rgba(74, 14, 23, 0.12);
 
   /* Typography */
   --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-cinzel: 'Cinzel', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-script: 'Alex Brush', cursive;
+  --font-script: 'Great Vibes', 'Alex Brush', cursive;
 
-  /* Shadows & Glass */
-  --shadow-sm: 0 4px 12px rgba(10, 25, 47, 0.05);
-  --shadow-card: 0 16px 40px -10px rgba(10, 25, 47, 0.08), 0 0 0 1px rgba(184, 134, 11, 0.2);
-  --shadow-card-hover: 0 24px 50px -10px rgba(10, 25, 47, 0.14), 0 0 0 1px rgba(184, 134, 11, 0.5);
+  /* Shadows */
+  --shadow-sm: 0 4px 12px rgba(74, 14, 23, 0.06);
+  --shadow-card: 0 16px 40px -10px rgba(74, 14, 23, 0.08), 0 0 0 1px rgba(184, 134, 11, 0.22);
+  --shadow-card-hover: 0 24px 50px -10px rgba(74, 14, 23, 0.16), 0 0 0 1px rgba(184, 134, 11, 0.6);
   --shadow-gold: 0 10px 25px -5px rgba(184, 134, 11, 0.35);
   --glass-blur: blur(14px);
 
@@ -94,7 +99,7 @@ body {
   z-index: 1;
 }
 
-/* Accessibility Focus Ring */
+/* Focus Ring */
 :focus-visible {
   outline: 2px solid var(--gold-primary);
   outline-offset: 3px;
@@ -103,19 +108,16 @@ body {
 
 /* Typography Utilities */
 .font-serif { font-family: var(--font-serif); }
+.font-cinzel { font-family: var(--font-cinzel); }
 .font-sans { font-family: var(--font-sans); }
 .font-script { font-family: var(--font-script); }
 
-.text-gold {
-  color: var(--gold-dark);
-}
-
-.text-navy {
-  color: var(--navy-primary);
-}
+.text-gold { color: var(--gold-dark); }
+.text-burgundy { color: var(--burgundy-primary); }
+.text-white { color: #ffffff; }
 
 .text-gold-gradient {
-  background: linear-gradient(135deg, #8c6506 0%, #b8860b 50%, #0a192f 100%);
+  background: linear-gradient(135deg, #8c6506 0%, #b8860b 50%, #4a0e17 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
@@ -135,7 +137,7 @@ body {
 }
 
 /* ==========================================================================
-   COVER / GREETING GATE OVERLAY (LIGHT LUXURY EDITION)
+   COVER GATE: BESPOKE VERTICAL CARD (BURGUNDY & GOLD ON DEEP WINE)
    ========================================================================== */
 .cover-gate {
   position: fixed;
@@ -144,10 +146,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.97) 0%, rgba(248, 246, 240, 0.97) 60%, rgba(238, 242, 248, 0.98) 100%);
-  padding: 24px;
+  background: radial-gradient(circle at center, #4a0e17 0%, #2a060c 70%, #170205 100%);
+  padding: 16px;
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  overflow-y: auto;
 }
 
 .cover-gate.opened {
@@ -156,172 +159,256 @@ body {
   pointer-events: none;
 }
 
-.cover-card {
+/* The Bespoke Card */
+.bespoke-card {
   width: 100%;
-  max-width: 480px;
-  padding: 44px 28px;
-  text-align: center;
+  max-width: 420px;
   background: #ffffff;
-  border: 1px solid var(--gold-border);
-  border-radius: 24px;
-  box-shadow: 0 25px 60px -10px rgba(10, 25, 47, 0.15), 0 0 30px rgba(184, 134, 11, 0.1);
+  border-radius: 36px 36px 28px 28px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--gold-border-bright);
+  padding: 32px 24px 28px 24px;
   position: relative;
   overflow: hidden;
   animation: floatCard 4s ease-in-out infinite;
+  border: 2px solid rgba(184, 134, 11, 0.45);
 }
 
-.cover-card::before {
+/* Inner hairline gold frame */
+.bespoke-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 5px;
-  background: var(--gold-gradient);
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid rgba(184, 134, 11, 0.25);
+  border-radius: 28px 28px 20px 20px;
+  pointer-events: none;
 }
 
-.cover-badge {
-  display: inline-flex;
+/* Card Top Row */
+.card-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.editorial-tag {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.editorial-tag span:nth-child(1) {
+  font-family: var(--font-cinzel);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.editorial-tag span:nth-child(2) {
+  font-family: var(--font-cinzel);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: var(--burgundy-primary);
+}
+
+.editorial-tag span:nth-child(3) {
+  font-family: var(--font-cinzel);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--gold-dark);
+  font-weight: 600;
+}
+
+/* Vertical Date Badge */
+.date-stamp-badge {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 18px;
+  gap: 6px;
   background: var(--gold-light);
   border: 1px solid var(--gold-border);
-  border-radius: 30px;
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold-dark);
-  margin-bottom: 24px;
-  font-weight: 700;
+  border-radius: 12px;
+  padding: 6px 10px;
 }
 
-.cover-avatar-wrap {
-  width: 130px;
-  height: 130px;
+.date-stamp-numbers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.05;
+}
+
+.date-stamp-day {
+  font-family: var(--font-cinzel);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--burgundy-primary);
+}
+
+.date-stamp-month {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+}
+
+.date-stamp-year {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.date-stamp-vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: var(--burgundy-primary);
+  border-left: 1px solid var(--gold-border);
+  padding-left: 4px;
+}
+
+/* Hero Calligraphy Name */
+.card-hero-name {
+  text-align: left;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 2;
+}
+
+.card-hero-title {
+  font-family: var(--font-script);
+  font-size: clamp(2.5rem, 8vw, 3.2rem);
+  color: var(--burgundy-primary);
+  line-height: 1;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 8px rgba(184, 134, 11, 0.15);
+}
+
+.card-hero-degree {
+  font-family: var(--font-cinzel);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gold-dark);
+  letter-spacing: 1.5px;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.card-hero-faculty {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+/* Arch Photo Frame */
+.card-arch-wrap {
+  width: 100%;
+  max-width: 280px;
+  height: 250px;
   margin: 0 auto 20px auto;
+  border-radius: 140px 140px 16px 16px;
   padding: 4px;
   background: var(--gold-gradient);
-  border-radius: 50%;
-  box-shadow: 0 10px 24px rgba(184, 134, 11, 0.25);
+  box-shadow: 0 12px 30px rgba(74, 14, 23, 0.15);
+  position: relative;
+  z-index: 2;
 }
 
-.cover-avatar {
+.card-arch-photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 50%;
+  border-radius: 136px 136px 12px 12px;
   border: 3px solid #ffffff;
 }
 
-.cover-title {
-  font-size: 1.85rem;
-  font-weight: 700;
-  color: var(--navy-primary);
-  margin-bottom: 4px;
-  letter-spacing: 0.5px;
+/* Recipient Envelope Tag */
+.recipient-tag-envelope {
+  background: #fdfaf7;
+  border: 1px solid var(--gold-border);
+  border-radius: 18px;
+  padding: 18px 16px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 8px 20px rgba(74, 14, 23, 0.05);
 }
 
-.cover-degree {
-  font-size: 0.95rem;
+.tag-paperclip {
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  width: 24px;
+  height: 24px;
   color: var(--gold-dark);
-  font-weight: 600;
-  margin-bottom: 20px;
-  letter-spacing: 0.5px;
 }
 
-.recipient-box {
-  background: #f8fafc;
-  border: 1px dashed var(--gold-border);
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 24px;
-}
-
-.recipient-label {
-  font-size: 0.8rem;
-  color: var(--text-dim);
+.tag-invitation-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  color: var(--text-dim);
   margin-bottom: 4px;
 }
 
-.recipient-name {
+.tag-guest-name {
   font-family: var(--font-serif);
-  font-size: 1.6rem;
+  font-size: 1.45rem;
   font-weight: 700;
-  color: var(--navy-primary);
-  word-break: break-word;
+  color: var(--burgundy-primary);
+  line-height: 1.2;
+  margin-bottom: 2px;
 }
 
-.recipient-category {
-  font-size: 0.85rem;
+.tag-guest-category {
+  font-size: 0.8rem;
   color: var(--gold-dark);
   font-weight: 600;
-  margin-top: 2px;
+  margin-bottom: 16px;
 }
 
-/* Primary Button (Navy with Gold Trim) */
-.btn-gold {
+/* Button "Buka Undangan" (Burgundy Gradient with Gold Border) */
+.btn-open-card {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 14px 34px;
+  width: 100%;
+  padding: 13px 20px;
   min-height: 48px;
   font-family: var(--font-sans);
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.5px;
   color: #ffffff;
-  background: linear-gradient(135deg, #0a192f 0%, #17325c 100%);
+  background: var(--burgundy-gradient);
   border: 1px solid var(--gold-primary);
-  border-radius: 30px;
+  border-radius: 25px;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(10, 25, 47, 0.25);
+  box-shadow: 0 8px 20px rgba(74, 14, 23, 0.35);
   transition: all var(--tr-normal);
-  text-decoration: none;
 }
 
-.btn-gold:hover {
-  transform: translateY(-3px) scale(1.02);
-  background: linear-gradient(135deg, #0e2344 0%, #1c3d70 100%);
-  box-shadow: 0 12px 28px rgba(10, 25, 47, 0.35), 0 0 15px var(--gold-glow);
+.btn-open-card:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #5c121e 0%, #7d1b2b 100%);
+  box-shadow: 0 12px 26px rgba(74, 14, 23, 0.45);
   color: #fcedb5;
 }
 
-.btn-gold:active {
-  transform: translateY(-1px);
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 24px;
-  min-height: 44px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--navy-primary);
-  background: #ffffff;
-  border: 1px solid var(--gold-border);
-  border-radius: 30px;
-  cursor: pointer;
-  text-decoration: none;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--tr-fast);
-}
-
-.btn-secondary:hover {
-  background: var(--gold-light);
-  border-color: var(--gold-primary);
-  color: var(--gold-dark);
-  transform: translateY(-2px);
-}
-
 /* ==========================================================================
-   FLOATING AUDIO CONTROLLER
+   FLOATING MUSIC CONTROLLER
    ========================================================================== */
 .music-widget {
   position: fixed;
@@ -331,13 +418,13 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--gold-border);
   padding: 6px 14px 6px 6px;
   border-radius: 40px;
-  box-shadow: 0 10px 30px rgba(10, 25, 47, 0.12);
+  box-shadow: 0 10px 30px rgba(74, 14, 23, 0.15);
   transition: transform var(--tr-normal), border-color var(--tr-normal);
 }
 
@@ -353,7 +440,7 @@ body {
   min-height: 44px;
   border-radius: 50%;
   border: 2px solid var(--gold-primary);
-  background: var(--navy-primary);
+  background: var(--burgundy-primary);
   color: #f5e0a0;
   display: flex;
   align-items: center;
@@ -380,7 +467,7 @@ body {
 .music-title {
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--navy-primary);
+  color: var(--burgundy-primary);
   white-space: nowrap;
 }
 
@@ -391,7 +478,7 @@ body {
 }
 
 /* ==========================================================================
-   HEADER / NAVIGATION BAR
+   NAVIGATION BAR
    ========================================================================== */
 .site-nav {
   position: fixed;
@@ -400,11 +487,11 @@ body {
   width: 100%;
   z-index: 800;
   padding: 14px 24px;
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid rgba(184, 134, 11, 0.2);
-  box-shadow: 0 4px 20px rgba(10, 25, 47, 0.04);
+  border-bottom: 1px solid rgba(184, 134, 11, 0.22);
+  box-shadow: 0 4px 20px rgba(74, 14, 23, 0.05);
   transition: background var(--tr-normal);
 }
 
@@ -417,10 +504,10 @@ body {
 }
 
 .nav-brand {
-  font-family: var(--font-serif);
-  font-size: 1.35rem;
+  font-family: var(--font-cinzel);
+  font-size: 1.15rem;
   font-weight: 700;
-  color: var(--navy-primary);
+  color: var(--burgundy-primary);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -434,7 +521,7 @@ body {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 24px;
   list-style: none;
 }
 
@@ -447,28 +534,78 @@ body {
 }
 
 .nav-link:hover {
-  color: var(--gold-dark);
-}
-
-.nav-admin-btn {
-  padding: 7px 16px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #ffffff;
-  background: var(--navy-primary);
-  border: 1px solid var(--gold-primary);
-  border-radius: 20px;
-  text-decoration: none;
-  transition: all var(--tr-fast);
-}
-
-.nav-admin-btn:hover {
-  background: var(--gold-dark);
-  border-color: var(--gold-dark);
+  color: var(--burgundy-primary);
 }
 
 /* ==========================================================================
-   HERO SECTION
+   SECTION COMMON STYLES & DYNAMIC ALTERNATING RHYTHM (REF IMAGE)
+   ========================================================================== */
+.section {
+  padding: 85px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-tag {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.1rem, 4.5vw, 3rem);
+  font-weight: 700;
+  color: var(--burgundy-primary);
+  line-height: 1.2;
+}
+
+.section-divider {
+  width: 80px;
+  height: 3px;
+  background: var(--gold-gradient);
+  margin: 16px auto 0 auto;
+  border-radius: 3px;
+}
+
+/* BURGUNDY THEMED SECTION BLOCKS (Like reference image) */
+.section-burgundy {
+  background: var(--burgundy-gradient);
+  color: #ffffff;
+  position: relative;
+}
+
+.section-burgundy::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.section-burgundy .section-tag {
+  color: var(--gold-shimmer);
+}
+
+.section-burgundy .section-title {
+  color: #ffffff;
+}
+
+.section-burgundy .section-divider {
+  background: linear-gradient(90deg, transparent, #f5e0a0, transparent);
+}
+
+/* ==========================================================================
+   HERO SECTION (LIGHT PEARL WITH GOLD TRIM)
    ========================================================================== */
 .hero-section {
   padding: 130px 20px 80px 20px;
@@ -478,7 +615,7 @@ body {
 
 .hero-subtitle {
   font-family: var(--font-script);
-  font-size: 2.3rem;
+  font-size: 2.4rem;
   color: var(--gold-dark);
   margin-bottom: 6px;
 }
@@ -488,7 +625,7 @@ body {
   font-size: clamp(2.4rem, 6vw, 4.2rem);
   font-weight: 700;
   line-height: 1.15;
-  color: var(--navy-primary);
+  color: var(--burgundy-primary);
   margin-bottom: 24px;
 }
 
@@ -514,11 +651,11 @@ body {
   font-size: 1.1rem;
 }
 
-/* Graduate Showcase Card (Clean White with Gold & Navy) */
+/* Graduate Showcase Card */
 .graduate-card {
   background: #ffffff;
   border: 1px solid var(--gold-border);
-  border-radius: 24px;
+  border-radius: 28px;
   padding: 44px 32px;
   box-shadow: var(--shadow-card);
   position: relative;
@@ -533,17 +670,17 @@ body {
   right: 0;
   height: 4px;
   background: var(--gold-gradient);
-  border-radius: 24px 24px 0 0;
+  border-radius: 28px 28px 0 0;
 }
 
 .graduate-photo-frame {
-  width: 200px;
-  height: 200px;
+  width: 210px;
+  height: 210px;
   margin: 0 auto 24px auto;
   border-radius: 50%;
   padding: 6px;
   background: var(--gold-gradient);
-  box-shadow: 0 14px 36px rgba(184, 134, 11, 0.25);
+  box-shadow: 0 14px 36px rgba(74, 14, 23, 0.2);
 }
 
 .graduate-photo {
@@ -556,10 +693,10 @@ body {
 
 .graduate-name {
   font-family: var(--font-serif);
-  font-size: 2.35rem;
+  font-size: 2.45rem;
   font-weight: 700;
   margin-bottom: 6px;
-  color: var(--navy-primary);
+  color: var(--burgundy-primary);
 }
 
 .graduate-degree {
@@ -577,9 +714,7 @@ body {
   margin: 0 auto;
 }
 
-/* ==========================================================================
-   COUNTDOWN TIMER (LIGHT EDITION)
-   ========================================================================== */
+/* Countdown Timer */
 .countdown-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -601,7 +736,7 @@ body {
   font-family: var(--font-serif);
   font-size: 2.1rem;
   font-weight: 700;
-  color: var(--navy-primary);
+  color: var(--burgundy-primary);
   line-height: 1.1;
 }
 
@@ -615,47 +750,7 @@ body {
 }
 
 /* ==========================================================================
-   SECTION COMMON STYLES
-   ========================================================================== */
-.section {
-  padding: 80px 20px;
-  position: relative;
-  z-index: 2;
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.section-tag {
-  display: inline-block;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--gold-dark);
-  margin-bottom: 10px;
-}
-
-.section-title {
-  font-family: var(--font-serif);
-  font-size: clamp(2rem, 4.5vw, 3rem);
-  font-weight: 700;
-  color: var(--navy-primary);
-  line-height: 1.2;
-}
-
-.section-divider {
-  width: 80px;
-  height: 3px;
-  background: var(--gold-gradient);
-  margin: 16px auto 0 auto;
-  border-radius: 3px;
-}
-
-/* ==========================================================================
-   ACARA & JADWAL (SCHEDULE)
+   ACARA & JADWAL (BURGUNDY SECTION BACKGROUND)
    ========================================================================== */
 .event-grid {
   display: grid;
@@ -670,13 +765,14 @@ body {
   border-radius: 20px;
   padding: 36px 26px;
   text-align: center;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
   transition: transform var(--tr-normal), box-shadow var(--tr-normal);
+  color: var(--text-body);
 }
 
 .event-card:hover {
   transform: translateY(-5px);
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
   border-color: var(--gold-border-bright);
 }
 
@@ -690,7 +786,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--gold-dark);
+  color: var(--burgundy-primary);
 }
 
 .event-icon-circle svg {
@@ -702,7 +798,7 @@ body {
   font-family: var(--font-serif);
   font-size: 1.55rem;
   font-weight: 700;
-  color: var(--navy-primary);
+  color: var(--burgundy-primary);
   margin-bottom: 12px;
 }
 
@@ -713,17 +809,43 @@ body {
 }
 
 .event-detail-item strong {
-  color: var(--navy-primary);
+  color: var(--burgundy-primary);
   font-weight: 700;
 }
 
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 26px;
+  min-height: 46px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--burgundy-primary);
+  background: #ffffff;
+  border: 1px solid var(--gold-border);
+  border-radius: 30px;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: all var(--tr-fast);
+}
+
+.btn-secondary:hover {
+  background: var(--gold-light);
+  border-color: var(--gold-primary);
+  color: var(--burgundy-primary);
+  transform: translateY(-2px);
+}
+
 /* ==========================================================================
-   LOCATION & MAPS
+   LOCATION & MAPS (LIGHT SECTION BACKGROUND)
    ========================================================================== */
 .map-card {
   background: #ffffff;
   border: 1px solid var(--gold-border);
-  border-radius: 20px;
+  border-radius: 22px;
   padding: 24px;
   box-shadow: var(--shadow-card);
   overflow: hidden;
@@ -754,9 +876,9 @@ body {
 
 .map-location-name {
   font-family: var(--font-serif);
-  font-size: 1.5rem;
+  font-size: 1.55rem;
   font-weight: 700;
-  color: var(--navy-primary);
+  color: var(--burgundy-primary);
 }
 
 .map-address {
@@ -765,15 +887,36 @@ body {
   max-width: 600px;
 }
 
-.map-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  gap: 10px;
+  padding: 14px 34px;
+  min-height: 48px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  background: var(--burgundy-gradient);
+  border: 1px solid var(--gold-primary);
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(74, 14, 23, 0.3);
+  transition: all var(--tr-normal);
+  text-decoration: none;
+}
+
+.btn-gold:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: linear-gradient(135deg, #5c121e 0%, #7d1b2b 100%);
+  box-shadow: 0 12px 28px rgba(74, 14, 23, 0.45);
+  color: #fcedb5;
 }
 
 /* ==========================================================================
-   STORY TIMELINE (WHITE/GOLD BACKGROUND & NAVY DETAILS)
+   STORY TIMELINE (BURGUNDY SECTION BACKGROUND)
    ========================================================================== */
 .timeline {
   position: relative;
@@ -789,7 +932,7 @@ body {
   bottom: 0;
   left: 50%;
   width: 2px;
-  background: linear-gradient(180deg, transparent, var(--gold-primary) 15%, var(--gold-primary) 85%, transparent);
+  background: linear-gradient(180deg, transparent, #f5e0a0 15%, #f5e0a0 85%, transparent);
   transform: translateX(-50%);
 }
 
@@ -814,10 +957,10 @@ body {
   top: 32px;
   width: 18px;
   height: 18px;
-  background: var(--gold-dark);
-  border: 4px solid #ffffff;
+  background: #f5e0a0;
+  border: 4px solid var(--burgundy-primary);
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(184, 134, 11, 0.5);
+  box-shadow: 0 0 12px rgba(245, 224, 160, 0.7);
   z-index: 3;
 }
 
@@ -832,21 +975,22 @@ body {
 .timeline-card {
   background: #ffffff;
   border: 1px solid var(--gold-border);
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 24px;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   transition: transform var(--tr-normal), border-color var(--tr-normal);
+  color: var(--text-body);
 }
 
 .timeline-card:hover {
   transform: translateY(-4px);
   border-color: var(--gold-border-bright);
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
 }
 
 .timeline-image-wrap {
   width: 100%;
-  height: 170px;
+  height: 180px;
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 16px;
@@ -878,7 +1022,7 @@ body {
   font-family: var(--font-serif);
   font-size: 1.35rem;
   font-weight: 700;
-  color: var(--navy-primary);
+  color: var(--burgundy-primary);
   margin-bottom: 6px;
 }
 
@@ -896,19 +1040,19 @@ body {
 }
 
 /* ==========================================================================
-   PHOTO GALLERY & LIGHTBOX
+   PHOTO GALLERY & LIGHTBOX (LIGHT SECTION BACKGROUND)
    ========================================================================== */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
 }
 
 .gallery-item {
   position: relative;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  height: 260px;
+  height: 320px;
   border: 1px solid var(--gold-border);
   cursor: pointer;
   background: #ffffff;
@@ -925,22 +1069,22 @@ body {
 .gallery-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(10, 25, 47, 0.85) 100%);
+  background: linear-gradient(180deg, transparent 40%, rgba(42, 6, 12, 0.88) 100%);
   display: flex;
   align-items: flex-end;
-  padding: 16px;
+  padding: 20px;
   opacity: 0;
   transition: opacity var(--tr-normal);
 }
 
 .gallery-caption {
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   color: #fcedb5;
   font-weight: 600;
 }
 
 .gallery-item:hover .gallery-thumb {
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 
 .gallery-item:hover .gallery-overlay {
@@ -951,7 +1095,7 @@ body {
 .lightbox-modal {
   position: fixed;
   inset: 0;
-  background: rgba(10, 25, 47, 0.88);
+  background: rgba(26, 3, 7, 0.92);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 99999;
@@ -980,7 +1124,7 @@ body {
   max-height: 80vh;
   border-radius: 14px;
   border: 2px solid var(--gold-light);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
 }
 
 .lightbox-close {
@@ -1001,14 +1145,15 @@ body {
 }
 
 /* ==========================================================================
-   WISHES / UCAPAN & DOA (GUESTBOOK)
+   WISHES / UCAPAN & DOA (BURGUNDY SECTION BACKGROUND)
    ========================================================================== */
 .wishes-card {
   background: #ffffff;
   border: 1px solid var(--gold-border);
-  border-radius: 20px;
-  padding: 34px 28px;
-  box-shadow: var(--shadow-card);
+  border-radius: 22px;
+  padding: 36px 30px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+  color: var(--text-body);
 }
 
 .wishes-form {
@@ -1028,14 +1173,14 @@ body {
 .form-label {
   font-size: 0.88rem;
   font-weight: 700;
-  color: var(--navy-primary);
+  color: var(--burgundy-primary);
 }
 
-.form-input, .form-textarea, .form-select {
+.form-input, .form-textarea {
   width: 100%;
   padding: 12px 16px;
-  background: #f8fafc;
-  border: 1px solid rgba(10, 25, 47, 0.15);
+  background: #fdfaf7;
+  border: 1px solid rgba(74, 14, 23, 0.18);
   border-radius: 10px;
   color: var(--text-heading);
   font-family: var(--font-sans);
@@ -1043,7 +1188,7 @@ body {
   transition: border-color var(--tr-fast), box-shadow var(--tr-fast);
 }
 
-.form-input:focus, .form-textarea:focus, .form-select:focus {
+.form-input:focus, .form-textarea:focus {
   border-color: var(--gold-primary);
   background: #ffffff;
   box-shadow: 0 0 0 3px var(--gold-glow);
@@ -1064,7 +1209,6 @@ body {
   padding-right: 6px;
 }
 
-/* Custom Scrollbar */
 .wishes-list::-webkit-scrollbar {
   width: 5px;
 }
@@ -1074,9 +1218,9 @@ body {
 }
 
 .wish-item {
-  background: #f8fafc;
-  border: 1px solid rgba(184, 134, 11, 0.2);
-  border-radius: 12px;
+  background: #fdfaf7;
+  border: 1px solid rgba(184, 134, 11, 0.22);
+  border-radius: 14px;
   padding: 16px;
   text-align: left;
   position: relative;
@@ -1091,7 +1235,7 @@ body {
 
 .wish-author {
   font-weight: 700;
-  color: var(--navy-primary);
+  color: var(--burgundy-primary);
   font-size: 0.95rem;
 }
 
@@ -1114,13 +1258,14 @@ body {
 }
 
 /* ==========================================================================
-   FOOTER
+   FOOTER (DEEP BURGUNDY)
    ========================================================================== */
 .site-footer {
   padding: 60px 20px 40px 20px;
   text-align: center;
   border-top: 1px solid var(--gold-border);
-  background: #ffffff;
+  background: var(--burgundy-darkest);
+  color: #ffffff;
   position: relative;
   z-index: 2;
 }
@@ -1128,19 +1273,19 @@ body {
 .footer-quote {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 1.15rem;
-  color: var(--gold-dark);
+  font-size: 1.18rem;
+  color: var(--gold-shimmer);
   max-width: 620px;
   margin: 0 auto 20px auto;
 }
 
 .footer-credits {
   font-size: 0.88rem;
-  color: var(--text-muted);
+  color: #cbd5e1;
 }
 
 /* ==========================================================================
-   ANIMATIONS & SCROLL REVEAL
+   ANIMATIONS
    ========================================================================== */
 @keyframes spinDisc {
   from { transform: rotate(0deg); }
@@ -1149,7 +1294,7 @@ body {
 
 @keyframes floatCard {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-6px); }
 }
 
 .reveal-on-scroll {
@@ -1169,7 +1314,7 @@ body {
 .delay-4 { transition-delay: 0.4s; }
 
 /* ==========================================================================
-   RESPONSIVE LAYOUT & MOBILE BREAKPOINTS (R-03 & C-4)
+   MOBILE RESPONSIVENESS (R-03)
    ========================================================================== */
 @media (max-width: 768px) {
   .site-nav {
@@ -1218,10 +1363,6 @@ body {
     height: 160px;
   }
 
-  .cover-card {
-    padding: 32px 18px;
-  }
-
   .music-widget {
     bottom: 16px;
     right: 16px;
@@ -1232,6 +1373,14 @@ body {
     max-width: 110px;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .bespoke-card {
+    padding: 24px 18px 20px 18px;
+  }
+
+  .card-hero-title {
+    font-size: 2.3rem;
   }
 }
 
@@ -1244,5 +1393,8 @@ body {
   }
   .section-title {
     font-size: 1.8rem;
+  }
+  .card-arch-wrap {
+    height: 220px;
   }
 }

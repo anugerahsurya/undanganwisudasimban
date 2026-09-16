@@ -309,14 +309,14 @@ document.addEventListener('DOMContentLoaded', () => {
           id: 1,
           name: 'Budi Santoso',
           category: 'Sahabat Kampus',
-          text: 'Selamat dan sukses selalu bro! Perjuangan dari Sempro sampai Sidang terbayar lunas. Berkah selalu gelarnya!',
+          text: 'Selamat dan sukses selalu Dyah! Perjuangan dari Sempro sampai Sidang terbayar lunas. Berkah selalu gelarnya!',
           timestamp: new Date(Date.now() - 3600000 * 5).toISOString()
         },
         {
           id: 2,
           name: 'Prof. Dr. Ir. Hendra',
           category: 'Dosen Pembimbing',
-          text: 'Selamat atas kelulusannya. Bangga dengan ketekunan dan kerja keras Anda dalam menyelesaikan penelitian. Teruslah berkarya untuk bangsa.',
+          text: 'Selamat atas kelulusannya Dyah Kusumaningrum, S.P. Bangga dengan ketekunan dan kerja keras Anda dalam menyelesaikan penelitian Agroteknologi.',
           timestamp: new Date(Date.now() - 3600000 * 24).toISOString()
         }
       ];
@@ -423,9 +423,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btnCalendar.addEventListener('click', (e) => {
       e.preventDefault();
 
-      const title = 'Wisuda Sarjana Anugerah Surya';
-      const description = 'Prosesi Wisuda Sarjana Anugerah Surya, S.Tr.Stat. Bertempat di Auditorium Utama Universitas.';
-      const location = 'Auditorium Utama Universitas Brawijaya / Kampus Tercinta';
+      const title = 'Wisuda Sarjana Dyah Kusumaningrum, S.P.';
+      const description = 'Prosesi Wisuda Sarjana Dyah Kusumaningrum, S.P. Fakultas Pertanian Universitas Andalas.';
+      const location = 'Auditorium Universitas Andalas (UNAND), Padang';
       const startDate = '20261024T080000';
       const endDate = '20261024T120000';
 

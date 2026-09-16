@@ -235,11 +235,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const message = 
 `Kepada Yth. Bapak/Ibu/Saudara/i *${name}*,
 
-Dengan penuh rasa syukur dan sukacita, perkenankan kami mengundang Anda untuk menghadiri perayaan Wisuda Sarjana *Anugerah Surya, S.Tr.Stat.* yang akan diselenggarakan pada:
+Dengan penuh rasa syukur dan sukacita, perkenankan kami mengundang Anda untuk menghadiri perayaan Wisuda Sarjana *Dyah Kusumaningrum, S.P.* yang akan diselenggarakan pada:
 
 📅 *Hari/Tanggal:* Sabtu, 24 Oktober 2026
 ⏰ *Waktu:* Pukul 08.00 WIB s/d Selesai
-📍 *Tempat:* Gedung Auditorium Utama Universitas
+📍 *Tempat:* Gedung Auditorium Universitas Andalas (UNAND), Padang
 
 Untuk informasi jadwal lengkap dan petunjuk denah lokasi acara, silakan kunjungi tautan undangan resmi Anda berikut ini:
 ${link}
