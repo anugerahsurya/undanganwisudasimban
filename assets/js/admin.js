@@ -44,12 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
      1. STORAGE & BASE URL MANAGEMENT
      ========================================================================== */
   function getDefaultBaseUrl() {
-    // If hosted on GitHub Pages or custom domain, use current origin/path
-    if (window.location.hostname.includes('github.io')) {
+    // If hosted on vercel, github pages, or custom domain, use current origin/path
+    if (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('github.io')) {
       return window.location.href.split('?')[0].replace('admin.html', 'index.html');
     }
     // Default fallback production URL:
-    return 'https://anugerahsurya.github.io/undanganwisudasimban/index.html';
+    return 'https://wisudadyah.vercel.app/index.html';
   }
 
   function getBaseUrl() {
