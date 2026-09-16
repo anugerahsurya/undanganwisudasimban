@@ -673,4 +673,40 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     }
   }
+
+  /* ==========================================================================
+     10. DYNAMIC AUTO-FIT FOR HERO GRADUATE NAME (No wrap, no truncation)
+     ========================================================================== */
+  function fitHeroTitle() {
+    const titleEl = document.querySelector('.card-hero-title');
+    if (!titleEl) return;
+    const parent = titleEl.parentElement;
+    if (!parent) return;
+
+    // Reset styles for measurement
+    titleEl.style.fontSize = '';
+    titleEl.style.whiteSpace = 'nowrap';
+    titleEl.style.display = 'inline-block';
+    titleEl.style.maxWidth = '100%';
+
+    const containerWidth = Math.max(160, parent.clientWidth - 8);
+    if (containerWidth <= 0) return;
+
+    // Start with proportional font size based on container width
+    let currentSize = Math.min(28, containerWidth / 14);
+    titleEl.style.fontSize = `${currentSize}px`;
+
+    // Reduce iteratively if overflowing container width until it fits perfectly
+    while (titleEl.scrollWidth > containerWidth && currentSize > 11) {
+      currentSize -= 0.4;
+      titleEl.style.fontSize = `${currentSize}px`;
+    }
+  }
+
+  fitHeroTitle();
+  window.addEventListener('resize', fitHeroTitle);
+  window.addEventListener('orientationchange', fitHeroTitle);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(fitHeroTitle);
+  }
 });
