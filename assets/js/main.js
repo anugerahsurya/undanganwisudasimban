@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isPlaying = false;
 
   /* ==========================================================================
-     1. PARSE URL PARAMETERS & CLEAN PATHS (No index.html needed)
+     1. PARSE URL PARAMETERS & RANDOM STRING TOKENS (No index.html needed)
      ========================================================================== */
   function getUrlParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -40,24 +40,158 @@ document.addEventListener('DOMContentLoaded', () => {
     return temp.innerHTML;
   }
 
-  function parseGuestInfo() {
-    let name = getUrlParam('to') || getUrlParam('guest') || getUrlParam('nama') || getUrlParam('u') || getUrlParam('id');
-    let category = getUrlParam('cat') || getUrlParam('kategori');
+  function fromBase64Url(base64Url) {
+    if (!base64Url || typeof base64Url !== 'string') return null;
+    try {
+      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      while (base64.length % 4) {
+        base64 += '=';
+      }
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new TextDecoder().decode(bytes);
+    } catch (e) {
+      return null;
+    }
+  }
 
-    // If not in query string, extract from clean path (e.g. /Budi-Santoso or /to/Budi-Santoso)
+  function decodeGuestToken(token) {
+    if (!token) return null;
+    const cleanToken = token.trim();
+
+    // 1. Try Base64 URL decoding
+    const decodedStr = fromBase64Url(cleanToken);
+    if (decodedStr) {
+      try {
+        const parsed = JSON.parse(decodedStr);
+        if (Array.isArray(parsed) && parsed.length >= 2) {
+          return {
+            code: parsed[0] || '',
+            name: parsed[1] || '',
+            category: parsed[2] || 'Keluarga & Sahabat'
+          };
+        } else if (parsed && typeof parsed === 'object' && (parsed.name || parsed.n)) {
+          return {
+            code: parsed.code || parsed.c || '',
+            name: parsed.name || parsed.n || '',
+            category: parsed.category || parsed.cat || parsed.k || 'Keluarga & Sahabat'
+          };
+        }
+      } catch (err) {
+        if (decodedStr.includes('|')) {
+          const parts = decodedStr.split('|');
+          if (parts.length >= 3) {
+            return { code: parts[0], name: parts[1], category: parts[2] || 'Keluarga & Sahabat' };
+          } else if (parts.length === 2) {
+            return { code: '', name: parts[0], category: parts[1] || 'Keluarga & Sahabat' };
+          }
+        }
+      }
+    }
+
+    // 2. Check localStorage if this device has the admin guest database
+    try {
+      const stored = localStorage.getItem('wisuda_guest_list_db');
+      if (stored) {
+        const guests = JSON.parse(stored);
+        if (Array.isArray(guests)) {
+          const found = guests.find(g => 
+            (g.code && g.code.toUpperCase() === cleanToken.toUpperCase()) || 
+            String(g.id) === cleanToken
+          );
+          if (found) {
+            return {
+              code: found.code || '',
+              name: found.name,
+              category: found.category || 'Keluarga & Sahabat'
+            };
+          }
+        }
+      }
+    } catch (e) {
+      // ignore localStorage errors
+    }
+
+    return null;
+  }
+
+  function parseGuestInfo() {
+    const rawToken = getUrlParam('u') || getUrlParam('code');
+    let name = '';
+    let category = '';
+
+    if (rawToken) {
+      const decoded = decodeGuestToken(rawToken);
+      if (decoded && decoded.name) {
+        name = decoded.name;
+        category = decoded.category || getUrlParam('cat') || getUrlParam('kategori');
+      }
+    }
+
+    // If still not resolved, check other URL params
+    if (!name) {
+      const candidateParam = getUrlParam('guest') || getUrlParam('id');
+      if (candidateParam) {
+        const decoded = decodeGuestToken(candidateParam);
+        if (decoded && decoded.name) {
+          name = decoded.name;
+          category = decoded.category;
+        } else {
+          name = candidateParam;
+        }
+      }
+    }
+
+    if (!name) {
+      name = getUrlParam('to') || getUrlParam('nama');
+      if (name) {
+        const decoded = decodeGuestToken(name);
+        if (decoded && decoded.name) {
+          name = decoded.name;
+          category = decoded.category;
+        }
+      }
+    }
+
+    if (!category) {
+      category = getUrlParam('cat') || getUrlParam('kategori');
+    }
+
+    // If not in query string, extract from clean path (e.g. /u/WyJ... or /to/Name)
     if (!name) {
       let path = window.location.pathname.replace(/^\/+|\/+$/g, '');
       if (path && path !== 'index.html' && path !== 'index' && path !== 'admin.html' && path !== 'admin' && !path.startsWith('assets/')) {
-        // Handle /to/Name/Category or /u/Name/Category
-        if (path.startsWith('to/') || path.startsWith('u/')) {
+        if (path.startsWith('u/')) {
+          const token = path.replace(/^u\//, '');
+          const decoded = decodeGuestToken(token);
+          if (decoded && decoded.name) {
+            name = decoded.name;
+            category = decoded.category;
+          }
+        } else if (path.startsWith('to/')) {
           const parts = path.split('/');
-          name = decodeURIComponent(parts[1] || '').replace(/[-_+]/g, ' ');
-          if (parts[2]) {
-            category = decodeURIComponent(parts[2]).replace(/[-_+]/g, ' ');
+          const subToken = decodeURIComponent(parts[1] || '');
+          const decoded = decodeGuestToken(subToken);
+          if (decoded && decoded.name) {
+            name = decoded.name;
+            category = decoded.category;
+          } else {
+            name = subToken.replace(/[-_+]/g, ' ');
+            if (parts[2]) {
+              category = decodeURIComponent(parts[2]).replace(/[-_+]/g, ' ');
+            }
           }
         } else if (!path.includes('.')) {
-          // Handle direct slug: /Budi-Santoso or /Budi_Santoso or /Budi
-          name = decodeURIComponent(path).replace(/[-_+]/g, ' ');
+          const decoded = decodeGuestToken(path);
+          if (decoded && decoded.name) {
+            name = decoded.name;
+            category = decoded.category;
+          } else {
+            name = decodeURIComponent(path).replace(/[-_+]/g, ' ');
+          }
         }
       }
     }

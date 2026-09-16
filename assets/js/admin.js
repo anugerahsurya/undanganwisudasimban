@@ -54,7 +54,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function getGuests() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
+      if (!stored) return [];
+      const guests = JSON.parse(stored);
+      let changed = false;
+      guests.forEach(g => {
+        if (!g.code) {
+          g.code = generateGuestCode();
+          changed = true;
+        }
+      });
+      if (changed) {
+        saveGuests(guests);
+      }
+      return guests;
     } catch (e) {
       return [];
     }
@@ -69,14 +81,48 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     2. LINK GENERATOR HELPER
+     2. RANDOM CODE & TOKEN GENERATOR (URL-SAFE BASE64)
      ========================================================================== */
+  function generateGuestCode(length = 6) {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  function toBase64Url(str) {
+    try {
+      const utf8Bytes = new TextEncoder().encode(str);
+      let binary = '';
+      for (let i = 0; i < utf8Bytes.length; i++) {
+        binary += String.fromCharCode(utf8Bytes[i]);
+      }
+      return btoa(binary)
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+    } catch (e) {
+      return encodeURIComponent(str);
+    }
+  }
+
+  function encodeGuestToken(guest) {
+    const code = guest.code || generateGuestCode();
+    // Compact array payload: [randomCode, guestName, guestCategory]
+    const payload = JSON.stringify([code, guest.name, guest.category || 'Umum']);
+    return toBase64Url(payload);
+  }
+
   function getUniqueLink(guest) {
     const base = getBaseUrl();
-    const params = new URLSearchParams();
-    params.set('to', guest.name);
-    if (guest.category) params.set('cat', guest.category);
-    return `${base}?${params.toString()}`;
+    const token = encodeGuestToken(guest);
+    if (window.location.protocol === 'file:') {
+      return `${base}/index.html?u=${token}`;
+    }
+    const cleanBase = base ? base.replace(/\/+$/, '') : '.';
+    return `${cleanBase}/?u=${token}`;
   }
 
   function sanitize(str) {
@@ -152,7 +198,7 @@ See you! 🫶🏻🎓`;
     if (filtered.length === 0) {
       guestTableBody.innerHTML = `
         <tr>
-          <td colspan="5" style="text-align: center; padding: 36px 20px; color: var(--text-dim);">
+          <td colspan="6" style="text-align: center; padding: 36px 20px; color: var(--text-dim);">
             ${query ? 'Tidak ada tamu yang cocok dengan kata kunci pencarian.' : 'Daftar tamu masih kosong. Silakan gunakan form di atas untuk menambahkan tamu undangan.'}
           </td>
         </tr>
@@ -163,12 +209,16 @@ See you! 🫶🏻🎓`;
     guestTableBody.innerHTML = filtered.map((guest, index) => {
       const link = getUniqueLink(guest);
       const inviteMessage = formatInviteMessage(guest.name, link);
+      const guestCode = guest.code || 'DK-' + String(guest.id).slice(-4);
 
       return `
         <tr data-id="${guest.id}">
           <td style="color: var(--text-dim);">${index + 1}</td>
           <td>
-            <strong style="color: #ffffff;">${sanitize(guest.name)}</strong>
+            <span class="guest-code-badge">${sanitize(guestCode)}</span>
+          </td>
+          <td>
+            <strong style="color: var(--burgundy-primary); font-weight: 600;">${sanitize(guest.name)}</strong>
           </td>
           <td>
             <span class="category-badge">${sanitize(guest.category || 'Umum')}</span>
@@ -296,6 +346,7 @@ See you! 🫶🏻🎓`;
       const guests = getGuests();
       const newGuest = {
         id: Date.now(),
+        code: generateGuestCode(),
         name: nameInput.value.trim(),
         category: (catInput && catInput.value.trim()) || 'Umum'
       };
@@ -385,6 +436,7 @@ See you! 🫶🏻🎓`;
             const category = row['Kategori'] || row['kategori'] || row['Category'] || row['category'] || row['Hubungan'] || Object.values(row)[1] || 'Umum';
             return {
               id: Date.now() + idx,
+              code: generateGuestCode(),
               name: String(name).trim(),
               category: String(category).trim() || 'Umum'
             };
@@ -398,6 +450,7 @@ See you! 🫶🏻🎓`;
             if (cols[0]) {
               importedGuests.push({
                 id: Date.now() + i,
+                code: generateGuestCode(),
                 name: cols[0],
                 category: cols[1] || 'Umum'
               });

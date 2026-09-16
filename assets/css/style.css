@@ -207,41 +207,62 @@ html.access-restricted body > * {
   margin: 0 auto;
 }
 
-/* Floral Botanical Accents */
-.floral-accent {
+/* Graduation Academic Ornaments (Replacing Floral Accents) */
+.grad-accent {
   position: absolute;
   pointer-events: none;
   user-select: none;
   z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.floral-top-right {
-  top: -45px;
-  right: -32px;
-  width: 160px;
-  height: auto;
-  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.45));
-  animation: floatFloral 5s ease-in-out infinite alternate;
+.grad-accent-top-right {
+  top: -42px;
+  right: -28px;
+  width: 145px;
+  height: 145px;
+  animation: floatGradTop 5s ease-in-out infinite alternate;
 }
 
-.floral-bottom-left {
-  bottom: -25px;
-  left: -35px;
-  width: 150px;
-  height: auto;
-  transform: scaleX(-1) rotate(18deg);
-  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.45));
-  animation: floatFloralReverse 5.5s ease-in-out infinite alternate;
+.grad-accent-bottom-left {
+  bottom: -28px;
+  left: -28px;
+  width: 140px;
+  height: 140px;
+  animation: floatGradBottom 5.5s ease-in-out infinite alternate;
 }
 
-@keyframes floatFloral {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  100% { transform: translate(4px, -6px) rotate(2deg); }
+.grad-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-@keyframes floatFloralReverse {
-  0% { transform: scaleX(-1) rotate(18deg) translate(0, 0); }
-  100% { transform: scaleX(-1) rotate(20deg) translate(-4px, -6px); }
+@keyframes floatGradTop {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-6px) rotate(2.5deg); }
+}
+
+@keyframes floatGradBottom {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(5px) rotate(-2deg); }
+}
+
+@media (max-width: 480px) {
+  .grad-accent-top-right {
+    top: -30px;
+    right: -14px;
+    width: 110px;
+    height: 110px;
+  }
+  .grad-accent-bottom-left {
+    bottom: -16px;
+    left: -14px;
+    width: 105px;
+    height: 105px;
+  }
 }
 
 /* Peeking Vinyl Record */

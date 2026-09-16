@@ -417,6 +417,19 @@ body {
   border: 1px solid var(--gold-border);
 }
 
+.guest-code-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  font-family: monospace, ui-monospace;
+  letter-spacing: 0.5px;
+  border-radius: 6px;
+  background: #f4ede4;
+  color: var(--burgundy-primary);
+  border: 1px solid var(--gold-border);
+}
+
 .link-cell {
   max-width: 220px;
   overflow: hidden;

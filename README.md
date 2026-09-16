@@ -56,8 +56,9 @@ Laman admin dapat diakses melalui `admin.html` atau tombol **"Laman Admin"** di 
 
 2. **Generate Link Unik Otomatis:**
    - Tarik dan lepas (drag-and-drop) file Excel ke area dropzone di admin.
-   - Sistem secara instan membuatkan tautan unik untuk setiap tamu, contoh:
-     `index.html?to=Budi+Santoso&cat=Sahabat+Kampus`
+   - Sistem secara instan membuatkan tautan unik dengan random string token untuk setiap tamu, contoh:
+     `index.html?u=WyJESy04WDlNIiwiQnVkaSBTYW50b3NvLCBTLktvbS4iLCJTYWhhYmF0IEthbXB1cyJd`
+     (Nama tamu terenkode rapi dalam random string yang aman dan privasi terjaga).
 
 3. **Kirim Undangan Sekali Klik:**
    - **Tombol Salin Link:** Menyalin link unik tamu ke clipboard.
