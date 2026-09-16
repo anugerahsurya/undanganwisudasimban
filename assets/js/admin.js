@@ -33,9 +33,51 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 4, name: 'Ahmad Fauzi', category: 'Teman Angkatan', phone: '6281788889999' }
   ];
 
+  // Base URL & Google Sheets Elements
+  const baseUrlInput = document.getElementById('base-url-input');
+  const btnSaveBaseUrl = document.getElementById('btn-save-base-url');
+  const formulaLinkDisplay = document.getElementById('formula-link-display');
+  const gsheetUrlInput = document.getElementById('gsheet-url-input');
+  const btnSyncGsheet = document.getElementById('btn-sync-gsheet');
+
   /* ==========================================================================
-     1. STORAGE MANAGEMENT
+     1. STORAGE & BASE URL MANAGEMENT
      ========================================================================== */
+  function getDefaultBaseUrl() {
+    // If hosted on GitHub Pages or custom domain, use current origin/path
+    if (window.location.hostname.includes('github.io')) {
+      return window.location.href.split('?')[0].replace('admin.html', 'index.html');
+    }
+    // Default fallback production URL:
+    return 'https://anugerahsurya.github.io/undanganwisudasimban/index.html';
+  }
+
+  function getBaseUrl() {
+    return localStorage.getItem('wisuda_base_url_setting') || getDefaultBaseUrl();
+  }
+
+  function updateFormulaDisplay() {
+    if (formulaLinkDisplay) {
+      formulaLinkDisplay.textContent = `=CONCATENATE("${getBaseUrl()}?to=", ENCODEURL(A2), "&cat=", ENCODEURL(B2))`;
+    }
+  }
+
+  if (baseUrlInput) {
+    baseUrlInput.value = getBaseUrl();
+    updateFormulaDisplay();
+  }
+
+  if (btnSaveBaseUrl) {
+    btnSaveBaseUrl.addEventListener('click', () => {
+      let val = baseUrlInput.value.trim();
+      if (!val) val = getDefaultBaseUrl();
+      localStorage.setItem('wisuda_base_url_setting', val);
+      updateFormulaDisplay();
+      renderTable(searchInput ? searchInput.value : '');
+      showToast('Tautan dasar website berhasil disimpan!');
+    });
+  }
+
   function getGuests() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -57,12 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
      2. LINK GENERATOR HELPER
      ========================================================================== */
   function getUniqueLink(guest) {
-    const currentUrl = window.location.href.split('?')[0];
-    const baseUrl = currentUrl.replace('admin.html', 'index.html');
+    const base = getBaseUrl();
     const params = new URLSearchParams();
     params.set('to', guest.name);
     if (guest.category) params.set('cat', guest.category);
-    return `${baseUrl}?${params.toString()}`;
+    return `${base}?${params.toString()}`;
   }
 
   function sanitize(str) {
@@ -397,7 +438,90 @@ Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir
   }
 
   /* ==========================================================================
-     8. DOWNLOAD TEMPLATE EXCEL
+     8. GOOGLE SPREADSHEETS LIVE SYNC
+     ========================================================================== */
+  if (btnSyncGsheet) {
+    btnSyncGsheet.addEventListener('click', async () => {
+      const url = gsheetUrlInput ? gsheetUrlInput.value.trim() : '';
+      if (!url) {
+        alert('Silakan tempelkan tautan Google Spreadsheet Anda terlebih dahulu.');
+        return;
+      }
+
+      if (typeof XLSX === 'undefined') {
+        alert('Library SheetJS belum termuat.');
+        return;
+      }
+
+      const idMatch = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      if (!idMatch) {
+        alert('Format URL Google Spreadsheet tidak dikenali. Pastikan URL berupa link Google Sheets (docs.google.com/spreadsheets/d/...).');
+        return;
+      }
+
+      const sheetId = idMatch[1];
+      const gidMatch = url.match(/gid=([0-9]+)/);
+      const gid = gidMatch ? gidMatch[1] : '0';
+      const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&id=${sheetId}&gid=${gid}`;
+
+      showToast('Menghubungkan & menarik data dari Google Spreadsheet...');
+
+      try {
+        const res = await fetch(csvUrl);
+        if (!res.ok) {
+          throw new Error('Gagal mengunduh data Spreadsheet (HTTP ' + res.status + ').');
+        }
+
+        const csvText = await res.text();
+        const workbook = XLSX.read(csvText, { type: 'string' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(firstSheet);
+
+        if (!rows || rows.length === 0) {
+          alert('Spreadsheet berhasil dibaca tetapi tidak ada baris data. Pastikan baris 1 adalah judul: Nama, Kategori, No_WhatsApp.');
+          return;
+        }
+
+        const currentGuests = [];
+        let count = 0;
+
+        rows.forEach((row, idx) => {
+          const nameKey = Object.keys(row).find(k => /nama|name/i.test(k));
+          const catKey = Object.keys(row).find(k => /kategori|category|kelompok|group/i.test(k));
+          const phoneKey = Object.keys(row).find(k => /wa|whatsapp|hp|phone|telepon|no/i.test(k));
+
+          const nameVal = nameKey ? String(row[nameKey]).trim() : '';
+          const catVal = catKey ? String(row[catKey]).trim() : 'Tamu Undangan';
+          const phoneVal = phoneKey ? formatPhone(row[phoneKey]) : '';
+
+          if (nameVal) {
+            currentGuests.push({
+              id: Date.now() + idx,
+              name: nameVal,
+              category: catVal,
+              phone: phoneVal
+            });
+            count++;
+          }
+        });
+
+        if (count === 0) {
+          alert('Tidak ditemukan kolom nama yang valid pada Google Spreadsheet Anda.');
+          return;
+        }
+
+        saveGuests(currentGuests);
+        renderTable();
+        showToast(`Berhasil menyinkronkan ${count} data tamu & tautan unik dari Google Spreadsheet!`);
+      } catch (err) {
+        console.error('GSheet Sync Error:', err);
+        alert(`Gagal menarik data dari Google Spreadsheet: ${err.message}\n\nPastikan pengaturan Google Spreadsheet Anda:\n1. Klik "Bagikan" di pojok kanan atas Google Sheets.\n2. Ubah akses menjadi "Siapa saja yang memiliki link dapat melihat" (Anyone with the link can view).\n\nAtau Anda juga bisa mengunduh file Excel dari Google Sheets (File > Unduh > Microsoft Excel) lalu drag-and-drop ke area unggah di bawah.`);
+      }
+    });
+  }
+
+  /* ==========================================================================
+     9. DOWNLOAD TEMPLATE SPREADSHEET (WITH UNIQUE LINKS PRE-CONFIGURED)
      ========================================================================== */
   if (btnDownloadTemplate) {
     btnDownloadTemplate.addEventListener('click', () => {
@@ -406,23 +530,48 @@ Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir
         return;
       }
 
+      const base = getBaseUrl();
       const templateData = [
-        { 'Nama': 'Budi Santoso', 'Kategori': 'Sahabat Kampus', 'No_WhatsApp': '081234567890' },
-        { 'Nama': 'Prof. Dr. Ir. Hendra', 'Kategori': 'Dosen Pembimbing', 'No_WhatsApp': '081298765432' },
-        { 'Nama': 'Dewi Lestari', 'Kategori': 'Keluarga', 'No_WhatsApp': '081355554444' },
-        { 'Nama': 'Ahmad Fauzi', 'Kategori': 'Teman Angkatan', 'No_WhatsApp': '081788889999' }
+        {
+          'Nama Tamu': 'Budi Santoso',
+          'Kategori': 'Sahabat Kampus',
+          'No WhatsApp': '081234567890',
+          'Link Undangan Unik': `${base}?to=Budi+Santoso&cat=Sahabat+Kampus`,
+          'Link Kirim WhatsApp': `https://wa.me/6281234567890?text=${encodeURIComponent('Halo Budi Santoso, berikut undangan wisuda Dyah Kusumaningrum, S.P.: ' + base + '?to=Budi+Santoso&cat=Sahabat+Kampus')}`
+        },
+        {
+          'Nama Tamu': 'Prof. Dr. Ir. Hendra',
+          'Kategori': 'Dosen Pembimbing',
+          'No WhatsApp': '081298765432',
+          'Link Undangan Unik': `${base}?to=Prof.+Dr.+Ir.+Hendra&cat=Dosen+Pembimbing`,
+          'Link Kirim WhatsApp': `https://wa.me/6281298765432?text=${encodeURIComponent('Halo Prof. Dr. Ir. Hendra, berikut undangan wisuda Dyah Kusumaningrum, S.P.: ' + base + '?to=Prof.+Dr.+Ir.+Hendra&cat=Dosen+Pembimbing')}`
+        },
+        {
+          'Nama Tamu': 'Dewi Lestari',
+          'Kategori': 'Keluarga',
+          'No WhatsApp': '081355554444',
+          'Link Undangan Unik': `${base}?to=Dewi+Lestari&cat=Keluarga`,
+          'Link Kirim WhatsApp': `https://wa.me/6281355554444?text=${encodeURIComponent('Halo Dewi Lestari, berikut undangan wisuda Dyah Kusumaningrum, S.P.: ' + base + '?to=Dewi+Lestari&cat=Keluarga')}`
+        },
+        {
+          'Nama Tamu': 'Ahmad Fauzi',
+          'Kategori': 'Teman Angkatan',
+          'No WhatsApp': '081788889999',
+          'Link Undangan Unik': `${base}?to=Ahmad+Fauzi&cat=Teman+Angkatan`,
+          'Link Kirim WhatsApp': `https://wa.me/6281788889999?text=${encodeURIComponent('Halo Ahmad Fauzi, berikut undangan wisuda Dyah Kusumaningrum, S.P.: ' + base + '?to=Ahmad+Fauzi&cat=Teman+Angkatan')}`
+        }
       ];
 
       const ws = XLSX.utils.json_to_sheet(templateData);
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Daftar Tamu');
-      XLSX.writeFile(wb, 'template_tamu_undangan_wisuda.xlsx');
-      showToast('Template Excel berhasil diunduh!');
+      XLSX.utils.book_append_sheet(wb, ws, 'Daftar Undangan');
+      XLSX.writeFile(wb, 'template_undangan_wisuda_dyah.xlsx');
+      showToast('Template Spreadsheet berhasil diunduh!');
     });
   }
 
   /* ==========================================================================
-     9. EXPORT GUEST LIST TO EXCEL
+     10. EXPORT GUEST LIST TO SPREADSHEET (ALL LINKS PRESERVED)
      ========================================================================== */
   if (btnExportExcel) {
     btnExportExcel.addEventListener('click', () => {
@@ -437,19 +586,27 @@ Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir
         return;
       }
 
-      const exportRows = guests.map((g, idx) => ({
-        'No': idx + 1,
-        'Nama Tamu': g.name,
-        'Kategori': g.category || 'Umum',
-        'No WhatsApp': g.phone || '',
-        'Link Undangan Unik': getUniqueLink(g)
-      }));
+      const exportRows = guests.map((g, idx) => {
+        const uniqueLink = getUniqueLink(g);
+        const phone = formatPhone(g.phone);
+        const waMsg = `Assalamu'alaikum Wr. Wb. / Salam Sejahtera\n\nKepada Yth. Bapak/Ibu/Saudara/i ${g.name},\n\nDengan penuh rasa syukur, kami mengundang Anda untuk hadir dalam momen berharga Perayaan Wisuda Sarjana Dyah Kusumaningrum, S.P. (Agroteknologi Universitas Andalas):\n\n📅 Sabtu, 19 September 2026\n📍 Auditorium Universitas Andalas, Padang\n\nTautan Undangan Resmi Anda:\n${uniqueLink}`;
+        const waLink = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(waMsg)}` : '';
+
+        return {
+          'No': idx + 1,
+          'Nama Tamu': g.name,
+          'Kategori': g.category || 'Umum',
+          'No WhatsApp': g.phone || '',
+          'Link Undangan Unik': uniqueLink,
+          'Link Kirim WhatsApp': waLink
+        };
+      });
 
       const ws = XLSX.utils.json_to_sheet(exportRows);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Daftar Undangan');
-      XLSX.writeFile(wb, `daftar_tamu_wisuda_${new Date().toISOString().slice(0, 10)}.xlsx`);
-      showToast('Data tamu & link unik berhasil diekspor ke Excel!');
+      XLSX.writeFile(wb, `daftar_undangan_wisuda_dyah_${new Date().toISOString().slice(0, 10)}.xlsx`);
+      showToast('Seluruh data tamu & tautan unik berhasil disimpan ke file Spreadsheet!');
     });
   }
 
