@@ -49,6 +49,7 @@
   --font-cinzel: 'Cinzel', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-script: 'Great Vibes', 'Alex Brush', cursive;
+  --font-lilita: 'Lilita One', cursive, sans-serif;
 
   /* Shadows */
   --shadow-sm: 0 4px 12px rgba(74, 14, 23, 0.06);
@@ -240,10 +241,10 @@ body {
 }
 
 .card-header-kicker {
-  font-family: var(--font-cinzel);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 2.5px;
+  font-family: var(--font-lilita);
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 2px;
   color: var(--gold-dark);
 }
 
@@ -298,20 +299,24 @@ body {
 }
 
 .card-hero-title {
-  font-family: var(--font-serif);
-  font-size: clamp(1.85rem, 5.5vw, 2.3rem);
-  font-weight: 700;
+  font-family: var(--font-lilita);
+  font-size: clamp(1.35rem, 4.8vw, 1.95rem);
+  font-weight: 400;
   color: var(--burgundy-primary);
-  line-height: 1.15;
+  line-height: 1.18;
+  letter-spacing: 0.5px;
   margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-hero-degree {
-  font-family: var(--font-cinzel);
-  font-size: 0.84rem;
-  font-weight: 700;
+  font-family: var(--font-lilita);
+  font-size: 0.88rem;
+  font-weight: 400;
   color: var(--gold-dark);
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
@@ -321,27 +326,30 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* Date & Venue Pill Badge */
+/* Date & Venue Pill Badge - Responsive wrapping to avoid overflow */
 .card-date-venue-pill {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px 8px;
   background: rgba(212, 175, 55, 0.08);
   border: 1px solid rgba(184, 134, 11, 0.3);
   border-radius: 9999px;
   padding: 6px 14px;
-  font-size: 0.75rem;
+  font-size: clamp(0.68rem, 2.7vw, 0.76rem);
   font-weight: 600;
   color: var(--burgundy-primary);
   margin: 0 auto 16px auto;
-  max-width: max-content;
+  max-width: 100%;
+  text-align: center;
   position: relative;
   z-index: 2;
 }
 
 .card-date-venue-pill svg {
   color: var(--gold-dark);
+  flex-shrink: 0;
 }
 
 .pill-dot {
@@ -370,9 +378,9 @@ body {
 }
 
 .tag-guest-name {
-  font-family: var(--font-serif);
-  font-size: 1.35rem;
-  font-weight: 700;
+  font-family: var(--font-lilita);
+  font-size: clamp(1.2rem, 4.2vw, 1.45rem);
+  font-weight: 400;
   color: var(--burgundy-primary);
   line-height: 1.2;
   margin-bottom: 2px;
@@ -394,10 +402,10 @@ body {
   width: 100%;
   padding: 12px 20px;
   min-height: 46px;
-  font-family: var(--font-sans);
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-family: var(--font-lilita);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.8px;
   color: #ffffff;
   background: var(--burgundy-gradient);
   border: 1px solid var(--gold-primary);
@@ -412,6 +420,36 @@ body {
   background: linear-gradient(135deg, #5c121e 0%, #7d1b2b 100%);
   box-shadow: 0 12px 26px rgba(74, 14, 23, 0.45);
   color: #fcedb5;
+}
+
+@media (max-width: 440px) {
+  .bespoke-card {
+    padding: 22px 14px 18px 14px;
+    border-radius: 14px;
+    max-width: calc(100vw - 20px);
+  }
+  .card-photo-frame {
+    max-width: 240px;
+    height: 220px;
+  }
+  .card-hero-title {
+    font-size: clamp(1.18rem, 4.8vw, 1.55rem);
+    white-space: nowrap;
+  }
+  .card-header-kicker {
+    font-size: 0.76rem;
+    letter-spacing: 1.5px;
+  }
+  .card-university-tag {
+    font-size: 0.65rem;
+  }
+  .card-date-venue-pill {
+    padding: 5px 10px;
+    font-size: 0.7rem;
+  }
+  .recipient-tag-envelope {
+    padding: 13px 10px 12px 10px;
+  }
 }
 
 /* ==========================================================================
