@@ -304,34 +304,49 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateCountdown, 1000);
 
   /* ==========================================================================
-     4B. PARALLAX 3-COLUMN ANIMATED GALLERY SCROLL CONTROLLER (21st.dev style)
+     4B. 21ST.DEV ANIMATED GALLERY 3D SCROLL & PARALLAX ENGINE
      ========================================================================== */
-  const heroSection = document.querySelector('.hero-section-burgundy');
+  const scrollTrack = document.getElementById('container-scroll-track');
+  const gallery3D = document.getElementById('gallery-3d-container');
   const col1 = document.getElementById('gallery-col-1');
   const col2 = document.getElementById('gallery-col-2');
   const col3 = document.getElementById('gallery-col-3');
 
-  if (heroSection && col1 && col2 && col3) {
+  if (scrollTrack && gallery3D && col1 && col2 && col3) {
     let ticking = false;
 
-    function updateHeroParallax() {
-      const rect = heroSection.getBoundingClientRect();
-      const scrollTrackHeight = heroSection.offsetHeight - window.innerHeight;
+    function update3DGallery() {
+      const rect = scrollTrack.getBoundingClientRect();
+      const scrollHeight = scrollTrack.offsetHeight - window.innerHeight;
 
-      // Progress from 0 (top) to 1 (when user scrolls past the hero section)
       let progress = 0;
-      if (scrollTrackHeight > 0) {
-        progress = Math.max(0, Math.min(1, -rect.top / scrollTrackHeight));
+      if (scrollHeight > 0) {
+        progress = Math.max(0, Math.min(1, -rect.top / scrollHeight));
       }
 
-      // Parallax translation ranges matching 21st.dev template
-      // Col 1: -12% to +14%
-      // Col 2: +18% to -18% (counter-motion)
-      // Col 3: -14% to +14%
-      const y1 = -12 + (progress * 26);
-      const y2 = 18 - (progress * 36);
-      const y3 = -14 + (progress * 28);
+      // 21st.dev template transform mapping:
+      // rotateX: transforms from 55deg down to 0deg across progress [0, 0.5]
+      const rotateX = progress <= 0.5 
+        ? 55 - (progress / 0.5) * 55 
+        : 0;
 
+      // scale: transforms from 1.18 down to 1.0 across progress [0.5, 0.9]
+      const scale = progress < 0.5 
+        ? 1.18 
+        : progress <= 0.9 
+          ? 1.18 - ((progress - 0.5) / 0.4) * 0.18 
+          : 1.0;
+
+      // column yRange parallax mapping:
+      // col 1: -10% to 2% on progress [0.5, 1]
+      // col 2: 15% to 5% on progress [0.5, 1]
+      // col 3: -10% to 2% on progress [0.5, 1]
+      const pCol = progress < 0.5 ? 0 : (progress - 0.5) / 0.5;
+      const y1 = -10 + (pCol * 12);
+      const y2 = 15 - (pCol * 10);
+      const y3 = -10 + (pCol * 12);
+
+      gallery3D.style.transform = `rotateX(${rotateX.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
       col1.style.transform = `translate3d(0, ${y1.toFixed(2)}%, 0)`;
       col2.style.transform = `translate3d(0, ${y2.toFixed(2)}%, 0)`;
       col3.style.transform = `translate3d(0, ${y3.toFixed(2)}%, 0)`;
@@ -341,16 +356,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', () => {
       if (!ticking) {
-        window.requestAnimationFrame(updateHeroParallax);
+        window.requestAnimationFrame(update3DGallery);
         ticking = true;
       }
     }, { passive: true });
 
     window.addEventListener('resize', () => {
-      updateHeroParallax();
+      update3DGallery();
     }, { passive: true });
 
-    updateHeroParallax();
+    update3DGallery();
   }
 
   /* ==========================================================================
