@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const coverGate = document.getElementById('cover-gate');
   const btnOpenInvite = document.getElementById('btn-open-invite');
   const bgAudio = document.getElementById('bg-audio');
+  if (bgAudio) {
+    bgAudio.volume = 0.75;
+  }
   const musicToggle = document.getElementById('music-toggle');
   const discBtn = document.getElementById('disc-btn');
   const recipientNameEl = document.getElementById('recipient-name');
@@ -325,26 +328,26 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 21st.dev template transform mapping:
-      // rotateX: transforms from 55deg down to 0deg across progress [0, 0.5]
-      const rotateX = progress <= 0.5 
-        ? 55 - (progress / 0.5) * 55 
+      // rotateX: transforms from 42deg down to 0deg across progress [0, 0.6]
+      const rotateX = progress <= 0.6 
+        ? 42 - (progress / 0.6) * 42 
         : 0;
 
-      // scale: transforms from 1.18 down to 1.0 across progress [0.5, 0.9]
-      const scale = progress < 0.5 
-        ? 1.18 
-        : progress <= 0.9 
-          ? 1.18 - ((progress - 0.5) / 0.4) * 0.18 
+      // scale: transforms from 1.12 down to 1.0 across progress [0.3, 0.85]
+      const scale = progress < 0.3 
+        ? 1.12 
+        : progress <= 0.85 
+          ? 1.12 - ((progress - 0.3) / 0.55) * 0.12 
           : 1.0;
 
-      // column yRange parallax mapping:
-      // col 1: -10% to 2% on progress [0.5, 1]
-      // col 2: 15% to 5% on progress [0.5, 1]
-      // col 3: -10% to 2% on progress [0.5, 1]
-      const pCol = progress < 0.5 ? 0 : (progress - 0.5) / 0.5;
-      const y1 = -10 + (pCol * 12);
-      const y2 = 15 - (pCol * 10);
-      const y3 = -10 + (pCol * 12);
+      // column yRange parallax mapping (gentle & centered so no empty voids or clipping):
+      // col 1: -4% to 2%
+      // col 2: 4% to -2%
+      // col 3: -4% to 2%
+      const pCol = progress < 0.3 ? 0 : (progress - 0.3) / 0.7;
+      const y1 = -4 + (pCol * 6);
+      const y2 = 4 - (pCol * 6);
+      const y3 = -4 + (pCol * 6);
 
       gallery3D.style.transform = `rotateX(${rotateX.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
       col1.style.transform = `translate3d(0, ${y1.toFixed(2)}%, 0)`;
