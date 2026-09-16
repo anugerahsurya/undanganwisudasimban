@@ -44,21 +44,24 @@ document.addEventListener('DOMContentLoaded', () => {
      1. STORAGE & BASE URL MANAGEMENT
      ========================================================================== */
   function getDefaultBaseUrl() {
-    // If hosted on vercel, github pages, or custom domain, use current origin/path
-    if (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('github.io')) {
-      return window.location.href.split('?')[0].replace('admin.html', 'index.html');
+    if (window.location.hostname.includes('vercel.app')) {
+      return 'https://wisudadyah.vercel.app';
     }
-    // Default fallback production URL:
-    return 'https://wisudadyah.vercel.app/index.html';
+    if (window.location.hostname.includes('github.io')) {
+      return window.location.href.split('?')[0].replace('admin.html', '').replace(/\/+$/, '');
+    }
+    return 'https://wisudadyah.vercel.app';
   }
 
   function getBaseUrl() {
-    return localStorage.getItem('wisuda_base_url_setting') || getDefaultBaseUrl();
+    let url = localStorage.getItem('wisuda_base_url_setting') || getDefaultBaseUrl();
+    return url.replace(/index\.html\/?$/, '').replace(/\/+$/, '');
   }
 
   function updateFormulaDisplay() {
     if (formulaLinkDisplay) {
-      formulaLinkDisplay.textContent = `=CONCATENATE("${getBaseUrl()}?to=", ENCODEURL(A2), "&cat=", ENCODEURL(B2))`;
+      const base = getBaseUrl();
+      formulaLinkDisplay.textContent = `=CONCATENATE("${base}/", SUBSTITUTE(A2, " ", "-"))`;
     }
   }
 
@@ -71,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnSaveBaseUrl.addEventListener('click', () => {
       let val = baseUrlInput.value.trim();
       if (!val) val = getDefaultBaseUrl();
+      val = val.replace(/index\.html\/?$/, '').replace(/\/+$/, '');
       localStorage.setItem('wisuda_base_url_setting', val);
       updateFormulaDisplay();
       renderTable(searchInput ? searchInput.value : '');

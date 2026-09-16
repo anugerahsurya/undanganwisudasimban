@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isPlaying = false;
 
   /* ==========================================================================
-     1. PARSE URL PARAMETERS (Recipient Name & Category)
+     1. PARSE URL PARAMETERS & CLEAN PATHS (No index.html needed)
      ========================================================================== */
   function getUrlParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -34,13 +34,43 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function sanitize(str) {
+    if (!str) return '';
     const temp = document.createElement('div');
     temp.textContent = str;
     return temp.innerHTML;
   }
 
-  const rawGuestName = getUrlParam('to') || getUrlParam('guest') || getUrlParam('nama') || 'Tamu Undangan';
-  const rawGuestCategory = getUrlParam('cat') || getUrlParam('kategori') || 'Keluarga & Sahabat';
+  function parseGuestInfo() {
+    let name = getUrlParam('to') || getUrlParam('guest') || getUrlParam('nama');
+    let category = getUrlParam('cat') || getUrlParam('kategori');
+
+    // If not in query string, extract from clean path (e.g. /Budi-Santoso or /to/Budi-Santoso)
+    if (!name) {
+      let path = window.location.pathname.replace(/^\/+|\/+$/g, '');
+      if (path && path !== 'index.html' && path !== 'index' && path !== 'admin.html' && path !== 'admin' && !path.startsWith('assets/')) {
+        // Handle /to/Name/Category or /u/Name/Category
+        if (path.startsWith('to/') || path.startsWith('u/')) {
+          const parts = path.split('/');
+          name = decodeURIComponent(parts[1] || '').replace(/[-_+]/g, ' ');
+          if (parts[2]) {
+            category = decodeURIComponent(parts[2]).replace(/[-_+]/g, ' ');
+          }
+        } else if (!path.includes('.')) {
+          // Handle direct slug: /Budi-Santoso or /Budi_Santoso or /Budi
+          name = decodeURIComponent(path).replace(/[-_+]/g, ' ');
+        }
+      }
+    }
+
+    return {
+      name: name ? name.trim() : 'Tamu Undangan',
+      category: category ? category.trim() : 'Keluarga & Sahabat'
+    };
+  }
+
+  const guestData = parseGuestInfo();
+  const rawGuestName = guestData.name;
+  const rawGuestCategory = guestData.category;
 
   const guestName = sanitize(rawGuestName);
   const guestCategory = sanitize(rawGuestCategory);
