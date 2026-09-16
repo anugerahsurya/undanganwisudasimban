@@ -675,31 +675,43 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     10. DYNAMIC AUTO-FIT FOR HERO GRADUATE NAME (No wrap, no truncation)
+     10. DYNAMIC AUTO-FIT FOR HERO GRADUATE NAME (Snug to border with 1em margin)
      ========================================================================== */
   function fitHeroTitle() {
     const titleEl = document.querySelector('.card-hero-title');
     if (!titleEl) return;
-    const parent = titleEl.parentElement;
-    if (!parent) return;
+    const card = titleEl.closest('.bespoke-card');
+    if (!card) return;
 
-    // Reset styles for measurement
-    titleEl.style.fontSize = '';
+    // Requirement: Mepet ke border dengan margin 1em (1em pada tiap sisi kiri dan kanan)
+    const emInPx = parseFloat(getComputedStyle(card).fontSize) || 16;
+    // Lebar maksimum yang tersedia adalah lebar kartu dikurangi 1em di kiri dan 1em di kanan
+    const maxAllowedWidth = Math.max(160, card.clientWidth - (2 * emInPx));
+
     titleEl.style.whiteSpace = 'nowrap';
     titleEl.style.display = 'inline-block';
-    titleEl.style.maxWidth = '100%';
+    titleEl.style.maxWidth = 'none';
 
-    const containerWidth = Math.max(160, parent.clientWidth - 8);
-    if (containerWidth <= 0) return;
+    // Baseline ukuran uji untuk pengukuran akurat
+    const testSize = 28;
+    titleEl.style.fontSize = `${testSize}px`;
 
-    // Start with proportional font size based on container width
-    let currentSize = Math.min(28, containerWidth / 14);
-    titleEl.style.fontSize = `${currentSize}px`;
+    const renderedWidth = titleEl.scrollWidth;
+    if (renderedWidth > 0) {
+      // Skala langsung secara proporsional agar teks selebar mungkin sampai mepet ke batas 1em
+      let targetSize = (maxAllowedWidth / renderedWidth) * testSize;
+      
+      // Maksimum 32px agar tetap proporsional dan elegan
+      targetSize = Math.min(32, targetSize);
+      // Pembulatan presisi 1 desimal
+      targetSize = Math.floor(targetSize * 10) / 10;
+      titleEl.style.fontSize = `${targetSize}px`;
 
-    // Reduce iteratively if overflowing container width until it fits perfectly
-    while (titleEl.scrollWidth > containerWidth && currentSize > 11) {
-      currentSize -= 0.4;
-      titleEl.style.fontSize = `${currentSize}px`;
+      // Mikro-penyesuaian jika ada perbedaan subpixel rendering agar pas mepet di batas 1em
+      while (titleEl.scrollWidth > maxAllowedWidth && targetSize > 12) {
+        targetSize -= 0.2;
+        titleEl.style.fontSize = `${targetSize}px`;
+      }
     }
   }
 

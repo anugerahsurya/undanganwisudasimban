@@ -167,7 +167,7 @@ body {
   background: #ffffff;
   border-radius: 18px;
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6), 0 0 35px rgba(184, 134, 11, 0.18);
-  padding: 32px 24px 24px 24px;
+  padding: 30px 1em 24px 1em;
   position: relative;
   overflow: hidden;
   animation: floatCard 4s ease-in-out infinite;
@@ -296,21 +296,22 @@ body {
   margin-bottom: 12px;
   position: relative;
   z-index: 2;
+  width: 100%;
+  padding: 0;
 }
 
 .card-hero-title {
   font-family: var(--font-lilita);
-  font-size: clamp(1rem, 4.4vw, 1.75rem);
+  font-size: clamp(1.2rem, 5.8vw, 1.85rem);
   font-weight: 400;
   color: var(--burgundy-primary);
-  line-height: 1.18;
-  letter-spacing: 0.3px;
-  margin-bottom: 4px;
+  line-height: 1.15;
+  letter-spacing: 0.2px;
+  margin: 0 auto 4px auto;
   white-space: nowrap;
-  display: block;
-  width: 100%;
+  display: inline-block;
   max-width: 100%;
-  box-sizing: border-box;
+  text-align: center;
 }
 
 .card-hero-degree {
@@ -1726,18 +1727,18 @@ body {
   }
 
   .bespoke-card {
-    padding: 24px 18px 20px 18px;
+    padding: 24px 1em 20px 1em;
   }
 
   .card-hero-title {
-    font-size: clamp(1rem, 4.4vw, 1.55rem);
+    font-size: clamp(1.15rem, 5.8vw, 1.7rem);
     white-space: nowrap;
   }
 }
 
 @media (max-width: 480px) {
   .card-hero-title {
-    font-size: clamp(0.92rem, 4.2vw, 1.35rem);
+    font-size: clamp(1.1rem, 5.8vw, 1.55rem);
     white-space: nowrap;
   }
   .hero-main-title {
