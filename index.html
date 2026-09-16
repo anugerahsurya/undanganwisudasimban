@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Undangan Wisuda Sarjana | Anugerah Surya, S.Tr.Stat.</title>
+  <meta name="description" content="Undangan Resmi Perayaan Wisuda Sarjana Anugerah Surya, S.Tr.Stat. Merayakan kelulusan dan awal langkah baru bersama keluarga dan sahabat terkasih.">
+  
+  <!-- Google Fonts: Cormorant Garamond, Plus Jakarta Sans, Alex Brush -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Golden Particle Background Canvas -->
+  <canvas id="sparkle-canvas"></canvas>
+
+  <!-- Background Audio Element -->
+  <audio id="bg-audio" preload="auto" loop>
+    <source src="assets/audio/song.mp3" type="audio/mp3">
+    Browser Anda tidak mendukung elemen pemutar audio.
+  </audio>
+
+  <!-- ==========================================================================
+       COVER / GREETING GATE OVERLAY (Awal saat web diakses)
+       ========================================================================== -->
+  <aside id="cover-gate" class="cover-gate" aria-label="Sampul Undangan Wisuda">
+    <div class="cover-card">
+      <div class="cover-badge">Undangan Wisuda</div>
+      
+      <div class="cover-avatar-wrap">
+        <img src="assets/images/profile.jpg" alt="Foto Wisudawan" class="cover-avatar">
+      </div>
+
+      <h1 class="cover-title font-serif text-gold-gradient">Anugerah Surya</h1>
+      <p class="cover-degree">Sarjana Terapan Statistika (S.Tr.Stat.)</p>
+
+      <div class="recipient-box">
+        <p class="recipient-label">Kepada Yang Terhormat:</p>
+        <div id="recipient-name" class="recipient-name">Tamu Undangan</div>
+        <div id="recipient-category" class="recipient-category">Keluarga & Sahabat</div>
+      </div>
+
+      <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 22px;">
+        Tanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir dan berbagi kebahagiaan pada hari kelulusan kami.
+      </p>
+
+      <button id="btn-open-invite" class="btn-gold" type="button" aria-label="Buka Undangan Wisuda">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+        <span>Buka Undangan</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       FLOATING MUSIC CONTROLLER
+       ========================================================================== -->
+  <div class="music-widget" role="region" aria-label="Kontrol Musik Latar">
+    <button id="music-toggle" class="disc-btn" type="button" aria-label="Putar atau Jeda Musik">
+      <span id="disc-btn" class="disc-btn">
+        <svg class="icon-play" viewBox="0 0 24 24" style="display: none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <svg class="icon-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+      </span>
+    </button>
+    <div class="music-info">
+      <span class="music-title">Bandung</span>
+      <span class="music-artist">Yura Yunita</span>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       NAVIGATION BAR
+       ========================================================================== -->
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="#beranda" class="nav-brand">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+        </svg>
+        <span>Graduation Day</span>
+      </a>
+      <nav aria-label="Menu Utama">
+        <ul class="nav-links">
+          <li><a href="#beranda" class="nav-link">Beranda</a></li>
+          <li><a href="#jadwal" class="nav-link">Jadwal Acara</a></li>
+          <li><a href="#lokasi" class="nav-link">Lokasi</a></li>
+          <li><a href="#cerita" class="nav-link">Perjalanan</a></li>
+          <li><a href="#galeri" class="nav-link">Galeri</a></li>
+          <li><a href="#ucapan" class="nav-link">Ucapan</a></li>
+        </ul>
+      </nav>
+      <a href="admin.html" class="nav-admin-btn">Laman Admin</a>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       HERO SECTION
+       ========================================================================== -->
+  <main>
+    <section id="beranda" class="hero-section">
+      <div class="container">
+        <p class="hero-subtitle">The Graduation of</p>
+        <h1 class="hero-main-title text-gold-gradient">Perayaan Kelulusan Sarjana</h1>
+        
+        <div class="hero-ornament">
+          <span class="hero-ornament-icon">✦</span>
+        </div>
+
+        <div class="graduate-card reveal-on-scroll">
+          <div class="graduate-photo-frame">
+            <img src="assets/images/profile.jpg" alt="Anugerah Surya, S.Tr.Stat." class="graduate-photo">
+          </div>
+
+          <h2 class="graduate-name font-serif">Anugerah Surya, S.Tr.Stat.</h2>
+          <p class="graduate-degree">Program Studi Statistika Terapan</p>
+          <p class="graduate-uni">
+            Dengan penuh rasa syukur ke hadirat Tuhan Yang Maha Esa atas karunia dan rahmat-Nya, sehingga dapat menyelesaikan masa studi dan meraih gelar kesarjanaan.
+          </p>
+
+          <!-- Countdown Timer -->
+          <div class="countdown-container">
+            <div class="countdown-item">
+              <div id="cd-days" class="countdown-num">00</div>
+              <div class="countdown-label">Hari</div>
+            </div>
+            <div class="countdown-item">
+              <div id="cd-hours" class="countdown-num">00</div>
+              <div class="countdown-label">Jam</div>
+            </div>
+            <div class="countdown-item">
+              <div id="cd-minutes" class="countdown-num">00</div>
+              <div class="countdown-label">Menit</div>
+            </div>
+            <div class="countdown-item">
+              <div id="cd-seconds" class="countdown-num">00</div>
+              <div class="countdown-label">Detik</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         ACARA & JADWAL SECTION
+         ========================================================================== -->
+    <section id="jadwal" class="section">
+      <div class="container">
+        <header class="section-header reveal-on-scroll">
+          <span class="section-tag">Save The Date</span>
+          <h2 class="section-title">Waktu & Tempat Pelaksanaan</h2>
+          <div class="section-divider"></div>
+        </header>
+
+        <div class="event-grid">
+          <!-- Card 1: Prosesi Wisuda -->
+          <article class="event-card reveal-on-scroll delay-1">
+            <div class="event-icon-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+              </svg>
+            </div>
+            <h3 class="event-title">Prosesi Sidang Terbuka</h3>
+            <div class="event-detail-item">
+              <strong>Sabtu, 24 Oktober 2026</strong>
+            </div>
+            <div class="event-detail-item">
+              Pukul 08.00 WIB s/d 11.30 WIB
+            </div>
+            <div class="event-detail-item text-muted">
+              Auditorium Utama Universitas
+            </div>
+          </article>
+
+          <!-- Card 2: Sesi Foto & Temu Ramah -->
+          <article class="event-card reveal-on-scroll delay-2">
+            <div class="event-icon-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </div>
+            <h3 class="event-title">Temu Ramah & Foto Bersama</h3>
+            <div class="event-detail-item">
+              <strong>Sabtu, 24 Oktober 2026</strong>
+            </div>
+            <div class="event-detail-item">
+              Pukul 11.45 WIB s/d Selesai
+            </div>
+            <div class="event-detail-item text-muted">
+              Plaza & Halaman Rektorat Utama
+            </div>
+          </article>
+        </div>
+
+        <div class="text-center reveal-on-scroll delay-3">
+          <button id="btn-save-calendar" class="btn-secondary" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span>Simpan ke Kalender (.ics)</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         LOKASI & GOOGLE MAPS
+         ========================================================================== -->
+    <section id="lokasi" class="section">
+      <div class="container">
+        <header class="section-header reveal-on-scroll">
+          <span class="section-tag">Petunjuk Lokasi</span>
+          <h2 class="section-title">Denah & Titik Temu</h2>
+          <div class="section-divider"></div>
+        </header>
+
+        <div class="map-card reveal-on-scroll">
+          <div class="map-wrapper">
+            <!-- Responsive Google Maps Embed -->
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.902931568285!2d106.86654867499634!3d-6.902206793097072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e64c5e3170b7%3A0xb3631f417e2f5b61!2sGedung%20Auditorium%20Politeknik%20Statistika%20STIS!5e0!3m2!1sid!2sid!4v1710582910291!5m2!1sid!2sid" 
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Google Maps Lokasi Gedung Wisuda">
+            </iframe>
+          </div>
+
+          <div class="map-info">
+            <h3 class="map-location-name">Gedung Auditorium Utama</h3>
+            <p class="map-address">
+              Jl. Otto Iskandardinata No. 64C, Jatinegara, Jakarta Timur, DKI Jakarta 13330
+            </p>
+            <p class="text-muted" style="font-size: 0.88rem;">
+              Area parkir tersedia di Gedung Parkir Barat dan Lapangan Utama. Titik temu ramah keluarga berada di selasar Gedung Rektorat.
+            </p>
+
+            <div class="map-actions">
+              <a href="https://maps.google.com/?q=Politeknik+Statistika+STIS" target="_blank" rel="noopener noreferrer" class="btn-gold">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                </svg>
+                <span>Buka di Google Maps</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         STORY PERJALANAN MENUJU WISUDA (TIMELINE)
+         ========================================================================== -->
+    <section id="cerita" class="section">
+      <div class="container">
+        <header class="section-header reveal-on-scroll">
+          <span class="section-tag">Perjalanan Akademik</span>
+          <h2 class="section-title">Kilas Balik Menuju Toga</h2>
+          <div class="section-divider"></div>
+        </header>
+
+        <div class="timeline">
+          <!-- Milestone 1: Seminar Proposal (Sempro) -->
+          <article class="timeline-item reveal-on-scroll delay-1">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <div class="timeline-image-wrap">
+                <img src="assets/images/sempro.jpg" alt="Momen Seminar Proposal" class="timeline-image" loading="lazy">
+              </div>
+              <span class="timeline-phase">Fase 01</span>
+              <h3 class="timeline-title">Seminar Proposal (Sempro)</h3>
+              <div class="timeline-date">14 Januari 2026</div>
+              <p class="timeline-desc">
+                Langkah awal pembuktian gagasan riset. Di hadapan para dosen pembimbing dan penguji, rancangan metodologi penelitian dipaparkan dengan penuh debar, persiapan matang, dan ribuan catatan perbaikan berharga.
+              </p>
+            </div>
+          </article>
+
+          <!-- Milestone 2: Seminar Hasil (Semhas) -->
+          <article class="timeline-item reveal-on-scroll delay-2">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <div class="timeline-image-wrap">
+                <img src="assets/images/semhas.jpg" alt="Momen Seminar Hasil" class="timeline-image" loading="lazy">
+              </div>
+              <span class="timeline-phase">Fase 02</span>
+              <h3 class="timeline-title">Seminar Hasil (Semhas)</h3>
+              <div class="timeline-date">18 Juni 2026</div>
+              <p class="timeline-desc">
+                Tahap pengolahan data riil dan pengujian model statistik. Hari-hari penuh coding, pembersihan data, serta begadang di laboratorium hingga akhirnya temuan riset teruji secara ilmiah dan siap dipertahankan.
+              </p>
+            </div>
+          </article>
+
+          <!-- Milestone 3: Sidang Skripsi & Yudisium -->
+          <article class="timeline-item reveal-on-scroll delay-3">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <div class="timeline-image-wrap">
+                <img src="assets/images/gallery-3.jpg" alt="Momen Sidang Skripsi dan Yudisium" class="timeline-image" loading="lazy">
+              </div>
+              <span class="timeline-phase">Fase 03</span>
+              <h3 class="timeline-title">Sidang Skripsi & Yudisium</h3>
+              <div class="timeline-date">28 Agustus 2026</div>
+              <p class="timeline-desc">
+                Pintu gerbang kelulusan akhir. Pertanyaan demi pertanyaan penguji terjawab tuntas. Rasa haru dan syukur membuncah ketika kata "Dinyatakan Lulus dengan Pujian" dikumandangkan oleh dewan penguji.
+              </p>
+            </div>
+          </article>
+
+          <!-- Milestone 4: Hari Wisuda -->
+          <article class="timeline-item reveal-on-scroll delay-4">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <div class="timeline-image-wrap">
+                <img src="assets/images/wisuda.jpg" alt="Momen Perayaan Hari Wisuda" class="timeline-image" loading="lazy">
+              </div>
+              <span class="timeline-phase">Puncak</span>
+              <h3 class="timeline-title">Hari Wisuda yang Dinanti</h3>
+              <div class="timeline-date">24 Oktober 2026</div>
+              <p class="timeline-desc">
+                Puncak rasa syukur dan persembahan tanda bakti untuk orang tua tercinta. Pengalihan kuncir toga menjadi saksi permulaan darma bakti nyata bagi bangsa dan sesama.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         GALERI FOTO MEMORI
+         ========================================================================== -->
+    <section id="galeri" class="section">
+      <div class="container">
+        <header class="section-header reveal-on-scroll">
+          <span class="section-tag">Momen Berharga</span>
+          <h2 class="section-title">Galeri Kenangan Kampus</h2>
+          <div class="section-divider"></div>
+        </header>
+
+        <div class="gallery-grid">
+          <div class="gallery-item reveal-on-scroll delay-1" tabindex="0" role="button" aria-label="Lihat foto potret wisudawan">
+            <img src="assets/images/profile.jpg" alt="Potret Wisudawan" class="gallery-thumb" loading="lazy">
+            <div class="gallery-overlay">
+              <span class="gallery-caption">Potret Toga Kebanggaan</span>
+            </div>
+          </div>
+
+          <div class="gallery-item reveal-on-scroll delay-2" tabindex="0" role="button" aria-label="Lihat foto presentasi proposal">
+            <img src="assets/images/sempro.jpg" alt="Presentasi Proposal Penelitian" class="gallery-thumb" loading="lazy">
+            <div class="gallery-overlay">
+              <span class="gallery-caption">Presentasi Proposal Riset</span>
+            </div>
+          </div>
+
+          <div class="gallery-item reveal-on-scroll delay-3" tabindex="0" role="button" aria-label="Lihat foto naskah skripsi selesai">
+            <img src="assets/images/semhas.jpg" alt="Naskah Skripsi Akhir Selesai" class="gallery-thumb" loading="lazy">
+            <div class="gallery-overlay">
+              <span class="gallery-caption">Senyum Usai Sidang Akhir</span>
+            </div>
+          </div>
+
+          <div class="gallery-item reveal-on-scroll delay-4" tabindex="0" role="button" aria-label="Lihat foto perayaan toga bersama rekan">
+            <img src="assets/images/wisuda.jpg" alt="Lempar Topi Wisuda Bersama Teman" class="gallery-thumb" loading="lazy">
+            <div class="gallery-overlay">
+              <span class="gallery-caption">Selebrasi Bahagia Bersama</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         BUKU UCAPAN & DOA (GUESTBOOK)
+         ========================================================================== -->
+    <section id="ucapan" class="section">
+      <div class="container">
+        <header class="section-header reveal-on-scroll">
+          <span class="section-tag">Doa & Harapan</span>
+          <h2 class="section-title">Kirimkan Ucapan Selamat</h2>
+          <div class="section-divider"></div>
+        </header>
+
+        <div class="wishes-card reveal-on-scroll">
+          <form id="wishes-form" class="wishes-form">
+            <div class="form-group">
+              <label for="wish-name" class="form-label">Nama Anda</label>
+              <input type="text" id="wish-name" class="form-input" placeholder="Tuliskan nama lengkap Anda" required>
+            </div>
+
+            <div class="form-group">
+              <label for="wish-message" class="form-label">Pesan Ucapan & Doa</label>
+              <textarea id="wish-message" class="form-textarea" placeholder="Tuliskan doa serta ucapan selamat untuk wisudawan..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-gold">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+              <span>Kirimkan Ucapan</span>
+            </button>
+          </form>
+
+          <h3 class="font-serif text-gold" style="font-size: 1.35rem; margin-bottom: 16px;">
+            Daftar Doa & Ucapan Teman:
+          </h3>
+          <div id="wishes-list" class="wishes-list" aria-live="polite">
+            <!-- Populated via JavaScript from localStorage -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       LIGHTBOX MODAL
+       ========================================================================== -->
+  <div id="lightbox-modal" class="lightbox-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Tampilan Foto Penuh">
+    <div class="lightbox-content">
+      <button id="lightbox-close" class="lightbox-close" type="button" aria-label="Tutup Tampilan Foto">&times;</button>
+      <img id="lightbox-img" class="lightbox-img" src="" alt="Pratinjau Foto">
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <blockquote class="footer-quote">
+        "Pendidikan bukan sekadar tentang meraih gelar, melainkan tentang pembentukan budi pekerti, integritas, dan pengabdian bagi nusa serta bangsa."
+      </blockquote>
+      <p class="footer-credits">
+        Persembahan Penuh Cinta untuk Orang Tua, Dosen, serta Rekan Seperjuangan.
+      </p>
+      <p class="footer-credits" style="margin-top: 10px; font-size: 0.78rem;">
+        &copy; 2026 Anugerah Surya, S.Tr.Stat. | Undangan Wisuda Digital.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript File -->
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
