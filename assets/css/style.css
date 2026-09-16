@@ -1,38 +1,39 @@
 /* ==========================================================================
-   UNDANGAN WISUDA ELEGAN - WHITE, GOLD & BURGUNDY THEME
+   UNDANGAN WISUDA ELEGAN - BURGUNDY, GOLD & WHITE THEME
    Design System: Luxury Academic Celebration
-   Editorial Bespoke Card + Alternating Burgundy/Ivory Sections
+   Grand Burgundy Hero + Dynamic Alternating Sections + Floating Laurel Leaves
    ========================================================================== */
 
 :root {
-  /* Light Page Backgrounds */
-  --bg-page: #fbfbf9;
-  --bg-page-gradient: radial-gradient(circle at 50% 0%, #fffbf0 0%, #faf8f4 45%, #f4f2eb 100%);
+  /* Page Backgrounds */
+  --bg-page: #faf8f5;
+  --bg-page-gradient: radial-gradient(circle at 50% 0%, #fffdf8 0%, #faf6ef 50%, #f4f0e6 100%);
   --bg-card: rgba(255, 255, 255, 0.96);
   --bg-card-hover: #ffffff;
-  --bg-subtle: #f9f8f5;
+  --bg-subtle: #f9f7f2;
 
-  /* Burgundy Royal Palette (Replacing Navy) */
-  --burgundy-darkest: #2a060c;
-  --burgundy-deep: #3b0a11;
+  /* Burgundy Royal Palette */
+  --burgundy-darkest: #1c0307;
+  --burgundy-deep: #2e070d;
   --burgundy-primary: #4a0e17;
   --burgundy-medium: #5c121e;
   --burgundy-rich: #6e1825;
   --burgundy-light: #852030;
   --burgundy-soft: #fdf2f4;
+  --burgundy-hero-gradient: linear-gradient(180deg, #2e070d 0%, #4a0e17 40%, #5c121e 75%, #3b0a11 100%);
   --burgundy-gradient: linear-gradient(135deg, #4a0e17 0%, #6e1825 50%, #3b0a11 100%);
-  --burgundy-gradient-card: linear-gradient(135deg, #5c121e 0%, #4a0e17 100%);
+  --burgundy-gradient-card: linear-gradient(135deg, rgba(74, 14, 23, 0.85) 0%, rgba(46, 7, 13, 0.95) 100%);
 
   /* Gold Palette */
   --gold-primary: #b8860b;
-  --gold-vibrant: #c59b27;
+  --gold-vibrant: #d4af37;
   --gold-light: #fef8eb;
-  --gold-shimmer: #f5e0a0;
+  --gold-shimmer: #f8e5b8;
   --gold-dark: #8c6506;
-  --gold-border: rgba(184, 134, 11, 0.32);
-  --gold-border-bright: rgba(184, 134, 11, 0.75);
-  --gold-glow: rgba(184, 134, 11, 0.2);
-  --gold-gradient: linear-gradient(135deg, #d4af37 0%, #aa771c 100%);
+  --gold-border: rgba(184, 134, 11, 0.35);
+  --gold-border-bright: rgba(212, 175, 55, 0.8);
+  --gold-glow: rgba(212, 175, 55, 0.25);
+  --gold-gradient: linear-gradient(135deg, #f5e0a0 0%, #d4af37 50%, #aa771c 100%);
   --gold-gradient-soft: linear-gradient(135deg, rgba(253, 245, 230, 0.9) 0%, rgba(212, 175, 55, 0.2) 100%);
 
   /* Text Colors */
@@ -51,8 +52,8 @@
 
   /* Shadows */
   --shadow-sm: 0 4px 12px rgba(74, 14, 23, 0.06);
-  --shadow-card: 0 16px 40px -10px rgba(74, 14, 23, 0.08), 0 0 0 1px rgba(184, 134, 11, 0.22);
-  --shadow-card-hover: 0 24px 50px -10px rgba(74, 14, 23, 0.16), 0 0 0 1px rgba(184, 134, 11, 0.6);
+  --shadow-card: 0 16px 40px -10px rgba(74, 14, 23, 0.1), 0 0 0 1px rgba(184, 134, 11, 0.25);
+  --shadow-card-hover: 0 24px 50px -10px rgba(74, 14, 23, 0.18), 0 0 0 1px rgba(184, 134, 11, 0.65);
   --shadow-gold: 0 10px 25px -5px rgba(184, 134, 11, 0.35);
   --glass-blur: blur(14px);
 
@@ -72,7 +73,7 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
-  background-color: var(--bg-page);
+  background-color: var(--burgundy-deep);
   color: var(--text-body);
   font-family: var(--font-sans);
   overflow-x: hidden;
@@ -81,14 +82,13 @@ html {
 body {
   min-height: 100vh;
   line-height: 1.6;
-  background: var(--bg-page-gradient);
-  background-attachment: fixed;
+  background: var(--bg-page);
   overflow-x: hidden;
   position: relative;
   color: var(--text-body);
 }
 
-/* Subtle Golden Canvas Background */
+/* Subtle Golden Canvas Particle & Leaf Background */
 #sparkle-canvas {
   position: fixed;
   top: 0;
@@ -96,14 +96,14 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
+  z-index: 10;
 }
 
 /* Focus Ring */
 :focus-visible {
-  outline: 2px solid var(--gold-primary);
+  outline: 2px solid var(--gold-vibrant);
   outline-offset: 3px;
-  box-shadow: 0 0 10px var(--gold-glow);
+  box-shadow: 0 0 12px var(--gold-glow);
 }
 
 /* Typography Utilities */
@@ -112,12 +112,12 @@ body {
 .font-sans { font-family: var(--font-sans); }
 .font-script { font-family: var(--font-script); }
 
-.text-gold { color: var(--gold-dark); }
+.text-gold { color: var(--gold-shimmer); }
 .text-burgundy { color: var(--burgundy-primary); }
 .text-white { color: #ffffff; }
 
 .text-gold-gradient {
-  background: linear-gradient(135deg, #8c6506 0%, #b8860b 50%, #4a0e17 100%);
+  background: var(--gold-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
@@ -137,7 +137,7 @@ body {
 }
 
 /* ==========================================================================
-   COVER GATE: BESPOKE VERTICAL CARD (BURGUNDY & GOLD ON DEEP WINE)
+   COVER GATE: BESPOKE VERTICAL EDITORIAL CARD
    ========================================================================== */
 .cover-gate {
   position: fixed;
@@ -146,7 +146,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, #4a0e17 0%, #2a060c 70%, #170205 100%);
+  background: radial-gradient(circle at center, #4a0e17 0%, #2e070d 65%, #170205 100%);
   padding: 16px;
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
   backdrop-filter: blur(10px);
@@ -165,7 +165,7 @@ body {
   max-width: 420px;
   background: #ffffff;
   border-radius: 36px 36px 28px 28px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--gold-border-bright);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--gold-border-bright);
   padding: 32px 24px 28px 24px;
   position: relative;
   overflow: hidden;
@@ -378,7 +378,7 @@ body {
   margin-bottom: 16px;
 }
 
-/* Button "Buka Undangan" (Burgundy Gradient with Gold Border) */
+/* Button "Buka Undangan" */
 .btn-open-card {
   display: inline-flex;
   align-items: center;
@@ -424,12 +424,12 @@ body {
   border: 1px solid var(--gold-border);
   padding: 6px 14px 6px 6px;
   border-radius: 40px;
-  box-shadow: 0 10px 30px rgba(74, 14, 23, 0.15);
+  box-shadow: 0 10px 30px rgba(74, 14, 23, 0.2);
   transition: transform var(--tr-normal), border-color var(--tr-normal);
 }
 
 .music-widget:hover {
-  border-color: var(--gold-primary);
+  border-color: var(--gold-vibrant);
   transform: translateY(-2px);
 }
 
@@ -439,7 +439,7 @@ body {
   min-width: 44px;
   min-height: 44px;
   border-radius: 50%;
-  border: 2px solid var(--gold-primary);
+  border: 2px solid var(--gold-vibrant);
   background: var(--burgundy-primary);
   color: #f5e0a0;
   display: flex;
@@ -478,7 +478,7 @@ body {
 }
 
 /* ==========================================================================
-   NAVIGATION BAR
+   NAVIGATION BAR (BURGUNDY GLASS HEADER)
    ========================================================================== */
 .site-nav {
   position: fixed;
@@ -487,11 +487,11 @@ body {
   width: 100%;
   z-index: 800;
   padding: 14px 24px;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(46, 7, 13, 0.92);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid rgba(184, 134, 11, 0.22);
-  box-shadow: 0 4px 20px rgba(74, 14, 23, 0.05);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
   transition: background var(--tr-normal);
 }
 
@@ -507,7 +507,7 @@ body {
   font-family: var(--font-cinzel);
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--burgundy-primary);
+  color: #f8e5b8;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -515,7 +515,7 @@ body {
 }
 
 .nav-brand svg {
-  color: var(--gold-dark);
+  color: var(--gold-vibrant);
 }
 
 .nav-links {
@@ -526,7 +526,7 @@ body {
 }
 
 .nav-link {
-  color: var(--text-muted);
+  color: #e2e8f0;
   text-decoration: none;
   font-size: 0.88rem;
   font-weight: 600;
@@ -534,98 +534,144 @@ body {
 }
 
 .nav-link:hover {
-  color: var(--burgundy-primary);
-}
-
-/* ==========================================================================
-   SECTION COMMON STYLES & DYNAMIC ALTERNATING RHYTHM (REF IMAGE)
-   ========================================================================== */
-.section {
-  padding: 85px 20px;
-  position: relative;
-  z-index: 2;
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.section-tag {
-  display: inline-block;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--gold-dark);
-  margin-bottom: 10px;
-}
-
-.section-title {
-  font-family: var(--font-serif);
-  font-size: clamp(2.1rem, 4.5vw, 3rem);
-  font-weight: 700;
-  color: var(--burgundy-primary);
-  line-height: 1.2;
-}
-
-.section-divider {
-  width: 80px;
-  height: 3px;
-  background: var(--gold-gradient);
-  margin: 16px auto 0 auto;
-  border-radius: 3px;
-}
-
-/* BURGUNDY THEMED SECTION BLOCKS (Like reference image) */
-.section-burgundy {
-  background: var(--burgundy-gradient);
-  color: #ffffff;
-  position: relative;
-}
-
-.section-burgundy::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.section-burgundy .section-tag {
   color: var(--gold-shimmer);
 }
 
-.section-burgundy .section-title {
+/* ==========================================================================
+   GRAND BURGUNDY HERO SECTION WITH 3-COLUMN ANIMATED PARALLAX GALLERY
+   ========================================================================== */
+.hero-section-burgundy {
+  position: relative;
+  min-height: 250vh;
+  background: var(--burgundy-hero-gradient);
   color: #ffffff;
 }
 
-.section-burgundy .section-divider {
-  background: linear-gradient(90deg, transparent, #f5e0a0, transparent);
+@media (max-width: 768px) {
+  .hero-section-burgundy {
+    min-height: 200vh;
+  }
 }
 
-/* ==========================================================================
-   HERO SECTION (LIGHT PEARL WITH GOLD TRIM)
-   ========================================================================== */
-.hero-section {
-  padding: 130px 20px 80px 20px;
-  text-align: center;
+.hero-sticky-container {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px 24px 20px;
+}
+
+/* 3-Column Parallax Multi-Stream Gallery (21st.dev Style) */
+.parallax-gallery-container {
+  position: absolute;
+  top: -25%;
+  bottom: -25%;
+  left: -12%;
+  right: -12%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.44;
+  transform: rotate(-3deg) scale(1.06);
+  filter: brightness(0.85) contrast(1.1);
+  transition: opacity var(--tr-normal);
+}
+
+.gallery-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  will-change: transform;
+}
+
+.gallery-col-2 {
+  margin-top: -15%;
+}
+
+.parallax-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
+  border: 1.5px solid rgba(212, 175, 55, 0.4);
+  background: #1c0307;
+}
+
+.parallax-img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Ambient Radial Aura for Foreground Contrast & Legibility */
+.hero-ambient-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(46, 7, 13, 0.72) 0%, rgba(28, 3, 7, 0.92) 75%, #1c0307 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hero-foreground-content {
   position: relative;
+  z-index: 10;
+  max-width: 760px;
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* Scroll Cue Indicator */
+.hero-scroll-cue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 18px;
+}
+
+.scroll-cue-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold-shimmer);
+}
+
+.scroll-cue-arrow {
+  width: 20px;
+  height: 20px;
+  color: var(--gold-shimmer);
+  animation: bounceCue 2s infinite;
+}
+
+@keyframes bounceCue {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(6px); }
+  60% { transform: translateY(3px); }
 }
 
 .hero-subtitle {
   font-family: var(--font-script);
-  font-size: 2.4rem;
-  color: var(--gold-dark);
+  font-size: 2.6rem;
+  color: var(--gold-shimmer);
   margin-bottom: 6px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 .hero-main-title {
   font-family: var(--font-serif);
-  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
   font-weight: 700;
   line-height: 1.15;
-  color: var(--burgundy-primary);
+  color: #ffffff;
   margin-bottom: 24px;
 }
 
@@ -643,26 +689,28 @@ body {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+  background: linear-gradient(90deg, transparent, #f5e0a0, transparent);
 }
 
 .hero-ornament-icon {
-  color: var(--gold-dark);
-  font-size: 1.1rem;
+  color: #f5e0a0;
+  font-size: 1.2rem;
 }
 
-/* Graduate Showcase Card */
-.graduate-card {
-  background: #ffffff;
-  border: 1px solid var(--gold-border);
-  border-radius: 28px;
-  padding: 44px 32px;
-  box-shadow: var(--shadow-card);
+/* Hero Graduate Card in Translucent Deep Glass with Gold Halo */
+.graduate-card-hero {
+  background: rgba(30, 4, 8, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  border-radius: 30px;
+  padding: 46px 32px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(184, 134, 11, 0.15);
   position: relative;
   margin-bottom: 40px;
 }
 
-.graduate-card::before {
+.graduate-card-hero::before {
   content: '';
   position: absolute;
   top: 0;
@@ -670,7 +718,7 @@ body {
   right: 0;
   height: 4px;
   background: var(--gold-gradient);
-  border-radius: 28px 28px 0 0;
+  border-radius: 30px 30px 0 0;
 }
 
 .graduate-photo-frame {
@@ -680,7 +728,7 @@ body {
   border-radius: 50%;
   padding: 6px;
   background: var(--gold-gradient);
-  box-shadow: 0 14px 36px rgba(74, 14, 23, 0.2);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), 0 0 25px rgba(212, 175, 55, 0.3);
 }
 
 .graduate-photo {
@@ -688,69 +736,176 @@ body {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  border: 4px solid #ffffff;
+  border: 4px solid #2e070d;
 }
 
-.graduate-name {
+.graduate-name-hero {
   font-family: var(--font-serif);
-  font-size: 2.45rem;
+  font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 6px;
-  color: var(--burgundy-primary);
+  color: #ffffff;
 }
 
-.graduate-degree {
-  font-size: 1.05rem;
+.graduate-degree-hero {
+  font-size: 1.1rem;
   font-weight: 700;
-  color: var(--gold-dark);
+  color: var(--gold-shimmer);
   letter-spacing: 1px;
   margin-bottom: 16px;
 }
 
-.graduate-uni {
-  font-size: 0.98rem;
-  color: var(--text-muted);
+.graduate-uni-hero {
+  font-size: 1rem;
+  color: #e2e8f0;
   max-width: 580px;
   margin: 0 auto;
+  line-height: 1.6;
 }
 
-/* Countdown Timer */
+/* Countdown Timer on Burgundy */
 .countdown-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
   max-width: 520px;
-  margin: 32px auto 0 auto;
+  margin: 34px auto 0 auto;
 }
 
-.countdown-item {
-  background: var(--bg-subtle);
-  border: 1px solid var(--gold-border);
+.countdown-item-hero {
+  background: rgba(20, 2, 5, 0.65);
+  border: 1px solid rgba(212, 175, 55, 0.35);
   border-radius: 14px;
   padding: 16px 8px;
   text-align: center;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-.countdown-num {
+.countdown-num-hero {
   font-family: var(--font-serif);
-  font-size: 2.1rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  color: var(--burgundy-primary);
+  color: var(--gold-shimmer);
   line-height: 1.1;
 }
 
-.countdown-label {
+.countdown-label-hero {
   font-size: 0.75rem;
-  color: var(--gold-dark);
+  color: #cbd5e1;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   margin-top: 4px;
 }
 
 /* ==========================================================================
-   ACARA & JADWAL (BURGUNDY SECTION BACKGROUND)
+   DYNAMIC SECTION RHYTHM (ALTERNATING SECTIONS)
+   ========================================================================== */
+.section {
+  padding: 90px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-tag {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.1rem, 4.5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.section-divider {
+  width: 80px;
+  height: 3px;
+  margin: 16px auto 0 auto;
+  border-radius: 3px;
+}
+
+/* 1. IVORY SECTIONS */
+.section-ivory {
+  background: var(--bg-page-gradient);
+  color: var(--text-body);
+  position: relative;
+  overflow: hidden;
+}
+
+.section-ivory::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.06) 0%, transparent 60%),
+              radial-gradient(circle at 20% 80%, rgba(110, 24, 37, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+  animation: ambientFloat 12s ease-in-out infinite alternate;
+}
+
+@keyframes ambientFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-12px, 10px) scale(1.05); }
+}
+
+.section-ivory .section-tag {
+  color: var(--gold-dark);
+}
+
+.section-ivory .section-title {
+  color: var(--burgundy-primary);
+}
+
+.section-ivory .section-divider {
+  background: var(--gold-gradient);
+}
+
+/* 2. BURGUNDY SECTIONS */
+.section-burgundy {
+  background: var(--burgundy-gradient);
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.section-burgundy::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  animation: ambientAura 9s ease-in-out infinite alternate;
+}
+
+@keyframes ambientAura {
+  0% { transform: scale(0.95); opacity: 0.6; }
+  100% { transform: scale(1.08); opacity: 1; }
+}
+
+.section-burgundy .section-tag {
+  color: var(--gold-shimmer);
+}
+
+.section-burgundy .section-title {
+  color: #ffffff;
+}
+
+.section-burgundy .section-divider {
+  background: linear-gradient(90deg, transparent, #f5e0a0, transparent);
+}
+
+/* ==========================================================================
+   ACARA & JADWAL (IVORY SECTION)
    ========================================================================== */
 .event-grid {
   display: grid;
@@ -765,14 +920,14 @@ body {
   border-radius: 20px;
   padding: 36px 26px;
   text-align: center;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-card);
   transition: transform var(--tr-normal), box-shadow var(--tr-normal);
   color: var(--text-body);
 }
 
 .event-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-card-hover);
   border-color: var(--gold-border-bright);
 }
 
@@ -828,7 +983,7 @@ body {
   border-radius: 30px;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
   transition: all var(--tr-fast);
 }
 
@@ -840,21 +995,22 @@ body {
 }
 
 /* ==========================================================================
-   LOCATION & MAPS (LIGHT SECTION BACKGROUND)
+   LOCATION & MAPS (BURGUNDY SECTION)
    ========================================================================== */
 .map-card {
   background: #ffffff;
   border: 1px solid var(--gold-border);
-  border-radius: 22px;
+  border-radius: 24px;
   padding: 24px;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
   overflow: hidden;
+  color: var(--text-body);
 }
 
 .map-wrapper {
   width: 100%;
   height: 380px;
-  border-radius: 14px;
+  border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--gold-border);
   margin-bottom: 24px;
@@ -903,7 +1059,7 @@ body {
   border: 1px solid var(--gold-primary);
   border-radius: 30px;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(74, 14, 23, 0.3);
+  box-shadow: 0 8px 20px rgba(74, 14, 23, 0.35);
   transition: all var(--tr-normal);
   text-decoration: none;
 }
@@ -916,7 +1072,7 @@ body {
 }
 
 /* ==========================================================================
-   STORY TIMELINE (BURGUNDY SECTION BACKGROUND)
+   STORY TIMELINE (IVORY SECTION)
    ========================================================================== */
 .timeline {
   position: relative;
@@ -932,7 +1088,7 @@ body {
   bottom: 0;
   left: 50%;
   width: 2px;
-  background: linear-gradient(180deg, transparent, #f5e0a0 15%, #f5e0a0 85%, transparent);
+  background: linear-gradient(180deg, transparent, var(--burgundy-primary) 15%, var(--burgundy-primary) 85%, transparent);
   transform: translateX(-50%);
 }
 
@@ -957,10 +1113,10 @@ body {
   top: 32px;
   width: 18px;
   height: 18px;
-  background: #f5e0a0;
-  border: 4px solid var(--burgundy-primary);
+  background: var(--gold-primary);
+  border: 4px solid #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 12px rgba(245, 224, 160, 0.7);
+  box-shadow: 0 0 10px rgba(184, 134, 11, 0.5);
   z-index: 3;
 }
 
@@ -977,7 +1133,7 @@ body {
   border: 1px solid var(--gold-border);
   border-radius: 20px;
   padding: 24px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-card);
   transition: transform var(--tr-normal), border-color var(--tr-normal);
   color: var(--text-body);
 }
@@ -985,7 +1141,7 @@ body {
 .timeline-card:hover {
   transform: translateY(-4px);
   border-color: var(--gold-border-bright);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .timeline-image-wrap {
@@ -1040,23 +1196,23 @@ body {
 }
 
 /* ==========================================================================
-   PHOTO GALLERY & LIGHTBOX (LIGHT SECTION BACKGROUND)
+   PHOTO GALLERY & LIGHTBOX (BURGUNDY SECTION)
    ========================================================================== */
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 22px;
+  gap: 24px;
 }
 
 .gallery-item {
   position: relative;
-  border-radius: 20px;
+  border-radius: 22px;
   overflow: hidden;
   height: 320px;
-  border: 1px solid var(--gold-border);
+  border: 2px solid rgba(212, 175, 55, 0.4);
   cursor: pointer;
   background: #ffffff;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 
 .gallery-thumb {
@@ -1069,7 +1225,7 @@ body {
 .gallery-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(42, 6, 12, 0.88) 100%);
+  background: linear-gradient(180deg, transparent 40%, rgba(28, 3, 7, 0.9) 100%);
   display: flex;
   align-items: flex-end;
   padding: 20px;
@@ -1095,7 +1251,7 @@ body {
 .lightbox-modal {
   position: fixed;
   inset: 0;
-  background: rgba(26, 3, 7, 0.92);
+  background: rgba(20, 2, 5, 0.94);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 99999;
@@ -1145,14 +1301,14 @@ body {
 }
 
 /* ==========================================================================
-   WISHES / UCAPAN & DOA (BURGUNDY SECTION BACKGROUND)
+   WISHES / UCAPAN & DOA (IVORY SECTION)
    ========================================================================== */
 .wishes-card {
   background: #ffffff;
   border: 1px solid var(--gold-border);
-  border-radius: 22px;
-  padding: 36px 30px;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+  border-radius: 24px;
+  padding: 38px 30px;
+  box-shadow: var(--shadow-card);
   color: var(--text-body);
 }
 
@@ -1258,12 +1414,12 @@ body {
 }
 
 /* ==========================================================================
-   FOOTER (DEEP BURGUNDY)
+   FOOTER (DEEPEST WINE BURGUNDY)
    ========================================================================== */
 .site-footer {
   padding: 60px 20px 40px 20px;
   text-align: center;
-  border-top: 1px solid var(--gold-border);
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
   background: var(--burgundy-darkest);
   color: #ffffff;
   position: relative;
@@ -1350,17 +1506,83 @@ body {
     gap: 8px;
   }
 
-  .countdown-num {
+  .countdown-num-hero {
     font-size: 1.6rem;
   }
 
-  .countdown-label {
+  .countdown-label-hero {
     font-size: 0.65rem;
   }
 
+  .hero-sticky-container {
+    padding: 60px 14px 20px 14px;
+  }
+
+  .parallax-gallery-container {
+    top: -15%;
+    bottom: -15%;
+    left: -20%;
+    right: -20%;
+    gap: 12px;
+    opacity: 0.35;
+  }
+
+  .gallery-col {
+    gap: 12px;
+  }
+
+  .parallax-img {
+    height: 130px;
+  }
+
+  .graduate-card-hero {
+    padding: 24px 16px;
+    border-radius: 20px;
+    margin-bottom: 0;
+  }
+
   .graduate-photo-frame {
-    width: 160px;
-    height: 160px;
+    width: 130px;
+    height: 130px;
+    margin-bottom: 12px;
+  }
+
+  .graduate-name-hero {
+    font-size: 1.65rem;
+  }
+
+  .graduate-degree-hero {
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+  }
+
+  .graduate-uni-hero {
+    font-size: 0.82rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .countdown-container {
+    margin-top: 14px;
+    gap: 6px;
+  }
+
+  .countdown-item-hero {
+    padding: 8px 4px;
+  }
+
+  .countdown-num-hero {
+    font-size: 1.4rem;
+  }
+
+  .countdown-label-hero {
+    font-size: 0.65rem;
+  }
+
+  .hero-scroll-cue {
+    margin-top: 10px;
   }
 
   .music-widget {
@@ -1388,13 +1610,16 @@ body {
   .hero-main-title {
     font-size: 2.1rem;
   }
-  .graduate-name {
-    font-size: 1.8rem;
+  .graduate-name-hero {
+    font-size: 1.5rem;
   }
   .section-title {
     font-size: 1.8rem;
   }
   .card-arch-wrap {
     height: 220px;
+  }
+  .hero-subtitle {
+    font-size: 2rem;
   }
 }

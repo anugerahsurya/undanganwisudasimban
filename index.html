@@ -41,8 +41,8 @@
 
         <div class="date-stamp-badge">
           <div class="date-stamp-numbers">
-            <span class="date-stamp-day">24</span>
-            <span class="date-stamp-month">OKT</span>
+            <span class="date-stamp-day">19</span>
+            <span class="date-stamp-month">SEP</span>
             <span class="date-stamp-year">2026</span>
           </div>
           <div class="date-stamp-vertical-text">SABTU</div>
@@ -127,55 +127,122 @@
 
   <main>
     <!-- ==========================================================================
-         SECTION 1: HERO (LIGHT PEARL / IVORY BACKGROUND)
+         SECTION 1: HERO WITH 3-COLUMN ANIMATED PARALLAX GALLERY
          ========================================================================== -->
-    <section id="beranda" class="hero-section">
-      <div class="container">
-        <p class="hero-subtitle">The Graduation of</p>
-        <h1 class="hero-main-title text-gold-gradient">Perayaan Kelulusan Sarjana</h1>
+    <section id="beranda" class="hero-section-burgundy">
+      <div class="hero-sticky-container">
         
-        <div class="hero-ornament">
-          <span class="hero-ornament-icon">✦</span>
-        </div>
+        <!-- Ambient Color Mesh Glow -->
+        <div class="hero-ambient-glow" aria-hidden="true"></div>
 
-        <div class="graduate-card reveal-on-scroll">
-          <div class="graduate-photo-frame">
-            <img src="assets/images/Main Photo.jpeg" alt="Dyah Kusumaningrum, S.P." class="graduate-photo">
+        <!-- 3-Column Animated Parallax Gallery (21st.dev Style) -->
+        <div class="parallax-gallery-container" aria-hidden="true">
+          <!-- Column 1 (Left Stream) -->
+          <div class="gallery-col gallery-col-1" id="gallery-col-1">
+            <div class="parallax-card">
+              <img src="assets/images/20260122_164020.jpg.jpeg" alt="Momen Studi dan Riset" class="parallax-img" loading="eager">
+            </div>
+            <div class="parallax-card">
+              <img src="assets/images/foto kelima.jpeg" alt="Aktivitas Lapangan Pertanian" class="parallax-img" loading="eager">
+            </div>
+            <div class="parallax-card">
+              <img src="assets/images/Foto Kedua.jpeg" alt="Seminar Proposal" class="parallax-img" loading="eager">
+            </div>
+            <div class="parallax-card">
+              <img src="assets/images/foto keempat.jpeg" alt="Kenangan Kampus UNAND" class="parallax-img" loading="eager">
+            </div>
           </div>
 
-          <h2 class="graduate-name font-serif">Dyah Kusumaningrum, S.P.</h2>
-          <p class="graduate-degree">Program Studi Agroteknologi • Fakultas Pertanian</p>
-          <p class="graduate-uni">
-            Universitas Andalas (UNAND), Padang. Penuh rasa syukur ke hadirat Tuhan Yang Maha Esa atas limpahan karunia, berkah, dan bimbingan selama menempuh masa studi hingga resmi menyandang gelar Sarjana Pertanian.
-          </p>
+          <!-- Column 2 (Center Stream - Offset & Counter Movement) -->
+          <div class="gallery-col gallery-col-2" id="gallery-col-2">
+            <div class="parallax-card">
+              <img src="assets/images/Main Photo.jpeg" alt="Potret Toga Wisuda" class="parallax-img" loading="eager">
+            </div>
+            <div class="parallax-card">
+              <img src="assets/images/baru.jpeg" alt="Selebrasi Kelulusan Sarjana" class="parallax-img" loading="eager">
+            </div>
+            <div class="parallax-card">
+              <img src="assets/images/20260915_151804.jpg.jpeg" alt="Momen Bersejarah Agroteknologi" class="parallax-img" loading="eager">
+            </div>
+            <div class="parallax-card">
+              <img src="assets/images/Foto Ketiga.jpeg" alt="Yudisium Sarjana Pertanian" class="parallax-img" loading="eager">
+            </div>
+          </div>
 
-          <!-- Countdown Timer -->
-          <div class="countdown-container">
-            <div class="countdown-item">
-              <div id="cd-days" class="countdown-num">00</div>
-              <div class="countdown-label">Hari</div>
+          <!-- Column 3 (Right Stream) -->
+          <div class="gallery-col gallery-col-3" id="gallery-col-3">
+            <div class="parallax-card">
+              <img src="assets/images/foto keenam.jpeg" alt="Kebersamaan Sahabat" class="parallax-img" loading="eager">
             </div>
-            <div class="countdown-item">
-              <div id="cd-hours" class="countdown-num">00</div>
-              <div class="countdown-label">Jam</div>
+            <div class="parallax-card">
+              <img src="assets/images/Foto Kedua.jpeg" alt="Bimbingan Riset" class="parallax-img" loading="eager">
             </div>
-            <div class="countdown-item">
-              <div id="cd-minutes" class="countdown-num">00</div>
-              <div class="countdown-label">Menit</div>
+            <div class="parallax-card">
+              <img src="assets/images/Main Photo.jpeg" alt="Wisudawati Agroteknologi" class="parallax-img" loading="eager">
             </div>
-            <div class="countdown-item">
-              <div id="cd-seconds" class="countdown-num">00</div>
-              <div class="countdown-label">Detik</div>
+            <div class="parallax-card">
+              <img src="assets/images/20260122_164020.jpg.jpeg" alt="Langkah Awal Riset" class="parallax-img" loading="eager">
             </div>
           </div>
         </div>
+
+        <!-- Foreground Floating Content (Royal Glassmorphism) -->
+        <div class="hero-foreground-content">
+          <p class="hero-subtitle">The Graduation of</p>
+          <h1 class="hero-main-title text-gold-gradient">Perayaan Kelulusan Sarjana</h1>
+          
+          <div class="hero-ornament">
+            <span class="hero-ornament-icon">✦</span>
+          </div>
+
+          <div class="graduate-card-hero reveal-on-scroll">
+            <div class="graduate-photo-frame">
+              <img src="assets/images/Main Photo.jpeg" alt="Dyah Kusumaningrum, S.P" class="graduate-photo">
+            </div>
+
+            <h2 class="graduate-name-hero font-serif">Dyah Kusumaningrum, S.P</h2>
+            <p class="graduate-degree-hero">Program Studi Agroteknologi • Universitas Andalas</p>
+            <p class="graduate-uni-hero">
+              Penuh rasa syukur ke hadirat Tuhan Yang Maha Esa atas limpahan karunia, berkah, dan bimbingan selama menempuh masa studi di Universitas Andalas hingga resmi menyandang gelar Sarjana Pertanian (S.P.).
+            </p>
+
+            <!-- Countdown Timer -->
+            <div class="countdown-container">
+              <div class="countdown-item-hero">
+                <div id="cd-days" class="countdown-num-hero">00</div>
+                <div class="countdown-label-hero">Hari</div>
+              </div>
+              <div class="countdown-item-hero">
+                <div id="cd-hours" class="countdown-num-hero">00</div>
+                <div class="countdown-label-hero">Jam</div>
+              </div>
+              <div class="countdown-item-hero">
+                <div id="cd-minutes" class="countdown-num-hero">00</div>
+                <div class="countdown-label-hero">Menit</div>
+              </div>
+              <div class="countdown-item-hero">
+                <div id="cd-seconds" class="countdown-num-hero">00</div>
+                <div class="countdown-label-hero">Detik</div>
+              </div>
+            </div>
+
+            <!-- Scroll Cue Indicator -->
+            <div class="hero-scroll-cue">
+              <span class="scroll-cue-text">Gulir ke bawah untuk rangkaian acara</span>
+              <svg class="scroll-cue-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
     <!-- ==========================================================================
-         SECTION 2: ACARA & JADWAL (BURGUNDY BACKGROUND SECTION)
+         SECTION 2: ACARA & JADWAL (IVORY BACKGROUND SECTION)
          ========================================================================== -->
-    <section id="jadwal" class="section section-burgundy">
+    <section id="jadwal" class="section section-ivory">
       <div class="container">
         <header class="section-header reveal-on-scroll">
           <span class="section-tag">Save The Date</span>
@@ -192,12 +259,12 @@
                 <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
               </svg>
             </div>
-            <h3 class="event-title">Prosesi Wisuda Sarjana</h3>
+            <h3 class="event-title">Prosesi Sidang Wisuda</h3>
             <div class="event-detail-item">
-              <strong>Sabtu, 24 Oktober 2026</strong>
+              <strong>Sabtu, 19 September 2026</strong>
             </div>
             <div class="event-detail-item">
-              Pukul 08.00 WIB s/d 11.30 WIB
+              Pukul 08.00 - 12.00 WIB
             </div>
             <div class="event-detail-item text-muted">
               Auditorium Universitas Andalas
@@ -214,13 +281,13 @@
             </div>
             <h3 class="event-title">Temu Ramah & Foto Bersama</h3>
             <div class="event-detail-item">
-              <strong>Sabtu, 24 Oktober 2026</strong>
+              <strong>Sabtu, 19 September 2026</strong>
             </div>
             <div class="event-detail-item">
-              Pukul 11.45 WIB s/d Selesai
+              Pukul 12.30 - 14.00 WIB
             </div>
             <div class="event-detail-item text-muted">
-              Halaman Auditorium & Dekanat Fakultas Pertanian
+              Halaman Gedung Rektorat Universitas Andalas
             </div>
           </article>
         </div>
@@ -240,9 +307,9 @@
     </section>
 
     <!-- ==========================================================================
-         SECTION 3: LOKASI & GOOGLE MAPS (LIGHT PEARL / IVORY BACKGROUND)
+         SECTION 3: LOKASI & GOOGLE MAPS (BURGUNDY BACKGROUND SECTION)
          ========================================================================== -->
-    <section id="lokasi" class="section">
+    <section id="lokasi" class="section section-burgundy">
       <div class="container">
         <header class="section-header reveal-on-scroll">
           <span class="section-tag">Petunjuk Lokasi</span>
@@ -262,16 +329,16 @@
           </div>
 
           <div class="map-info">
-            <h3 class="map-location-name">Auditorium Universitas Andalas (UNAND)</h3>
+            <h3 class="map-location-name">Auditorium Universitas Andalas</h3>
             <p class="map-address">
-              Kampus Limau Manis, Kecamatan Pauh, Kota Padang, Sumatera Barat 25175
+              Kampus Limau Manis, Jalan Dr. Mohammad Hatta, Limau Manis, Kecamatan Pauh, Kota Padang, Sumatera Barat
             </p>
             <p class="text-muted" style="font-size: 0.88rem;">
-              Area parkir tersedia di pelataran Auditorium dan kantong parkir rektorat. Titik temu ramah keluarga berada di selasar depan gedung Auditorium.
+              <strong>Petunjuk Parkir / Titik Kumpul:</strong> Halaman Gedung Rektorat Universitas Andalas.
             </p>
 
             <div class="map-actions">
-              <a href="https://maps.google.com/?q=Auditorium+Universitas+Andalas+Padang" target="_blank" rel="noopener noreferrer" class="btn-gold">
+              <a href="https://maps.app.goo.gl/XtWobiMFLiyLuQLa6" target="_blank" rel="noopener noreferrer" class="btn-gold">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
                 </svg>
@@ -284,9 +351,9 @@
     </section>
 
     <!-- ==========================================================================
-         SECTION 4: STORY TIMELINE (BURGUNDY BACKGROUND SECTION)
+         SECTION 4: STORY TIMELINE (IVORY BACKGROUND SECTION)
          ========================================================================== -->
-    <section id="cerita" class="section section-burgundy">
+    <section id="cerita" class="section section-ivory">
       <div class="container">
         <header class="section-header reveal-on-scroll">
           <span class="section-tag">Perjalanan Akademik</span>
@@ -304,9 +371,9 @@
               </div>
               <span class="timeline-phase">Fase 01</span>
               <h3 class="timeline-title">Seminar Proposal (Sempro)</h3>
-              <div class="timeline-date">Fakultas Pertanian UNAND</div>
+              <div class="timeline-date">22 Januari 2026</div>
               <p class="timeline-desc">
-                Langkah awal pembuktian gagasan riset di bidang Agroteknologi. Berdiri membawa berkas naskah proposal di depan dosen pembimbing dan penguji, penuh persiapan dan ribuan catatan perbaikan yang berharga.
+                Semuanya bermula dari sebuah proposal, dengan banyak keraguan dan ketakutan tentang bagaimana perjalanan ini akan berakhir. Hari itu menjadi langkah pertama dari penelitian yang kemudian membawa begitu banyak cerita, tentang belajar, bertahan, dan perlahan percaya pada diri sendiri.
               </p>
             </div>
           </article>
@@ -320,9 +387,9 @@
               </div>
               <span class="timeline-phase">Fase 02</span>
               <h3 class="timeline-title">Seminar Hasil (Semhas)</h3>
-              <div class="timeline-date">Tahap Analisis Riset</div>
+              <div class="timeline-date">19 Agustus 2026</div>
               <p class="timeline-desc">
-                Tahap presentasi temuan lapangan dan hasil penelitian pertanian. Hari-hari penuh ketekunan pengolahan data hingga naskah akhir siap diuji pada sidang komprehensif.
+                Setelah berbulan-bulan berkutat dengan penelitian, data, dan revisi yang menguras tenaga dan pikiran, akhirnya sampai pada seminar hasil. Tidak pernah terbayang bahwa setelah hari itu, perjalanan menuju akhir akan berjalan begitu cepat.
               </p>
             </div>
           </article>
@@ -336,9 +403,9 @@
               </div>
               <span class="timeline-phase">Fase 03</span>
               <h3 class="timeline-title">Sidang Skripsi & Yudisium</h3>
-              <div class="timeline-date">Agroteknologi 2022</div>
+              <div class="timeline-date">24 Agustus 2026</div>
               <p class="timeline-desc">
-                Pintu gerbang kelulusan akhir. Rasa lega dan haru tak terhingga bersama rekan seperjuangan saat selempang kelulusan tersemat dan resmi dinyatakan berhak menyandang gelar Sarjana Pertanian (S.P.).
+                Hanya beberapa hari setelah semhas, datang kesempatan untuk mengikuti ujian komprehensif pada 24 Agustus. Jujur, tidak pernah menyangka akan dipercaya dan diberi kesempatan melangkah secepat itu. Di tengah rasa lelah dan ketidaksiapan yang masih terasa, ternyata kesempatan itu adalah jawaban dari doa-doa yang selama ini diam-diam dipanjatkan. Hingga akhirnya, hari yang ditakuti justru menjadi hari ketika satu kalimat mengakhiri semuanya: dinyatakan lulus.
               </p>
             </div>
           </article>
@@ -352,9 +419,9 @@
               </div>
               <span class="timeline-phase">Puncak</span>
               <h3 class="timeline-title">Hari Wisuda yang Dinanti</h3>
-              <div class="timeline-date">24 Oktober 2026</div>
+              <div class="timeline-date">19 September 2026</div>
               <p class="timeline-desc">
-                Puncak rasa syukur dan persembahan tanda bakti kepada orang tua tercinta. Pengalihan kuncir toga menjadi saksi permulaan darma bakti nyata untuk kemajuan pertanian dan masyarakat luas.
+                Hari ini menjadi penutup dari perjalanan yang pernah terasa begitu panjang. Terima kasih kepada Mama, Papa, dan mas, serta keluarga, sahabat, dan mereka yang hadir dalam setiap prosesnya. Ada begitu banyak hal yang tidak terlihat di balik sebuah gelar. Lelah yang disembunyikan, air mata, doa, dan keberanian untuk tetap berjalan. Hari ini, semuanya dirayakan bukan karena perjalanannya mudah, tetapi karena akhirnya berhasil sampai.
               </p>
             </div>
           </article>
@@ -363,9 +430,9 @@
     </section>
 
     <!-- ==========================================================================
-         SECTION 5: GALERI FOTO MEMORI (LIGHT PEARL / IVORY BACKGROUND)
+         SECTION 5: GALERI FOTO MEMORI (BURGUNDY BACKGROUND SECTION)
          ========================================================================== -->
-    <section id="galeri" class="section">
+    <section id="galeri" class="section section-burgundy">
       <div class="container">
         <header class="section-header reveal-on-scroll">
           <span class="section-tag">Momen Berharga</span>
@@ -381,17 +448,59 @@
             </div>
           </div>
 
-          <div class="gallery-item reveal-on-scroll delay-2" tabindex="0" role="button" aria-label="Lihat foto naskah seminar di kampus UNAND">
+          <div class="gallery-item reveal-on-scroll delay-2" tabindex="0" role="button" aria-label="Lihat foto wisuda penuh syukur">
+            <img src="assets/images/baru.jpeg" alt="Momen Wisuda Penuh Syukur" class="gallery-thumb" loading="lazy">
+            <div class="gallery-overlay">
+              <span class="gallery-caption">Momen Wisuda Penuh Syukur</span>
+            </div>
+          </div>
+
+          <div class="gallery-item reveal-on-scroll delay-3" tabindex="0" role="button" aria-label="Lihat foto naskah seminar di kampus UNAND">
             <img src="assets/images/Foto Kedua.jpeg" alt="Naskah Seminar di Kampus UNAND" class="gallery-thumb" loading="lazy">
             <div class="gallery-overlay">
               <span class="gallery-caption">Langkah Pembuktian Riset</span>
             </div>
           </div>
 
-          <div class="gallery-item reveal-on-scroll delay-3" tabindex="0" role="button" aria-label="Lihat selebrasi Agroteknologi 2022">
+          <div class="gallery-item reveal-on-scroll delay-1" tabindex="0" role="button" aria-label="Lihat selebrasi Agroteknologi 2022">
             <img src="assets/images/Foto Ketiga.jpeg" alt="Selebrasi Agroteknologi 2022" class="gallery-thumb" loading="lazy">
             <div class="gallery-overlay">
               <span class="gallery-caption">Selebrasi Bersama Rekan Angkatan</span>
+            </div>
+          </div>
+
+          <div class="gallery-item reveal-on-scroll delay-2" tabindex="0" role="button" aria-label="Lihat kebersamaan di kampus UNAND">
+            <img src="assets/images/foto keempat.jpeg" alt="Kebersamaan di Kampus UNAND" class="gallery-thumb" loading="lazy">
+            <div class="gallery-overlay">
+              <span class="gallery-caption">Kebersamaan di Kampus UNAND</span>
+            </div>
+          </div>
+
+          <div class="gallery-item reveal-on-scroll delay-3" tabindex="0" role="button" aria-label="Lihat kenangan riset lapangan pertanian">
+            <img src="assets/images/foto kelima.jpeg" alt="Kenangan Riset Lapangan Pertanian" class="gallery-thumb" loading="lazy">
+            <div class="gallery-overlay">
+              <span class="gallery-caption">Kenangan Riset Lapangan</span>
+            </div>
+          </div>
+
+          <div class="gallery-item reveal-on-scroll delay-1" tabindex="0" role="button" aria-label="Lihat senyum bahagia bersama sahabat">
+            <img src="assets/images/foto keenam.jpeg" alt="Senyum Bahagia Bersama Sahabat" class="gallery-thumb" loading="lazy">
+            <div class="gallery-overlay">
+              <span class="gallery-caption">Ceria Bersama Sahabat</span>
+            </div>
+          </div>
+
+          <div class="gallery-item reveal-on-scroll delay-2" tabindex="0" role="button" aria-label="Lihat kilas balik perjalanan studi">
+            <img src="assets/images/20260122_164020.jpg.jpeg" alt="Kilas Balik Perjalanan Studi" class="gallery-thumb" loading="lazy">
+            <div class="gallery-overlay">
+              <span class="gallery-caption">Kilas Balik Perjalanan Studi</span>
+            </div>
+          </div>
+
+          <div class="gallery-item reveal-on-scroll delay-3" tabindex="0" role="button" aria-label="Lihat detik-detik menuju puncak kelulusan">
+            <img src="assets/images/20260915_151804.jpg.jpeg" alt="Detik-detik Menuju Puncak Kelulusan" class="gallery-thumb" loading="lazy">
+            <div class="gallery-overlay">
+              <span class="gallery-caption">Jejak Menuju Gelar Sarjana</span>
             </div>
           </div>
         </div>
@@ -399,9 +508,9 @@
     </section>
 
     <!-- ==========================================================================
-         SECTION 6: BUKU UCAPAN & DOA (BURGUNDY BACKGROUND SECTION)
+         SECTION 6: BUKU UCAPAN & DOA (IVORY BACKGROUND SECTION)
          ========================================================================== -->
-    <section id="ucapan" class="section section-burgundy">
+    <section id="ucapan" class="section section-ivory">
       <div class="container">
         <header class="section-header reveal-on-scroll">
           <span class="section-tag">Doa & Harapan</span>
@@ -457,13 +566,13 @@
   <footer class="site-footer">
     <div class="container">
       <blockquote class="footer-quote">
-        "Pendidikan bukan sekadar tentang meraih gelar, melainkan tentang pembentukan budi pekerti, integritas, dan pengabdian bagi nusa serta bangsa."
+        "Not every journey has to be easy to be meaningful. What matters is that we keep moving forward, until we finally arrive at the place we once prayed to reach."
       </blockquote>
       <p class="footer-credits">
-        Persembahan Penuh Cinta untuk Orang Tua, Dosen, serta Rekan Seperjuangan Agroteknologi.
+        Persembahan Penuh Cinta untuk Mama, Papa, Mas, Dosen Pembimbing, serta Rekan Seperjuangan Agroteknologi Universitas Andalas.
       </p>
       <p class="footer-credits" style="margin-top: 10px; font-size: 0.78rem;">
-        &copy; 2026 Dyah Kusumaningrum, S.P. | Undangan Wisuda Digital.
+        &copy; 2026 Dyah Kusumaningrum, S.P | Undangan Wisuda Digital.
       </p>
     </div>
   </footer>
