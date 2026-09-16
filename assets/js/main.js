@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function parseGuestInfo() {
-    let name = getUrlParam('to') || getUrlParam('guest') || getUrlParam('nama');
+    let name = getUrlParam('to') || getUrlParam('guest') || getUrlParam('nama') || getUrlParam('u') || getUrlParam('id');
     let category = getUrlParam('cat') || getUrlParam('kategori');
 
     // If not in query string, extract from clean path (e.g. /Budi-Santoso or /to/Budi-Santoso)
@@ -62,13 +62,27 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    const hasValidAccess = Boolean(name && name.trim().length > 0);
+
     return {
-      name: name ? name.trim() : 'Tamu Undangan',
+      hasValidAccess,
+      name: name ? name.trim() : '',
       category: category ? category.trim() : 'Keluarga & Sahabat'
     };
   }
 
   const guestData = parseGuestInfo();
+
+  // STRICT ACCESS RESTRICTION: Only accessible via unique link, root domain is blank
+  if (!guestData.hasValidAccess) {
+    document.documentElement.classList.add('access-restricted');
+    if (bgAudio) {
+      bgAudio.pause();
+      bgAudio.currentTime = 0;
+    }
+    return; // Exit main script completely so invitation does not run
+  }
+
   const rawGuestName = guestData.name;
   const rawGuestCategory = guestData.category;
 
@@ -81,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Pre-fill Guestbook name if present
   const wishNameInput = document.getElementById('wish-name');
-  if (wishNameInput && rawGuestName !== 'Tamu Undangan') {
+  if (wishNameInput && rawGuestName) {
     wishNameInput.value = rawGuestName;
   }
 

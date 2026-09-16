@@ -138,6 +138,26 @@ body {
 }
 
 /* ==========================================================================
+   ACCESS RESTRICTION (BLANK PAGE WHEN OPENED WITHOUT PERSONALIZED UNIQUE LINK)
+   ========================================================================== */
+html.access-restricted {
+  background: #ffffff !important;
+}
+
+html.access-restricted body {
+  background: #ffffff !important;
+  min-height: 100vh !important;
+  overflow: hidden !important;
+}
+
+html.access-restricted body > * {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ==========================================================================
    COVER GATE: BESPOKE VERTICAL EDITORIAL CARD
    ========================================================================== */
 .cover-gate {

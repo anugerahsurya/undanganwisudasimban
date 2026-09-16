@@ -11,6 +11,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Great+Vibes&family=Lilita+One&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
+  <!-- Early Access Gate: Only accessible via unique personalized link -->
+  <script>
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var hasQueryParam = params.get('to') || params.get('guest') || params.get('nama') || params.get('u') || params.get('id');
+      var cleanPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
+      var hasPathSlug = cleanPath && cleanPath !== 'index.html' && cleanPath !== 'index' && cleanPath !== 'admin.html' && cleanPath !== 'admin' && !cleanPath.startsWith('assets/');
+      
+      if (!hasQueryParam && !hasPathSlug) {
+        document.documentElement.classList.add('access-restricted');
+      }
+    })();
+  </script>
+
   <!-- Main Stylesheet (Burgundy, White & Gold Edition) -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
