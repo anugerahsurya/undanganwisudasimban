@@ -181,6 +181,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const waxSealCue = document.getElementById('wax-seal-cue');
+  const waxSealContainer = document.getElementById('wax-seal-container');
+
+  if (waxSealCue) {
+    waxSealCue.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openInvitation();
+    });
+    waxSealCue.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openInvitation();
+      }
+    });
+  }
+
+  if (waxSealContainer) {
+    waxSealContainer.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openInvitation();
+    });
+  }
+
   if (waxSeal) {
     waxSeal.addEventListener('click', (e) => {
       e.stopPropagation();
