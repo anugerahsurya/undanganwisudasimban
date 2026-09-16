@@ -149,12 +149,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (btnOpenInvite) {
-    btnOpenInvite.addEventListener('click', () => {
+  const envelopeWrapper = document.getElementById('envelope-wrapper');
+  const waxSeal = document.getElementById('wax-seal');
+  const peekingVinyl = document.getElementById('peeking-vinyl');
+
+  function openInvitation() {
+    if (envelopeWrapper) {
+      envelopeWrapper.classList.add('unsealed');
+    }
+    playAudio();
+
+    // Allow the wax seal to pop and letter to slide upward gracefully before fading gate
+    setTimeout(() => {
       if (coverGate) {
         coverGate.classList.add('opened');
       }
-      playAudio();
       triggerConfetti();
 
       // Smooth scroll to top of main content
@@ -162,6 +171,39 @@ document.addEventListener('DOMContentLoaded', () => {
         top: 0,
         behavior: 'smooth'
       });
+    }, 550);
+  }
+
+  if (btnOpenInvite) {
+    btnOpenInvite.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openInvitation();
+    });
+  }
+
+  if (waxSeal) {
+    waxSeal.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openInvitation();
+    });
+    waxSeal.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openInvitation();
+      }
+    });
+  }
+
+  if (peekingVinyl) {
+    peekingVinyl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (isPlaying) {
+        pauseAudio();
+        peekingVinyl.classList.remove('playing');
+      } else {
+        playAudio();
+        peekingVinyl.classList.add('playing');
+      }
     });
   }
 

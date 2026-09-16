@@ -20,6 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const statFriends = document.getElementById('stat-friends');
   const statLinks = document.getElementById('stat-links');
 
+  // Excel Import Elements
+  const btnDownloadTemplate = document.getElementById('btn-download-template');
+  const excelDropzone = document.getElementById('excel-dropzone');
+  const excelFileInput = document.getElementById('excel-file-input');
+
   /* ==========================================================================
      1. STORAGE & BASE URL MANAGEMENT
      ========================================================================== */
@@ -36,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rawStored = localStorage.getItem(STORAGE_KEY);
     if (rawStored) {
       const parsed = JSON.parse(rawStored);
-      if (Array.isArray(parsed) && parsed.length > 0 && parsed.some(g => g.name === 'Budi Santoso' && g.phone === '6281234567890')) {
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed.some(g => g.name === 'Budi Santoso' && (!g.id || g.phone === '6281234567890'))) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
       }
     } else {
@@ -81,13 +86,19 @@ document.addEventListener('DOMContentLoaded', () => {
     return temp.innerHTML;
   }
 
-  function formatPhone(phone) {
-    if (!phone) return '';
-    let cleaned = String(phone).replace(/[^0-9]/g, '');
-    if (cleaned.startsWith('0')) {
-      cleaned = '62' + cleaned.substring(1);
-    }
-    return cleaned;
+  function formatInviteMessage(name, link) {
+    return `Hii, ${name}! 👋🏻✨
+
+A little invitation from me! ✨
+
+Dengan penuh rasa syukur, aku ingin mengundang kamu untuk hadir dan berbagi momen spesial di hari wisudaku.
+
+It would mean a lot to have you there! 💖
+
+Details & invitation:
+🔗 ${link}
+
+See you! 🫶🏻🎓`;
   }
 
   /* ==========================================================================
@@ -121,8 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const filtered = guests.filter(g => {
       return (g.name && g.name.toLowerCase().includes(query)) || 
-             (g.category && g.category.toLowerCase().includes(query)) ||
-             (g.phone && g.phone.includes(query));
+             (g.category && g.category.toLowerCase().includes(query));
     });
 
     // Update Stats
@@ -142,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filtered.length === 0) {
       guestTableBody.innerHTML = `
         <tr>
-          <td colspan="6" style="text-align: center; padding: 36px 20px; color: var(--text-dim);">
+          <td colspan="5" style="text-align: center; padding: 36px 20px; color: var(--text-dim);">
             ${query ? 'Tidak ada tamu yang cocok dengan kata kunci pencarian.' : 'Daftar tamu masih kosong. Silakan gunakan form di atas untuk menambahkan tamu undangan.'}
           </td>
         </tr>
@@ -152,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     guestTableBody.innerHTML = filtered.map((guest, index) => {
       const link = getUniqueLink(guest);
-      const cleanPhone = formatPhone(guest.phone);
+      const inviteMessage = formatInviteMessage(guest.name, link);
 
       return `
         <tr data-id="${guest.id}">
@@ -163,9 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>
             <span class="category-badge">${sanitize(guest.category || 'Umum')}</span>
           </td>
-          <td style="color: var(--text-muted); font-family: monospace;">
-            ${cleanPhone || '<span style="color: var(--text-dim);">-</span>'}
-          </td>
           <td>
             <div class="link-cell" title="${link}">
               ${link}
@@ -173,22 +180,21 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
           <td>
             <div class="action-btn-group">
-              <button type="button" class="btn-action btn-copy" data-link="${link}" data-name="${sanitize(guest.name)}" title="Salin Link">
+              <button type="button" class="btn-action btn-copy" data-message="${encodeURIComponent(inviteMessage)}" data-name="${sanitize(guest.name)}" title="Salin Pesan Undangan (Siap Kirim)">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </svg>
-                <span>Salin</span>
+                <span>Salin Pesan</span>
               </button>
 
-              ${cleanPhone ? `
-                <button type="button" class="btn-action btn-whatsapp" data-phone="${cleanPhone}" data-name="${sanitize(guest.name)}" data-link="${link}" title="Kirim via WhatsApp">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.4-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08s.89 2.41 1.01 2.58c.13.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.41.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.07-.1-.23-.17-.48-.29z"/>
-                  </svg>
-                  <span>WA</span>
-                </button>
-              ` : ''}
+              <button type="button" class="btn-action btn-copy-link" data-link="${link}" data-name="${sanitize(guest.name)}" title="Salin Hanya Tautan">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span>Link</span>
+              </button>
 
               <a href="${link}" target="_blank" class="btn-action btn-view" title="Pratinjau Undangan">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -214,11 +220,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     5. TABLE ACTIONS (COPY LINK, WHATSAPP, DELETE)
+     5. TABLE ACTIONS (COPY MESSAGE, COPY LINK, DELETE)
      ========================================================================== */
   function attachTableActions() {
-    // Copy link buttons
+    // Copy invite message (ready-to-send template)
     document.querySelectorAll('.btn-copy').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const message = decodeURIComponent(btn.getAttribute('data-message') || '');
+        const name = btn.getAttribute('data-name');
+        if (navigator.clipboard && message) {
+          navigator.clipboard.writeText(message).then(() => {
+            showToast(`Pesan undangan untuk ${name} berhasil disalin! Siap dikirim.`);
+          }).catch(() => {
+            fallbackCopy(message, `Pesan untuk ${name}`);
+          });
+        } else {
+          fallbackCopy(message, `Pesan untuk ${name}`);
+        }
+      });
+    });
+
+    // Copy raw link
+    document.querySelectorAll('.btn-copy-link').forEach(btn => {
       btn.addEventListener('click', () => {
         const link = btn.getAttribute('data-link');
         const name = btn.getAttribute('data-name');
@@ -226,37 +249,11 @@ document.addEventListener('DOMContentLoaded', () => {
           navigator.clipboard.writeText(link).then(() => {
             showToast(`Tautan untuk ${name} berhasil disalin!`);
           }).catch(() => {
-            fallbackCopy(link, name);
+            fallbackCopy(link, `Tautan untuk ${name}`);
           });
         } else {
-          fallbackCopy(link, name);
+          fallbackCopy(link, `Tautan untuk ${name}`);
         }
-      });
-    });
-
-    // WhatsApp buttons
-    document.querySelectorAll('.btn-whatsapp').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const phone = btn.getAttribute('data-phone');
-        const name = btn.getAttribute('data-name');
-        const link = btn.getAttribute('data-link');
-
-        const message = 
-`Kepada Yth. Bapak/Ibu/Saudara/i *${name}*,
-
-Dengan penuh rasa syukur dan sukacita, perkenankan kami mengundang Anda untuk menghadiri perayaan Wisuda Sarjana *Dyah Kusumaningrum, S.P.* yang akan diselenggarakan pada:
-
-📅 *Hari/Tanggal:* Sabtu, 19 September 2026
-⏰ *Waktu:* Pukul 08.00 WIB s/d Selesai
-📍 *Tempat:* Gedung Auditorium Universitas Andalas, Padang
-
-Untuk informasi jadwal lengkap dan petunjuk denah lokasi acara, silakan kunjungi tautan undangan resmi Anda berikut ini:
-${link}
-
-Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir dan memberikan doa restu. Terima kasih.`;
-
-        const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-        window.open(waUrl, '_blank');
       });
     });
 
@@ -275,14 +272,14 @@ Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir
     });
   }
 
-  function fallbackCopy(text, name) {
+  function fallbackCopy(text, label = 'Teks') {
     const tempInput = document.createElement('textarea');
     tempInput.value = text;
     document.body.appendChild(tempInput);
     tempInput.select();
     document.execCommand('copy');
     document.body.removeChild(tempInput);
-    showToast(`Tautan untuk ${name} berhasil disalin!`);
+    showToast(`${label} berhasil disalin!`);
   }
 
   /* ==========================================================================
@@ -293,7 +290,6 @@ Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir
       e.preventDefault();
       const nameInput = document.getElementById('add-name');
       const catInput = document.getElementById('add-category');
-      const phoneInput = document.getElementById('add-phone');
 
       if (!nameInput || !nameInput.value.trim()) return;
 
@@ -301,8 +297,7 @@ Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir
       const newGuest = {
         id: Date.now(),
         name: nameInput.value.trim(),
-        category: (catInput && catInput.value.trim()) || 'Umum',
-        phone: (phoneInput && phoneInput.value.trim()) || ''
+        category: (catInput && catInput.value.trim()) || 'Umum'
       };
 
       guests.unshift(newGuest);
@@ -311,7 +306,6 @@ Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir
 
       nameInput.value = '';
       if (catInput) catInput.value = '';
-      if (phoneInput) phoneInput.value = '';
       showToast(`Tamu "${newGuest.name}" berhasil ditambahkan!`);
     });
   }
@@ -332,11 +326,144 @@ Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir
         showToast('Daftar tamu sudah kosong.');
         return;
       }
-
       if (confirm('Apakah Anda yakin ingin mengosongkan seluruh daftar tamu undangan?')) {
         saveGuests([]);
         renderTable();
         showToast('Seluruh data tamu berhasil dikosongkan.');
+      }
+    });
+  }
+
+  /* ==========================================================================
+     8. EXCEL TEMPLATE DOWNLOAD & BULK IMPORT
+     ========================================================================== */
+  if (btnDownloadTemplate) {
+    btnDownloadTemplate.addEventListener('click', () => {
+      const templateData = [
+        { "Nama Tamu": "Prof. Dr. Ir. Ahmad Sudarmono, M.Sc.", "Kategori": "Dosen Pembimbing" },
+        { "Nama Tamu": "Siti Rahmawati, S.P.", "Kategori": "Sahabat Kampus" },
+        { "Nama Tamu": "Bapak Hendra & Ibu", "Kategori": "Keluarga" },
+        { "Nama Tamu": "Rizky Pratama, S.P.", "Kategori": "Sahabat Angkatan" }
+      ];
+
+      if (typeof XLSX !== 'undefined') {
+        const ws = XLSX.utils.json_to_sheet(templateData);
+        ws['!cols'] = [{ wch: 38 }, { wch: 24 }];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Daftar Tamu");
+        XLSX.writeFile(wb, "template_daftar_tamu_wisuda.xlsx");
+        showToast("Template Excel berhasil diunduh!");
+      } else {
+        const csvContent = "Nama Tamu,Kategori\n\"Prof. Dr. Ir. Ahmad Sudarmono, M.Sc.\",\"Dosen Pembimbing\"\n\"Siti Rahmawati, S.P.\",\"Sahabat Kampus\"\n\"Bapak Hendra & Ibu\",\"Keluarga\"\n\"Rizky Pratama, S.P.\",\"Sahabat Angkatan\"";
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "template_daftar_tamu_wisuda.csv";
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("Template CSV berhasil diunduh!");
+      }
+    });
+  }
+
+  function processExcelFile(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        let importedGuests = [];
+        if (typeof XLSX !== 'undefined') {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const json = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+          importedGuests = json.map((row, idx) => {
+            const name = row['Nama Tamu'] || row['Nama'] || row['nama'] || row['Name'] || row['name'] || Object.values(row)[0] || '';
+            const category = row['Kategori'] || row['kategori'] || row['Category'] || row['category'] || row['Hubungan'] || Object.values(row)[1] || 'Umum';
+            return {
+              id: Date.now() + idx,
+              name: String(name).trim(),
+              category: String(category).trim() || 'Umum'
+            };
+          }).filter(g => g.name.length > 0);
+        } else {
+          const text = new TextDecoder().decode(e.target.result);
+          const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+          const startIdx = lines[0].toLowerCase().includes('nama') ? 1 : 0;
+          for (let i = startIdx; i < lines.length; i++) {
+            const cols = lines[i].split(',').map(c => c.replace(/^["']|["']$/g, '').trim());
+            if (cols[0]) {
+              importedGuests.push({
+                id: Date.now() + i,
+                name: cols[0],
+                category: cols[1] || 'Umum'
+              });
+            }
+          }
+        }
+
+        if (importedGuests.length === 0) {
+          showToast('Tidak ada data nama tamu valid yang ditemukan dalam file.', 'error');
+          return;
+        }
+
+        const currentGuests = getGuests();
+        const updated = [...importedGuests, ...currentGuests];
+        saveGuests(updated);
+        renderTable(searchInput ? searchInput.value : '');
+        showToast(`Berhasil mengimpor ${importedGuests.length} tamu dari file Excel!`);
+      } catch (err) {
+        console.error('Gagal membaca file Excel:', err);
+        showToast('Gagal memproses file. Pastikan format kolom sesuai template.', 'error');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  if (excelDropzone && excelFileInput) {
+    excelDropzone.addEventListener('click', () => {
+      excelFileInput.click();
+    });
+
+    excelDropzone.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        excelFileInput.click();
+      }
+    });
+
+    excelFileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) {
+        processExcelFile(file);
+        excelFileInput.value = '';
+      }
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      excelDropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        excelDropzone.classList.add('dragover');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      excelDropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        excelDropzone.classList.remove('dragover');
+      });
+    });
+
+    excelDropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const file = dt && dt.files && dt.files[0];
+      if (file) {
+        processExcelFile(file);
       }
     });
   }

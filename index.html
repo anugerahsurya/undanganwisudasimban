@@ -48,56 +48,96 @@
        COVER GATE: ELEGANT BESPOKE INVITATION CARD (BURGUNDY & GOLD ACCENTS)
        ========================================================================== -->
   <aside id="cover-gate" class="cover-gate" aria-label="Sampul Undangan Wisuda">
-    <div class="bespoke-card">
-      <!-- Decorative Corner Accents -->
-      <div class="card-corner-ornament top-left" aria-hidden="true"></div>
-      <div class="card-corner-ornament top-right" aria-hidden="true"></div>
-      <div class="card-corner-ornament bottom-left" aria-hidden="true"></div>
-      <div class="card-corner-ornament bottom-right" aria-hidden="true"></div>
+    <div class="envelope-scene">
+      <!-- Luxury Envelope Wrapper -->
+      <div id="envelope-wrapper" class="envelope-wrapper">
+        
+        <!-- Botanical Flower Bouquets (Top Right & Bottom Left) -->
+        <img src="assets/images/floral-bouquet.png" alt="" class="floral-accent floral-top-right" aria-hidden="true">
+        <img src="assets/images/floral-bouquet.png" alt="" class="floral-accent floral-bottom-left" aria-hidden="true">
 
-      <!-- Card Header: Crest & Official Invitation Tag -->
-      <div class="card-header-badge">
-        <span class="card-crest-icon">✦</span>
-        <span class="card-header-kicker">UNDANGAN RESMI WISUDA</span>
-        <span class="card-crest-icon">✦</span>
+        <!-- Behind Envelope: Vinyl Record peeking out right -->
+        <div class="peeking-vinyl" id="peeking-vinyl" title="Putar Musik Latar (Yura Yunita - Merakit)" tabindex="0" role="button">
+          <div class="vinyl-disc-grooves">
+            <div class="vinyl-center-sticker">
+              <span class="vinyl-sticker-text">CLICK TO LISTEN</span>
+              <div class="vinyl-spindle-hole"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Behind Envelope: Polaroid Photo peeking out left -->
+        <div class="peeking-polaroid" aria-hidden="true">
+          <div class="polaroid-inner">
+            <img src="assets/images/Main Photo.jpeg" alt="Potret Wisudawati Dyah" class="polaroid-thumb">
+            <span class="polaroid-caption">Dyah • S.P.</span>
+          </div>
+        </div>
+
+        <!-- The Bespoke Letter Card (Slides gracefully out of envelope) -->
+        <div class="bespoke-card envelope-letter" id="envelope-letter">
+          <!-- Lace scalloped edge decoration -->
+          <div class="scallop-lace-border" aria-hidden="true"></div>
+
+          <!-- Card Header: Script "Save our Date" -->
+          <div class="card-script-kicker">Save our Date</div>
+          <div class="card-date-hero">19 SEPTEMBER 2026</div>
+          <div class="card-hero-divider">
+            <span class="divider-line"></span>
+            <span class="divider-ornament">✦</span>
+            <span class="divider-line"></span>
+          </div>
+
+          <!-- Graduate Name & Degree -->
+          <div class="card-hero-name">
+            <h1 class="card-hero-title">Dyah Kusumaningrum, S.P.</h1>
+            <div class="card-hero-degree">Sarjana Pertanian</div>
+            <div class="card-hero-faculty">Agroteknologi • Universitas Andalas</div>
+          </div>
+
+          <!-- Recipient Invitation Box -->
+          <div class="recipient-tag-envelope">
+            <div class="tag-invitation-label">Kepada Yth. Bapak/Ibu/Saudara/i:</div>
+            <div id="recipient-name" class="tag-guest-name">Tamu Undangan</div>
+            <div id="recipient-category" class="tag-guest-category">Keluarga & Sahabat</div>
+
+            <button id="btn-open-invite" class="btn-open-card" type="button" aria-label="Buka Undangan Wisuda">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <span>Buka Undangan</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Envelope Front Pocket (Burgundy with 3D Flaps & Shadows) -->
+        <div class="envelope-pocket">
+          <div class="pocket-flap pocket-left"></div>
+          <div class="pocket-flap pocket-right"></div>
+          <div class="pocket-flap pocket-bottom"></div>
+        </div>
+
+        <!-- Envelope Top Flap (Triangular fold that opens up) -->
+        <div class="envelope-top-flap" id="envelope-top-flap"></div>
+
+        <!-- Wax Seal Monogram "DK" with Laurel Wreath -->
+        <div class="wax-seal-badge" id="wax-seal" role="button" tabindex="0" aria-label="Segel Lilin Emas - Klik untuk Membuka Undangan">
+          <div class="wax-seal-outer">
+            <div class="wax-seal-rim">
+              <span class="wax-monogram">DK</span>
+              <span class="wax-year">2026</span>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div class="card-university-tag">UNIVERSITAS ANDALAS • PADANG</div>
 
-      <!-- Graduate Name & Degree -->
-      <div class="card-hero-name">
-        <h1 class="card-hero-title">Dyah Kusumaningrum, S.P.</h1>
-        <div class="card-hero-degree">Sarjana Pertanian</div>
-        <div class="card-hero-faculty">Program Studi Agroteknologi</div>
+      <!-- Bottom Event Details (Exact match to reference photo style) -->
+      <div class="cover-bottom-caption">
+        <div class="bottom-date-display">19 . 09 . 2026</div>
+        <div class="bottom-venue-display">AUDITORIUM UNIVERSITAS ANDALAS • PADANG</div>
       </div>
-
-      <!-- Event Snippet Pill -->
-      <div class="card-date-venue-pill">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-        <span>Sabtu, 19 September 2026</span>
-        <span class="pill-dot">•</span>
-        <span>Auditorium UNAND</span>
-      </div>
-
-      <!-- Recipient Invitation Box -->
-      <div class="recipient-tag-envelope">
-        <div class="tag-invitation-label">Kepada Yth. Bapak/Ibu/Saudara/i:</div>
-        <div id="recipient-name" class="tag-guest-name">Tamu Undangan</div>
-        <div id="recipient-category" class="tag-guest-category">Keluarga & Sahabat</div>
-
-        <button id="btn-open-invite" class="btn-open-card" type="button" aria-label="Buka Undangan Wisuda">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-            <polyline points="22,6 12,13 2,6"></polyline>
-          </svg>
-          <span>Buka Undangan</span>
-        </button>
-      </div>
-
     </div>
   </aside>
 
@@ -442,82 +482,82 @@
 
         <div class="gallery-grid">
           <div class="gallery-item reveal-on-scroll delay-1" tabindex="0" role="button"
-            aria-label="Lihat potret resmi wisudawati">
+            aria-label="Lihat potret wisudawati Dyah Kusumaningrum">
             <img src="assets/images/Main Photo.jpeg" alt="Potret Wisudawati Dyah Kusumaningrum, S.P."
               class="gallery-thumb" loading="lazy">
             <div class="gallery-overlay">
-              <span class="gallery-caption">Potret Toga Kebanggaan</span>
+              <span class="gallery-caption">Senyum Syukur Sarjana Pertanian</span>
             </div>
           </div>
 
           <div class="gallery-item reveal-on-scroll delay-2" tabindex="0" role="button"
-            aria-label="Lihat foto wisuda penuh syukur">
-            <img src="assets/images/baru.jpeg" alt="Momen Wisuda Penuh Syukur" class="gallery-thumb" loading="lazy">
+            aria-label="Lihat rekan seperjuangan wisuda">
+            <img src="assets/images/baru.jpeg" alt="Rekan Seperjuangan Wisuda" class="gallery-thumb" loading="lazy">
             <div class="gallery-overlay">
-              <span class="gallery-caption">Momen Wisuda Penuh Syukur</span>
+              <span class="gallery-caption">Rekan Seperjuangan Wisuda</span>
             </div>
           </div>
 
           <div class="gallery-item reveal-on-scroll delay-3" tabindex="0" role="button"
-            aria-label="Lihat foto naskah seminar di kampus UNAND">
-            <img src="assets/images/Foto Kedua.jpeg" alt="Naskah Seminar di Kampus UNAND" class="gallery-thumb"
+            aria-label="Lihat dukungan sahabat di hari seminar">
+            <img src="assets/images/Foto Kedua.jpeg" alt="Dukungan Sahabat di Hari Seminar" class="gallery-thumb"
               loading="lazy">
             <div class="gallery-overlay">
-              <span class="gallery-caption">Langkah Pembuktian Riset</span>
+              <span class="gallery-caption">Dukungan Sahabat di Hari Seminar</span>
             </div>
           </div>
 
           <div class="gallery-item reveal-on-scroll delay-1" tabindex="0" role="button"
-            aria-label="Lihat selebrasi Agroteknologi 2022">
-            <img src="assets/images/Foto Ketiga.jpeg" alt="Selebrasi Agroteknologi 2022" class="gallery-thumb"
+            aria-label="Lihat potret senja di kampus UNAND">
+            <img src="assets/images/Foto Ketiga.jpeg" alt="Potret Senja di Kampus UNAND" class="gallery-thumb"
               loading="lazy">
             <div class="gallery-overlay">
-              <span class="gallery-caption">Selebrasi Bersama Rekan Angkatan</span>
+              <span class="gallery-caption">Potret Senja di Kampus UNAND</span>
             </div>
           </div>
 
           <div class="gallery-item reveal-on-scroll delay-2" tabindex="0" role="button"
-            aria-label="Lihat kebersamaan di kampus UNAND">
-            <img src="assets/images/foto keempat.jpeg" alt="Kebersamaan di Kampus UNAND" class="gallery-thumb"
+            aria-label="Lihat hadiah manis buket kelulusan">
+            <img src="assets/images/foto keempat.jpeg" alt="Hadiah Manis Buket Kelulusan" class="gallery-thumb"
               loading="lazy">
             <div class="gallery-overlay">
-              <span class="gallery-caption">Kebersamaan di Kampus UNAND</span>
+              <span class="gallery-caption">Hadiah Manis Kelulusan</span>
             </div>
           </div>
 
           <div class="gallery-item reveal-on-scroll delay-3" tabindex="0" role="button"
-            aria-label="Lihat kenangan riset lapangan pertanian">
-            <img src="assets/images/foto kelima.jpeg" alt="Kenangan Riset Lapangan Pertanian" class="gallery-thumb"
-              loading="lazy">
-            <div class="gallery-overlay">
-              <span class="gallery-caption">Kenangan Riset Lapangan</span>
-            </div>
-          </div>
-
-          <div class="gallery-item reveal-on-scroll delay-1" tabindex="0" role="button"
-            aria-label="Lihat senyum bahagia bersama sahabat">
-            <img src="assets/images/foto keenam.jpeg" alt="Senyum Bahagia Bersama Sahabat" class="gallery-thumb"
+            aria-label="Lihat ceria bersama sahabat kampus">
+            <img src="assets/images/foto kelima.jpeg" alt="Ceria Bersama Sahabat Kampus" class="gallery-thumb"
               loading="lazy">
             <div class="gallery-overlay">
               <span class="gallery-caption">Ceria Bersama Sahabat</span>
             </div>
           </div>
 
-          <div class="gallery-item reveal-on-scroll delay-2" tabindex="0" role="button"
-            aria-label="Lihat kilas balik perjalanan studi">
-            <img src="assets/images/20260122_164020.jpg.jpeg" alt="Kilas Balik Perjalanan Studi" class="gallery-thumb"
+          <div class="gallery-item reveal-on-scroll delay-1" tabindex="0" role="button"
+            aria-label="Lihat foto bersama orang tua dan dosen pembimbing">
+            <img src="assets/images/foto keenam.jpeg" alt="Bersama Orang Tua dan Dosen Pembimbing" class="gallery-thumb"
               loading="lazy">
             <div class="gallery-overlay">
-              <span class="gallery-caption">Kilas Balik Perjalanan Studi</span>
+              <span class="gallery-caption">Bersama Orang Tua & Dosen Pembimbing</span>
+            </div>
+          </div>
+
+          <div class="gallery-item reveal-on-scroll delay-2" tabindex="0" role="button"
+            aria-label="Lihat selebrasi semangat Agroteknologi 2022">
+            <img src="assets/images/20260122_164020.jpg.jpeg" alt="Semangat Agroteknologi 2022" class="gallery-thumb"
+              loading="lazy">
+            <div class="gallery-overlay">
+              <span class="gallery-caption">Semangat Agroteknologi 2022</span>
             </div>
           </div>
 
           <div class="gallery-item reveal-on-scroll delay-3" tabindex="0" role="button"
-            aria-label="Lihat detik-detik menuju puncak kelulusan">
-            <img src="assets/images/20260915_151804.jpg.jpeg" alt="Detik-detik Menuju Puncak Kelulusan"
+            aria-label="Lihat naskah seminar hasil penelitian">
+            <img src="assets/images/20260915_151804.jpg.jpeg" alt="Naskah Seminar Hasil Penelitian"
               class="gallery-thumb" loading="lazy">
             <div class="gallery-overlay">
-              <span class="gallery-caption">Jejak Menuju Gelar Sarjana</span>
+              <span class="gallery-caption">Naskah Seminar Hasil Penelitian</span>
             </div>
           </div>
         </div>

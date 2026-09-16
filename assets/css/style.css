@@ -180,134 +180,405 @@ html.access-restricted body > * {
   pointer-events: none;
 }
 
-/* The Bespoke Card - Refined Luxury Stationery (No Extreme Arch, Subtle Elegance) */
-.bespoke-card {
+/* ==========================================================================
+   ENVELOPE SCENE: 3D LUXURY STATIONERY & SLIDING LETTER CARD
+   ========================================================================== */
+.envelope-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   width: 100%;
   max-width: 440px;
-  background: #ffffff;
-  border-radius: 18px;
-  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6), 0 0 35px rgba(184, 134, 11, 0.18);
-  padding: 30px 1em 24px 1em;
+  margin: auto;
+  padding: 40px 12px 30px;
+  perspective: 1200px;
+}
+
+.envelope-wrapper {
   position: relative;
-  overflow: hidden;
-  animation: floatCard 4s ease-in-out infinite;
-  border: 1.5px solid rgba(184, 134, 11, 0.45);
+  width: 100%;
+  max-width: 380px;
+  min-height: 520px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 0 auto;
 }
 
-/* Inner hairline gold frame */
-.bespoke-card::before {
-  content: '';
+/* Floral Botanical Accents */
+.floral-accent {
   position: absolute;
-  top: 8px;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-  border: 1px solid rgba(184, 134, 11, 0.22);
-  border-radius: 13px;
   pointer-events: none;
+  user-select: none;
+  z-index: 20;
 }
 
-/* Decorative Gold Corner Brackets */
-.card-corner-ornament {
+.floral-top-right {
+  top: -45px;
+  right: -32px;
+  width: 160px;
+  height: auto;
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.45));
+  animation: floatFloral 5s ease-in-out infinite alternate;
+}
+
+.floral-bottom-left {
+  bottom: -25px;
+  left: -35px;
+  width: 150px;
+  height: auto;
+  transform: scaleX(-1) rotate(18deg);
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.45));
+  animation: floatFloralReverse 5.5s ease-in-out infinite alternate;
+}
+
+@keyframes floatFloral {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(4px, -6px) rotate(2deg); }
+}
+
+@keyframes floatFloralReverse {
+  0% { transform: scaleX(-1) rotate(18deg) translate(0, 0); }
+  100% { transform: scaleX(-1) rotate(20deg) translate(-4px, -6px); }
+}
+
+/* Peeking Vinyl Record */
+.peeking-vinyl {
   position: absolute;
-  width: 16px;
-  height: 16px;
-  pointer-events: none;
+  top: 14%;
+  right: -24px;
+  width: 155px;
+  height: 155px;
+  border-radius: 50%;
   z-index: 3;
+  transform: rotate(14deg);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
 }
 
-.card-corner-ornament.top-left {
-  top: 12px;
-  left: 12px;
-  border-top: 2px solid var(--gold-vibrant);
-  border-left: 2px solid var(--gold-vibrant);
+.peeking-vinyl:hover {
+  transform: rotate(20deg) scale(1.06) translateX(8px);
 }
 
-.card-corner-ornament.top-right {
-  top: 12px;
-  right: 12px;
-  border-top: 2px solid var(--gold-vibrant);
-  border-right: 2px solid var(--gold-vibrant);
-}
-
-.card-corner-ornament.bottom-left {
-  bottom: 12px;
-  left: 12px;
-  border-bottom: 2px solid var(--gold-vibrant);
-  border-left: 2px solid var(--gold-vibrant);
-}
-
-.card-corner-ornament.bottom-right {
-  bottom: 12px;
-  right: 12px;
-  border-bottom: 2px solid var(--gold-vibrant);
-  border-right: 2px solid var(--gold-vibrant);
-}
-
-/* Card Header Crest */
-.card-header-badge {
+.vinyl-disc-grooves {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #1a1a1a 0%, #111111 50%, #0a0a0a 100%),
+              repeating-radial-gradient(circle, transparent 0, transparent 2px, rgba(255, 255, 255, 0.03) 3px, transparent 4px),
+              conic-gradient(from 45deg, #181818, #303030 45deg, #181818 90deg, #303030 135deg, #181818 180deg, #303030 225deg, #181818 270deg, #303030 315deg, #181818 360deg);
+  background-blend-mode: normal, overlay, normal;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 2px;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.12), 0 4px 12px rgba(0,0,0,0.6);
+  animation: vinylSpinSlow 16s linear infinite paused;
+}
+
+.peeking-vinyl.playing .vinyl-disc-grooves {
+  animation-play-state: running;
+}
+
+@keyframes vinylSpinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.vinyl-center-sticker {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #5c121e 0%, #35070e 100%);
+  border: 2px solid var(--gold-vibrant);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
   position: relative;
-  z-index: 2;
 }
 
-.card-crest-icon {
-  color: var(--gold-vibrant);
-  font-size: 0.85rem;
-}
-
-.card-header-kicker {
-  font-family: var(--font-lilita);
-  font-size: 0.85rem;
-  font-weight: 400;
-  letter-spacing: 2px;
-  color: var(--gold-dark);
-}
-
-.card-university-tag {
-  font-size: 0.74rem;
-  font-weight: 600;
-  letter-spacing: 1.6px;
-  color: var(--text-dim);
+.vinyl-sticker-text {
+  font-family: var(--font-sans);
+  font-size: 0.44rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--gold-shimmer);
   text-align: center;
-  margin-bottom: 20px;
-  position: relative;
-  z-index: 2;
+  line-height: 1.1;
+  text-transform: uppercase;
 }
 
-/* Graduate Portrait Photo (Refined 12px Radius, Double Gold Hairline) */
-.card-photo-frame {
-  width: 100%;
-  max-width: 270px;
-  height: 250px;
-  margin: 0 auto 16px auto;
-  border-radius: 12px;
-  padding: 4px;
-  background: var(--gold-gradient);
-  box-shadow: 0 12px 28px rgba(74, 14, 23, 0.16);
-  position: relative;
-  z-index: 2;
+.vinyl-spindle-hole {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin-top: 2px;
 }
 
-.card-portrait-img {
+/* Peeking Vintage Polaroid */
+.peeking-polaroid {
+  position: absolute;
+  top: 18%;
+  left: -14px;
+  width: 145px;
+  z-index: 4;
+  transform: rotate(-9deg);
+  transition: transform 0.5s ease;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.42));
+  pointer-events: none;
+}
+
+.polaroid-inner {
+  background: #ffffff;
+  padding: 6px 6px 16px 6px;
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.polaroid-thumb {
   width: 100%;
-  height: 100%;
+  height: 135px;
   object-fit: cover;
-  border-radius: 9px;
-  border: 2.5px solid #ffffff;
+  border-radius: 2px;
   display: block;
 }
 
-.card-photo-glow {
+.polaroid-caption {
+  font-family: var(--font-script);
+  font-size: 1.1rem;
+  color: var(--burgundy-primary);
+  margin-top: 5px;
+  line-height: 1;
+}
+
+/* The Bespoke Letter Card */
+.bespoke-card.envelope-letter {
+  width: 100%;
+  background: #fdfbf7;
+  border-radius: 16px;
+  padding: 30px 18px 24px;
+  position: relative;
+  z-index: 5;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(184, 134, 11, 0.35);
+  transition: transform 0.75s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.6s ease;
+  margin-bottom: 20px;
+  overflow: visible;
+  animation: floatLetter 4.5s ease-in-out infinite;
+}
+
+@keyframes floatLetter {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.envelope-wrapper:hover .bespoke-card.envelope-letter,
+.envelope-wrapper.unsealed .bespoke-card.envelope-letter {
+  transform: translateY(-85px);
+  animation-play-state: paused;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45), 0 0 30px rgba(212, 175, 55, 0.25);
+}
+
+/* Scalloped Lace Edge */
+.scallop-lace-border {
   position: absolute;
-  inset: -10px;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.25) 0%, transparent 70%);
+  inset: -6px;
+  border: 2px dashed rgba(184, 134, 11, 0.35);
+  border-radius: 20px;
   pointer-events: none;
-  z-index: -1;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.9);
+}
+
+/* Card Header Script & Typography */
+.card-script-kicker {
+  font-family: var(--font-script);
+  font-size: clamp(2rem, 6.5vw, 2.45rem);
+  color: var(--gold-dark);
+  text-align: center;
+  line-height: 1.1;
+  margin-bottom: 2px;
+  text-shadow: 0 1px 2px rgba(212, 175, 55, 0.15);
+}
+
+.card-date-hero {
+  font-family: var(--font-cinzel);
+  font-size: clamp(0.95rem, 3.4vw, 1.15rem);
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--burgundy-primary);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.card-hero-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.divider-line {
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+}
+
+.divider-ornament {
+  color: var(--gold-vibrant);
+  font-size: 0.75rem;
+}
+
+/* Envelope Front Pocket (Rich Burgundy with 3D Flaps) */
+.envelope-pocket {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 250px;
+  z-index: 6;
+  pointer-events: none;
+  border-radius: 0 0 18px 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.pocket-flap {
+  position: absolute;
+  inset: 0;
+}
+
+.pocket-left {
+  clip-path: polygon(0 0, 0 100%, 50% 50%);
+  background: linear-gradient(135deg, #38070e 0%, #200206 100%);
+  filter: drop-shadow(2px 0 4px rgba(0, 0, 0, 0.3));
+}
+
+.pocket-right {
+  clip-path: polygon(100% 0, 100% 100%, 50% 50%);
+  background: linear-gradient(225deg, #420a11 0%, #290408 100%);
+  filter: drop-shadow(-2px 0 4px rgba(0, 0, 0, 0.3));
+}
+
+.pocket-bottom {
+  clip-path: polygon(0 100%, 100% 100%, 50% 42%);
+  background: linear-gradient(0deg, #2b050a 0%, #4a0e17 100%);
+  filter: drop-shadow(0 -4px 8px rgba(0, 0, 0, 0.35));
+}
+
+/* Envelope Top Flap */
+.envelope-top-flap {
+  position: absolute;
+  top: 140px;
+  left: 0;
+  width: 100%;
+  height: 155px;
+  z-index: 7;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(180deg, #5c121e 0%, #3b070e 100%);
+  transform-origin: top center;
+  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.envelope-wrapper.unsealed .envelope-top-flap,
+.envelope-wrapper:hover .envelope-top-flap {
+  transform: rotateX(175deg);
+  opacity: 0.15;
+}
+
+/* Wax Seal Monogram "DK" */
+.wax-seal-badge {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff1cb 0%, #d4af37 45%, #8c6506 90%);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45), inset 0 2px 4px rgba(255, 255, 255, 0.8), inset 0 -3px 5px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.wax-seal-badge:hover {
+  transform: translateX(-50%) scale(1.12);
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6), inset 0 2px 5px rgba(255, 255, 255, 0.9);
+}
+
+.wax-seal-outer {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(255, 255, 255, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wax-seal-rim {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.wax-monogram {
+  font-family: var(--font-cinzel);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #3b070e;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.wax-year {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #5c121e;
+  letter-spacing: 0.5px;
+  margin-top: 1px;
+}
+
+/* Bottom Event Details */
+.cover-bottom-caption {
+  margin-top: 26px;
+  text-align: center;
+  z-index: 10;
+}
+
+.bottom-date-display {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.6rem, 5vw, 2rem);
+  letter-spacing: 4px;
+  color: #fef8eb;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
+  margin-bottom: 4px;
+}
+
+.bottom-venue-display {
+  font-family: var(--font-cinzel);
+  font-size: clamp(0.72rem, 2.5vw, 0.85rem);
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--gold-shimmer);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
 }
 
 /* Hero Graduate Name */
@@ -401,12 +672,21 @@ html.access-restricted body > * {
 }
 
 .tag-guest-name {
-  font-family: var(--font-lilita);
-  font-size: clamp(1.2rem, 4.2vw, 1.45rem);
-  font-weight: 400;
+  font-family: var(--font-sans);
+  font-size: clamp(1.15rem, 3.8vw, 1.35rem);
+  font-weight: 700;
   color: var(--burgundy-primary);
-  line-height: 1.2;
-  margin-bottom: 2px;
+  line-height: 1.25;
+  margin: 6px auto 6px auto;
+  display: inline-block;
+  padding: 5px 14px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(212, 175, 55, 0.12) 100%);
+  border: 1.5px solid rgba(184, 134, 11, 0.42);
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(74, 14, 23, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.3px;
+  max-width: 100%;
+  word-break: break-word;
 }
 
 .tag-guest-category {

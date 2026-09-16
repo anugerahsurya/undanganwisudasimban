@@ -278,7 +278,7 @@ body {
 /* Quick Add Form */
 .quick-add-form {
   display: grid;
-  grid-template-columns: 2fr 1.5fr 1.5fr auto;
+  grid-template-columns: 2fr 1.5fr auto;
   gap: 14px;
   align-items: flex-end;
 }
@@ -448,8 +448,9 @@ body {
 
 .btn-copy {
   background: var(--gold-light);
-  color: var(--gold-dark);
-  border-color: var(--gold-border);
+  color: var(--burgundy-primary);
+  border-color: var(--gold-border-bright);
+  font-weight: 600;
 }
 
 .btn-copy:hover {
@@ -457,15 +458,16 @@ body {
   color: #ffffff;
 }
 
-.btn-whatsapp {
-  background: #ecfdf5;
-  color: #059669;
-  border-color: rgba(5, 150, 105, 0.3);
+.btn-copy-link {
+  background: #f8f9fa;
+  color: var(--text-heading);
+  border-color: var(--border-light);
 }
 
-.btn-whatsapp:hover {
-  background: #059669;
-  color: #ffffff;
+.btn-copy-link:hover {
+  background: var(--gold-light);
+  color: var(--burgundy-primary);
+  border-color: var(--gold-border);
 }
 
 .btn-view {

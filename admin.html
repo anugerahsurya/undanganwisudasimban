@@ -98,17 +98,64 @@
       </div>
     </section>
 
-    <!-- 2. Form Input Tambah Tamu -->
+    <!-- 2. Import Excel & Download Template Section -->
+    <section class="admin-card">
+      <h2 class="card-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        <span>Impor Tamu via Excel</span>
+      </h2>
+      <p class="card-subtitle">
+        Unduh template file Excel, isi daftar tamu undangan dan kategorinya, lalu unggah kembali untuk membuat seluruh tautan undangan secara instan.
+      </p>
+
+      <div class="dropzone-container">
+        <div id="excel-dropzone" class="dropzone" tabindex="0" role="button" aria-label="Unggah file Excel daftar tamu">
+          <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" style="display: none;">
+          <div class="dropzone-icon">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <div class="dropzone-text">Pilih atau Tarik File Excel ke Sini</div>
+          <div class="dropzone-hint">Format file yang didukung: .xlsx, .xls, atau .csv</div>
+        </div>
+
+        <div class="template-box">
+          <div style="font-weight: 700; color: var(--burgundy-primary); font-size: 0.95rem;">Template Format Excel</div>
+          <div style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4;">
+            Gunakan format standar (kolom <strong>Nama Tamu</strong> dan <strong>Kategori</strong>) agar data langsung terbaca rapi.
+          </div>
+          <button type="button" id="btn-download-template" class="btn-template" title="Unduh Template Excel">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Unduh Template Excel (.xlsx)</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Form Input Tambah Tamu Manual -->
     <section class="admin-card">
       <h2 class="card-title">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
-        <span>Tambah Tamu Undangan</span>
+        <span>Tambah Tamu Manual</span>
       </h2>
       <p class="card-subtitle">
-        Masukkan data tamu untuk membuat tautan undangan unik secara otomatis.
+        Masukkan data tamu satu per satu untuk membuat tautan undangan unik secara cepat.
       </p>
       
       <form id="quick-add-form" class="quick-add-form">
@@ -122,11 +169,6 @@
           <input type="text" id="add-category" class="form-input" placeholder="Contoh: Sahabat Kampus, Dosen, Keluarga">
         </div>
 
-        <div class="form-group">
-          <label for="add-phone" class="form-label">Nomor WhatsApp (Opsional)</label>
-          <input type="tel" id="add-phone" class="form-input" placeholder="Contoh: 08123456789">
-        </div>
-
         <button type="submit" class="btn-gold-sm">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -137,7 +179,7 @@
       </form>
     </section>
 
-    <!-- 3. Tabel Daftar Undangan & Aksi -->
+    <!-- 4. Tabel Daftar Undangan & Aksi -->
     <section class="admin-card">
       <div class="table-toolbar">
         <div class="search-wrap">
@@ -145,7 +187,7 @@
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input type="text" id="search-guest" placeholder="Cari nama, kategori, atau no HP...">
+          <input type="text" id="search-guest" placeholder="Cari nama atau kategori tamu...">
         </div>
 
         <div class="toolbar-buttons">
@@ -167,9 +209,8 @@
               <th style="width: 50px;">No</th>
               <th>Nama Tamu</th>
               <th>Kategori</th>
-              <th>No. WhatsApp</th>
               <th>Tautan Undangan Unik</th>
-              <th style="width: 220px;">Aksi</th>
+              <th style="width: 240px;">Aksi</th>
             </tr>
           </thead>
           <tbody id="guest-table-body">
@@ -183,6 +224,8 @@
   <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
+  <!-- Excel Generator & Parser (SheetJS) -->
+  <script src="assets/js/xlsx.full.min.js"></script>
   <!-- Admin Script -->
   <script src="assets/js/admin.js"></script>
 </body>
