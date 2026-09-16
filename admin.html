@@ -98,141 +98,23 @@
       </div>
     </section>
 
-    <!-- Base URL Setting Card -->
-    <section class="admin-card" style="margin-bottom: 24px;">
-      <h2 class="card-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="2" y1="12" x2="22" y2="12"></line>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-        </svg>
-        <span>Domain / Tautan Dasar Website Undangan</span>
-      </h2>
-      <p class="card-subtitle">
-        Tautan ini digunakan sebagai awalan link unik para tamu di tabel dan file spreadsheet. Secara otomatis mendeteksi URL website yang sedang berjalan atau dapat Anda ubah ke URL domain GitHub Pages / domain sendiri.
-      </p>
-      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-        <input type="text" id="base-url-input" class="form-input" style="flex: 1; min-width: 280px;" placeholder="https://wisudadyah.vercel.app">
-        <button id="btn-save-base-url" class="btn-gold-sm" type="button">Simpan Tautan Dasar</button>
-      </div>
-    </section>
-
-    <!-- Google Spreadsheet & Excel Integration Section -->
-    <section class="admin-card">
-      <h2 class="card-title">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-          <line x1="16" y1="13" x2="8" y2="13"></line>
-          <line x1="16" y1="17" x2="8" y2="17"></line>
-          <polyline points="10 9 9 9 8 9"></polyline>
-        </svg>
-        <span>Integrasi Spreadsheet (Google Sheets & Excel)</span>
-      </h2>
-      <p class="card-subtitle">
-        Kelola daftar tamu langsung dari Spreadsheet agar semua tautan undangan orang-orang tersimpan secara permanen. Anda dapat menautkan link Google Spreadsheet online atau mengunggah file Excel (.xlsx / .csv).
-      </p>
-
-      <!-- Google Sheets Live Sync Box -->
-      <div style="background: rgba(212, 175, 55, 0.06); border: 1.5px solid var(--gold-border); border-radius: 14px; padding: 20px; margin-bottom: 24px;">
-        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold-vibrant)" stroke-width="2">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-            <line x1="4" y1="10" x2="20" y2="10"></line>
-            <line x1="10" y1="4" x2="10" y2="20"></line>
-          </svg>
-          <h3 style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin: 0;">Sinkronisasi Google Spreadsheet Online</h3>
-        </div>
-        <p style="font-size: 0.84rem; color: #cbd5e1; margin-bottom: 14px; line-height: 1.5;">
-          Tempelkan link Google Spreadsheet Anda di bawah ini (pastikan pengaturan sharing disetel ke <em>"Siapa saja yang memiliki link dapat melihat"</em>). Sistem akan langsung membaca data dan membuat tautan unik untuk semua tamu.
-        </p>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <input type="url" id="gsheet-url-input" class="form-input" style="flex: 1; min-width: 280px;" placeholder="Contoh: https://docs.google.com/spreadsheets/d/1A2B3C.../edit?usp=sharing">
-          <button id="btn-sync-gsheet" class="btn-template" type="button">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 4 23 10 17 10"></polyline>
-              <polyline points="1 20 1 14 7 14"></polyline>
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-            </svg>
-            <span>Tarik Data dari Spreadsheet</span>
-          </button>
-        </div>
-
-        <!-- Google Sheets Formula Helper Accordion -->
-        <details style="margin-top: 14px; background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px 14px; border: 1px solid rgba(212, 175, 55, 0.2);">
-          <summary style="font-size: 0.82rem; font-weight: 700; color: var(--gold-shimmer); cursor: pointer;">
-            💡 Klik di sini untuk Rumus Otomatis Google Spreadsheet (Simpan link langsung di Sheet Anda)
-          </summary>
-          <div style="margin-top: 10px; font-size: 0.8rem; color: #cbd5e1; line-height: 1.6;">
-            <p>Di Google Sheets Anda, buat kolom berikut di baris pertama:</p>
-            <ul style="padding-left: 18px; margin: 6px 0;">
-              <li><strong>Kolom A:</strong> Nama Tamu</li>
-              <li><strong>Kolom B:</strong> Kategori (misal: Sahabat Kampus, Dosen, Keluarga)</li>
-              <li><strong>Kolom C:</strong> No WhatsApp (misal: 628123456789)</li>
-              <li><strong>Kolom D (Rumus Link Undangan Unik):</strong> Masukkan salah satu rumus ini di sel <code>D2</code>:
-                <div style="background: #120205; padding: 8px; border-radius: 6px; font-family: monospace; color: var(--gold-shimmer); margin: 6px 0; word-break: break-all;" id="formula-link-display">
-                  =CONCATENATE("https://wisudadyah.vercel.app/", SUBSTITUTE(A2, " ", "-"))
-                </div>
-                <div style="font-size: 0.76rem; color: var(--text-dim); margin-top: 2px;">
-                  Atau format dengan kategori: <code>=CONCATENATE("https://wisudadyah.vercel.app/?to=", ENCODEURL(A2), "&amp;cat=", ENCODEURL(B2))</code>
-                </div>
-              </li>
-              <li><strong>Kolom E (Rumus Kirim WA Langsung):</strong> Masukkan rumus ini di sel <code>E2</code>:
-                <div style="background: #120205; padding: 8px; border-radius: 6px; font-family: monospace; color: var(--gold-shimmer); margin: 6px 0; word-break: break-all;">
-                  ="https://wa.me/" & C2 & "?text=" & ENCODEURL("Halo " & A2 & ", berikut undangan wisuda Dyah Kusumaningrum: " & D2)
-                </div>
-              </li>
-            </ul>
-            <p style="margin-top: 6px; color: var(--text-dim);">Dengan rumus di atas, setiap kali Anda mengetik nama tamu baru di Spreadsheet, tautan undangan unik langsung otomatis terbuat dan tersimpan!</p>
-          </div>
-        </details>
-      </div>
-
-      <div class="dropzone-container">
-        <!-- Drag & Drop Zone -->
-        <div id="excel-dropzone" class="dropzone" role="button" tabindex="0" aria-label="Area unggah file Excel">
-          <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" style="display: none;">
-          <div class="dropzone-icon">
-            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
-          </div>
-          <div class="dropzone-text">Tarik & Lepas File Excel Disini, atau Klik untuk Memilih</div>
-          <div class="dropzone-hint">Mendukung format .xlsx, .xls, dan .csv (Kolom: Nama, Kategori, No_WhatsApp)</div>
-        </div>
-
-        <!-- Template Download Box -->
-        <div class="template-box">
-          <p style="font-size: 0.88rem; font-weight: 600; color: #ffffff;">Unduh Format Spreadsheet Siap Pakai</p>
-          <p style="font-size: 0.8rem; color: var(--text-dim);">File template Excel sudah dilengkapi kolom link unik yang siap dibuka di Google Sheets atau Excel.</p>
-          <button id="btn-download-template" class="btn-template" type="button">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            <span>Unduh Template Spreadsheet</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Quick Manual Add Form -->
+    <!-- 2. Form Input Tambah Tamu -->
     <section class="admin-card">
       <h2 class="card-title">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
-        <span>Tambah Tamu Manual</span>
+        <span>Tambah Tamu Undangan</span>
       </h2>
+      <p class="card-subtitle">
+        Masukkan data tamu untuk membuat tautan undangan unik secara otomatis.
+      </p>
       
       <form id="quick-add-form" class="quick-add-form">
         <div class="form-group">
           <label for="add-name" class="form-label">Nama Tamu *</label>
-          <input type="text" id="add-name" class="form-input" placeholder="Contoh: Sarah Nabila, S.T." required>
+          <input type="text" id="add-name" class="form-input" placeholder="Contoh: Budi Santoso, S.P." required>
         </div>
 
         <div class="form-group">
@@ -250,12 +132,12 @@
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          <span>Tambah</span>
+          <span>Tambah Tamu</span>
         </button>
       </form>
     </section>
 
-    <!-- Guest Table & Actions -->
+    <!-- 3. Tabel Daftar Undangan & Aksi -->
     <section class="admin-card">
       <div class="table-toolbar">
         <div class="search-wrap">
@@ -267,17 +149,12 @@
         </div>
 
         <div class="toolbar-buttons">
-          <button id="btn-export-excel" class="btn-template" type="button" title="Ekspor daftar tamu ke file Excel">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
+          <button id="btn-reset-data" class="btn-action btn-delete" type="button" title="Kosongkan seluruh data tamu">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
-            <span>Ekspor Excel</span>
-          </button>
-
-          <button id="btn-reset-data" class="btn-action btn-delete" type="button" title="Reset ke data contoh awal">
-            <span>Reset Data</span>
+            <span>Kosongkan Semua Data</span>
           </button>
         </div>
       </div>
@@ -306,8 +183,6 @@
   <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
-  <!-- SheetJS Library (Local offline copy first, then CDN fallback if needed) -->
-  <script src="assets/js/xlsx.full.min.js"></script>
   <!-- Admin Script -->
   <script src="assets/js/admin.js"></script>
 </body>

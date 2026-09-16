@@ -1,18 +1,13 @@
 /**
  * ADMIN GUEST MANAGER - JAVASCRIPT
- * Uses SheetJS (xlsx.full.min.js) for client-side Excel processing.
- * Handles: Import Excel/CSV, Export Excel, Unique Link Generator, WhatsApp sender,
- * Copy Link, Live Search, and localStorage persistence.
+ * Handles: Guest List Management (Manual Add, Search, Delete, Reset),
+ * Unique Link Generation, WhatsApp Direct Sharing, Copy Link, and Statistics.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY = 'wisuda_guest_list_db';
 
   // Elements
-  const dropzone = document.getElementById('excel-dropzone');
-  const fileInput = document.getElementById('excel-file-input');
-  const btnDownloadTemplate = document.getElementById('btn-download-template');
-  const btnExportExcel = document.getElementById('btn-export-excel');
   const btnResetData = document.getElementById('btn-reset-data');
   const searchInput = document.getElementById('search-guest');
   const guestTableBody = document.getElementById('guest-table-body');
@@ -25,69 +20,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const statFriends = document.getElementById('stat-friends');
   const statLinks = document.getElementById('stat-links');
 
-  // Initial Sample Guests
-  const defaultGuests = [
-    { id: 1, name: 'Budi Santoso', category: 'Sahabat Kampus', phone: '6281234567890' },
-    { id: 2, name: 'Prof. Dr. Ir. Hendra', category: 'Dosen Pembimbing', phone: '6281298765432' },
-    { id: 3, name: 'Dewi Lestari', category: 'Keluarga', phone: '6281355554444' },
-    { id: 4, name: 'Ahmad Fauzi', category: 'Teman Angkatan', phone: '6281788889999' }
-  ];
-
-  // Base URL & Google Sheets Elements
-  const baseUrlInput = document.getElementById('base-url-input');
-  const btnSaveBaseUrl = document.getElementById('btn-save-base-url');
-  const formulaLinkDisplay = document.getElementById('formula-link-display');
-  const gsheetUrlInput = document.getElementById('gsheet-url-input');
-  const btnSyncGsheet = document.getElementById('btn-sync-gsheet');
-
   /* ==========================================================================
      1. STORAGE & BASE URL MANAGEMENT
      ========================================================================== */
-  function getDefaultBaseUrl() {
+  function getBaseUrl() {
     if (window.location.hostname.includes('vercel.app')) {
       return 'https://wisudadyah.vercel.app';
     }
-    if (window.location.hostname.includes('github.io')) {
-      return window.location.href.split('?')[0].replace('admin.html', '').replace(/\/+$/, '');
+    // Fallback to origin without admin.html / trailing slash
+    return window.location.href.split('?')[0].replace(/admin\.html\/?$/, '').replace(/index\.html\/?$/, '').replace(/\/+$/, '');
+  }
+
+  // Clear previous dummy/demo data if present so admin starts completely empty
+  try {
+    const rawStored = localStorage.getItem(STORAGE_KEY);
+    if (rawStored) {
+      const parsed = JSON.parse(rawStored);
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed.some(g => g.name === 'Budi Santoso' && g.phone === '6281234567890')) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+      }
+    } else {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
     }
-    return 'https://wisudadyah.vercel.app';
-  }
-
-  function getBaseUrl() {
-    let url = localStorage.getItem('wisuda_base_url_setting') || getDefaultBaseUrl();
-    return url.replace(/index\.html\/?$/, '').replace(/\/+$/, '');
-  }
-
-  function updateFormulaDisplay() {
-    if (formulaLinkDisplay) {
-      const base = getBaseUrl();
-      formulaLinkDisplay.textContent = `=CONCATENATE("${base}/", SUBSTITUTE(A2, " ", "-"))`;
-    }
-  }
-
-  if (baseUrlInput) {
-    baseUrlInput.value = getBaseUrl();
-    updateFormulaDisplay();
-  }
-
-  if (btnSaveBaseUrl) {
-    btnSaveBaseUrl.addEventListener('click', () => {
-      let val = baseUrlInput.value.trim();
-      if (!val) val = getDefaultBaseUrl();
-      val = val.replace(/index\.html\/?$/, '').replace(/\/+$/, '');
-      localStorage.setItem('wisuda_base_url_setting', val);
-      updateFormulaDisplay();
-      renderTable(searchInput ? searchInput.value : '');
-      showToast('Tautan dasar website berhasil disimpan!');
-    });
+  } catch (e) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
   }
 
   function getGuests() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : defaultGuests;
+      return stored ? JSON.parse(stored) : [];
     } catch (e) {
-      return defaultGuests;
+      return [];
     }
   }
 
@@ -156,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const query = filterQuery.toLowerCase().trim();
 
     const filtered = guests.filter(g => {
-      return g.name.toLowerCase().includes(query) || 
+      return (g.name && g.name.toLowerCase().includes(query)) || 
              (g.category && g.category.toLowerCase().includes(query)) ||
              (g.phone && g.phone.includes(query));
     });
@@ -165,11 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (statTotal) statTotal.textContent = guests.length;
     if (statLinks) statLinks.textContent = guests.length;
     if (statVip) {
-      const vipCount = guests.filter(g => /dosen|keluarga|vip|pembimbing/i.test(g.category)).length;
+      const vipCount = guests.filter(g => /dosen|keluarga|vip|pembimbing/i.test(g.category || '')).length;
       statVip.textContent = vipCount;
     }
     if (statFriends) {
-      const friendCount = guests.filter(g => /sahabat|teman|rekan|angkatan/i.test(g.category)).length;
+      const friendCount = guests.filter(g => /sahabat|teman|rekan|angkatan/i.test(g.category || '')).length;
       statFriends.textContent = friendCount;
     }
 
@@ -178,8 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filtered.length === 0) {
       guestTableBody.innerHTML = `
         <tr>
-          <td colspan="6" style="text-align: center; padding: 30px; color: var(--text-dim);">
-            ${query ? 'Tidak ada tamu yang cocok dengan pencarian.' : 'Daftar tamu masih kosong. Silakan impor file Excel atau tambah manual di atas.'}
+          <td colspan="6" style="text-align: center; padding: 36px 20px; color: var(--text-dim);">
+            ${query ? 'Tidak ada tamu yang cocok dengan kata kunci pencarian.' : 'Daftar tamu masih kosong. Silakan gunakan form di atas untuk menambahkan tamu undangan.'}
           </td>
         </tr>
       `;
@@ -346,276 +310,14 @@ Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir
       renderTable(searchInput ? searchInput.value : '');
 
       nameInput.value = '';
+      if (catInput) catInput.value = '';
       if (phoneInput) phoneInput.value = '';
       showToast(`Tamu "${newGuest.name}" berhasil ditambahkan!`);
     });
   }
 
   /* ==========================================================================
-     7. EXCEL / CSV IMPORT VIA SHEETJS
-     ========================================================================== */
-  function handleFile(file) {
-    if (!file) return;
-
-    if (typeof XLSX === 'undefined') {
-      alert('Library SheetJS belum termuat. Periksa koneksi atau file lokal.');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const rows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
-
-        if (!rows || rows.length === 0) {
-          alert('File Excel kosong atau tidak terbaca format datanya.');
-          return;
-        }
-
-        let importedCount = 0;
-        const currentGuests = getGuests();
-
-        rows.forEach(row => {
-          // Find field keys with flexible naming
-          const nameKey = Object.keys(row).find(k => /nama|name/i.test(k));
-          const catKey = Object.keys(row).find(k => /kategori|category|kelompok|group/i.test(k));
-          const phoneKey = Object.keys(row).find(k => /wa|whatsapp|hp|phone|telepon|no/i.test(k));
-
-          const nameVal = nameKey ? String(row[nameKey]).trim() : '';
-          const catVal = catKey ? String(row[catKey]).trim() : 'Umum';
-          const phoneVal = phoneKey ? String(row[phoneKey]).trim() : '';
-
-          if (nameVal) {
-            currentGuests.push({
-              id: Date.now() + Math.floor(Math.random() * 10000),
-              name: nameVal,
-              category: catVal || 'Umum',
-              phone: phoneVal
-            });
-            importedCount++;
-          }
-        });
-
-        saveGuests(currentGuests);
-        renderTable();
-        showToast(`Berhasil mengimpor ${importedCount} data tamu dari Excel!`);
-      } catch (err) {
-        console.error('Excel parse error:', err);
-        alert('Gagal membaca file Excel. Pastikan file berformat .xlsx, .xls, atau .csv yang valid.');
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  }
-
-  if (fileInput) {
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) handleFile(file);
-    });
-  }
-
-  if (dropzone) {
-    dropzone.addEventListener('click', () => {
-      if (fileInput) fileInput.click();
-    });
-
-    dropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropzone.classList.add('dragover');
-    });
-
-    dropzone.addEventListener('dragleave', () => {
-      dropzone.classList.remove('dragover');
-    });
-
-    dropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropzone.classList.remove('dragover');
-      if (e.dataTransfer.files.length > 0) {
-        handleFile(e.dataTransfer.files[0]);
-      }
-    });
-  }
-
-  /* ==========================================================================
-     8. GOOGLE SPREADSHEETS LIVE SYNC
-     ========================================================================== */
-  if (btnSyncGsheet) {
-    btnSyncGsheet.addEventListener('click', async () => {
-      const url = gsheetUrlInput ? gsheetUrlInput.value.trim() : '';
-      if (!url) {
-        alert('Silakan tempelkan tautan Google Spreadsheet Anda terlebih dahulu.');
-        return;
-      }
-
-      if (typeof XLSX === 'undefined') {
-        alert('Library SheetJS belum termuat.');
-        return;
-      }
-
-      const idMatch = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-      if (!idMatch) {
-        alert('Format URL Google Spreadsheet tidak dikenali. Pastikan URL berupa link Google Sheets (docs.google.com/spreadsheets/d/...).');
-        return;
-      }
-
-      const sheetId = idMatch[1];
-      const gidMatch = url.match(/gid=([0-9]+)/);
-      const gid = gidMatch ? gidMatch[1] : '0';
-      const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&id=${sheetId}&gid=${gid}`;
-
-      showToast('Menghubungkan & menarik data dari Google Spreadsheet...');
-
-      try {
-        const res = await fetch(csvUrl);
-        if (!res.ok) {
-          throw new Error('Gagal mengunduh data Spreadsheet (HTTP ' + res.status + ').');
-        }
-
-        const csvText = await res.text();
-        const workbook = XLSX.read(csvText, { type: 'string' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(firstSheet);
-
-        if (!rows || rows.length === 0) {
-          alert('Spreadsheet berhasil dibaca tetapi tidak ada baris data. Pastikan baris 1 adalah judul: Nama, Kategori, No_WhatsApp.');
-          return;
-        }
-
-        const currentGuests = [];
-        let count = 0;
-
-        rows.forEach((row, idx) => {
-          const nameKey = Object.keys(row).find(k => /nama|name/i.test(k));
-          const catKey = Object.keys(row).find(k => /kategori|category|kelompok|group/i.test(k));
-          const phoneKey = Object.keys(row).find(k => /wa|whatsapp|hp|phone|telepon|no/i.test(k));
-
-          const nameVal = nameKey ? String(row[nameKey]).trim() : '';
-          const catVal = catKey ? String(row[catKey]).trim() : 'Tamu Undangan';
-          const phoneVal = phoneKey ? formatPhone(row[phoneKey]) : '';
-
-          if (nameVal) {
-            currentGuests.push({
-              id: Date.now() + idx,
-              name: nameVal,
-              category: catVal,
-              phone: phoneVal
-            });
-            count++;
-          }
-        });
-
-        if (count === 0) {
-          alert('Tidak ditemukan kolom nama yang valid pada Google Spreadsheet Anda.');
-          return;
-        }
-
-        saveGuests(currentGuests);
-        renderTable();
-        showToast(`Berhasil menyinkronkan ${count} data tamu & tautan unik dari Google Spreadsheet!`);
-      } catch (err) {
-        console.error('GSheet Sync Error:', err);
-        alert(`Gagal menarik data dari Google Spreadsheet: ${err.message}\n\nPastikan pengaturan Google Spreadsheet Anda:\n1. Klik "Bagikan" di pojok kanan atas Google Sheets.\n2. Ubah akses menjadi "Siapa saja yang memiliki link dapat melihat" (Anyone with the link can view).\n\nAtau Anda juga bisa mengunduh file Excel dari Google Sheets (File > Unduh > Microsoft Excel) lalu drag-and-drop ke area unggah di bawah.`);
-      }
-    });
-  }
-
-  /* ==========================================================================
-     9. DOWNLOAD TEMPLATE SPREADSHEET (WITH UNIQUE LINKS PRE-CONFIGURED)
-     ========================================================================== */
-  if (btnDownloadTemplate) {
-    btnDownloadTemplate.addEventListener('click', () => {
-      if (typeof XLSX === 'undefined') {
-        alert('Library SheetJS belum termuat.');
-        return;
-      }
-
-      const base = getBaseUrl();
-      const templateData = [
-        {
-          'Nama Tamu': 'Budi Santoso',
-          'Kategori': 'Sahabat Kampus',
-          'No WhatsApp': '081234567890',
-          'Link Undangan Unik': `${base}?to=Budi+Santoso&cat=Sahabat+Kampus`,
-          'Link Kirim WhatsApp': `https://wa.me/6281234567890?text=${encodeURIComponent('Halo Budi Santoso, berikut undangan wisuda Dyah Kusumaningrum, S.P.: ' + base + '?to=Budi+Santoso&cat=Sahabat+Kampus')}`
-        },
-        {
-          'Nama Tamu': 'Prof. Dr. Ir. Hendra',
-          'Kategori': 'Dosen Pembimbing',
-          'No WhatsApp': '081298765432',
-          'Link Undangan Unik': `${base}?to=Prof.+Dr.+Ir.+Hendra&cat=Dosen+Pembimbing`,
-          'Link Kirim WhatsApp': `https://wa.me/6281298765432?text=${encodeURIComponent('Halo Prof. Dr. Ir. Hendra, berikut undangan wisuda Dyah Kusumaningrum, S.P.: ' + base + '?to=Prof.+Dr.+Ir.+Hendra&cat=Dosen+Pembimbing')}`
-        },
-        {
-          'Nama Tamu': 'Dewi Lestari',
-          'Kategori': 'Keluarga',
-          'No WhatsApp': '081355554444',
-          'Link Undangan Unik': `${base}?to=Dewi+Lestari&cat=Keluarga`,
-          'Link Kirim WhatsApp': `https://wa.me/6281355554444?text=${encodeURIComponent('Halo Dewi Lestari, berikut undangan wisuda Dyah Kusumaningrum, S.P.: ' + base + '?to=Dewi+Lestari&cat=Keluarga')}`
-        },
-        {
-          'Nama Tamu': 'Ahmad Fauzi',
-          'Kategori': 'Teman Angkatan',
-          'No WhatsApp': '081788889999',
-          'Link Undangan Unik': `${base}?to=Ahmad+Fauzi&cat=Teman+Angkatan`,
-          'Link Kirim WhatsApp': `https://wa.me/6281788889999?text=${encodeURIComponent('Halo Ahmad Fauzi, berikut undangan wisuda Dyah Kusumaningrum, S.P.: ' + base + '?to=Ahmad+Fauzi&cat=Teman+Angkatan')}`
-        }
-      ];
-
-      const ws = XLSX.utils.json_to_sheet(templateData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Daftar Undangan');
-      XLSX.writeFile(wb, 'template_undangan_wisuda_dyah.xlsx');
-      showToast('Template Spreadsheet berhasil diunduh!');
-    });
-  }
-
-  /* ==========================================================================
-     10. EXPORT GUEST LIST TO SPREADSHEET (ALL LINKS PRESERVED)
-     ========================================================================== */
-  if (btnExportExcel) {
-    btnExportExcel.addEventListener('click', () => {
-      if (typeof XLSX === 'undefined') {
-        alert('Library SheetJS belum termuat.');
-        return;
-      }
-
-      const guests = getGuests();
-      if (guests.length === 0) {
-        alert('Tidak ada data tamu untuk diekspor.');
-        return;
-      }
-
-      const exportRows = guests.map((g, idx) => {
-        const uniqueLink = getUniqueLink(g);
-        const phone = formatPhone(g.phone);
-        const waMsg = `Assalamu'alaikum Wr. Wb. / Salam Sejahtera\n\nKepada Yth. Bapak/Ibu/Saudara/i ${g.name},\n\nDengan penuh rasa syukur, kami mengundang Anda untuk hadir dalam momen berharga Perayaan Wisuda Sarjana Dyah Kusumaningrum, S.P. (Agroteknologi Universitas Andalas):\n\n📅 Sabtu, 19 September 2026\n📍 Auditorium Universitas Andalas, Padang\n\nTautan Undangan Resmi Anda:\n${uniqueLink}`;
-        const waLink = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(waMsg)}` : '';
-
-        return {
-          'No': idx + 1,
-          'Nama Tamu': g.name,
-          'Kategori': g.category || 'Umum',
-          'No WhatsApp': g.phone || '',
-          'Link Undangan Unik': uniqueLink,
-          'Link Kirim WhatsApp': waLink
-        };
-      });
-
-      const ws = XLSX.utils.json_to_sheet(exportRows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Daftar Undangan');
-      XLSX.writeFile(wb, `daftar_undangan_wisuda_dyah_${new Date().toISOString().slice(0, 10)}.xlsx`);
-      showToast('Seluruh data tamu & tautan unik berhasil disimpan ke file Spreadsheet!');
-    });
-  }
-
-  /* ==========================================================================
-     10. SEARCH & RESET
+     7. SEARCH & RESET (KOSONGKAN DATA)
      ========================================================================== */
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -625,10 +327,16 @@ Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir
 
   if (btnResetData) {
     btnResetData.addEventListener('click', () => {
-      if (confirm('Kembalikan data ke daftar contoh awal? Semua perubahan akan direset.')) {
-        saveGuests(defaultGuests);
+      const guests = getGuests();
+      if (guests.length === 0) {
+        showToast('Daftar tamu sudah kosong.');
+        return;
+      }
+
+      if (confirm('Apakah Anda yakin ingin mengosongkan seluruh daftar tamu undangan?')) {
+        saveGuests([]);
         renderTable();
-        showToast('Data tamu berhasil direset ke contoh default.');
+        showToast('Seluruh data tamu berhasil dikosongkan.');
       }
     });
   }
