@@ -269,12 +269,12 @@ html.access-restricted body > * {
 }
 
 .card-university-tag {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 600;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.6px;
   color: var(--text-dim);
   text-align: center;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
   position: relative;
   z-index: 2;
 }
@@ -313,7 +313,7 @@ html.access-restricted body > * {
 /* Hero Graduate Name */
 .card-hero-name {
   text-align: center;
-  margin-bottom: 12px;
+  margin: 16px 0 18px 0;
   position: relative;
   z-index: 2;
   width: 100%;
@@ -363,7 +363,7 @@ html.access-restricted body > * {
   font-size: clamp(0.68rem, 2.7vw, 0.76rem);
   font-weight: 600;
   color: var(--burgundy-primary);
-  margin: 0 auto 16px auto;
+  margin: 0 auto 20px auto;
   max-width: 100%;
   text-align: center;
   position: relative;
