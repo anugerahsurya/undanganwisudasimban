@@ -386,12 +386,12 @@ html.access-restricted body > * {
   width: 100%;
   background: #fdfbf7;
   border-radius: 16px;
-  padding: 30px 18px 24px;
+  padding: 26px 18px 24px;
   position: relative;
   z-index: 5;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(184, 134, 11, 0.35);
   transition: transform 0.75s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.6s ease;
-  margin-bottom: 20px;
+  margin-bottom: 180px;
   overflow: visible;
   animation: floatLetter 4.5s ease-in-out infinite;
 }
@@ -403,7 +403,7 @@ html.access-restricted body > * {
 
 .envelope-wrapper:hover .bespoke-card.envelope-letter,
 .envelope-wrapper.unsealed .bespoke-card.envelope-letter {
-  transform: translateY(-85px);
+  transform: translateY(-80px);
   animation-play-state: paused;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45), 0 0 30px rgba(212, 175, 55, 0.25);
 }
@@ -496,25 +496,44 @@ html.access-restricted body > * {
 }
 
 
-/* Wax Seal Monogram "DK" & Call-to-Action Cue */
-.wax-seal-container {
+/* Front of Envelope Content (Recipient Plaque & Wax Seal CTA) */
+.envelope-front-content {
   position: absolute;
-  bottom: 82px;
+  bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 320px;
   z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  pointer-events: auto;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.envelope-wrapper.unsealed .envelope-front-content {
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px) scale(0.95);
+  pointer-events: none;
+}
+
+/* Wax Seal Monogram "DK" & Call-to-Action Cue */
+.wax-seal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   cursor: pointer;
   user-select: none;
+  position: relative;
 }
 
 .wax-seal-badge {
   position: relative;
-  width: 68px;
-  height: 68px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, #fff1cb 0%, #d4af37 45%, #8c6506 90%);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45), inset 0 2px 4px rgba(255, 255, 255, 0.8), inset 0 -3px 5px rgba(0, 0, 0, 0.4);
@@ -527,7 +546,7 @@ html.access-restricted body > * {
 
 .wax-seal-container:hover .wax-seal-badge,
 .wax-seal-badge:hover {
-  transform: scale(1.12);
+  transform: scale(1.1);
   box-shadow: 0 10px 28px rgba(212, 175, 55, 0.65), inset 0 2px 5px rgba(255, 255, 255, 0.9);
 }
 
@@ -552,9 +571,10 @@ html.access-restricted body > * {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  padding: 7px 18px;
-  background: rgba(36, 4, 8, 0.92);
-  border: 1.5px solid rgba(212, 175, 55, 0.7);
+  padding: 8px 22px;
+  min-height: 44px;
+  background: rgba(36, 4, 8, 0.94);
+  border: 1.5px solid rgba(212, 175, 55, 0.75);
   border-radius: 30px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 14px rgba(212, 175, 55, 0.25);
   color: #fff2d1;
@@ -576,6 +596,11 @@ html.access-restricted body > * {
   border-color: var(--gold-vibrant);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 22px rgba(212, 175, 55, 0.5);
   transform: translateY(-2px) scale(1.05);
+}
+
+.wax-seal-cue:focus-visible {
+  outline: 2px solid var(--gold-vibrant);
+  outline-offset: 3px;
 }
 
 .cue-icon {
@@ -734,65 +759,66 @@ html.access-restricted body > * {
   color: var(--gold-primary);
 }
 
-/* Recipient Box */
+/* Recipient Box on Front of Envelope */
 .recipient-tag-envelope {
-  background: #fbf9f6;
-  border: 1px solid rgba(184, 134, 11, 0.3);
+  width: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, #fdf9f1 100%);
+  border: 1.5px solid var(--gold-vibrant);
   border-radius: 14px;
-  padding: 16px 16px 14px 16px;
+  padding: 11px 14px 9px;
   text-align: center;
   position: relative;
-  z-index: 2;
-  box-shadow: 0 8px 20px rgba(74, 14, 23, 0.04);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 16px rgba(212, 175, 55, 0.35);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  user-select: none;
+}
+
+.recipient-tag-envelope:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 24px rgba(212, 175, 55, 0.45);
+  border-color: #fce8a6;
+}
+
+.recipient-tag-envelope:focus-visible {
+  outline: 2px solid var(--gold-vibrant);
+  outline-offset: 3px;
 }
 
 .tag-invitation-label {
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 1.2px;
+  letter-spacing: 1.3px;
   text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 4px;
+  color: var(--gold-dark);
+  margin-bottom: 2px;
 }
 
 .tag-guest-name {
   font-family: var(--font-sans);
-  font-size: clamp(1.15rem, 3.8vw, 1.35rem);
+  font-size: clamp(1.05rem, 3.8vw, 1.25rem);
   font-weight: 700;
   color: var(--burgundy-primary);
   line-height: 1.25;
-  margin: 6px auto 6px auto;
+  margin: 3px auto;
   display: inline-block;
-  padding: 5px 14px;
+  padding: 3px 12px;
   background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(212, 175, 55, 0.12) 100%);
-  border: 1.5px solid rgba(184, 134, 11, 0.42);
+  border: 1px solid rgba(184, 134, 11, 0.42);
   border-radius: 8px;
-  box-shadow: 0 3px 10px rgba(74, 14, 23, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(74, 14, 23, 0.05);
+  letter-spacing: 0.2px;
   max-width: 100%;
   word-break: break-word;
 }
 
 .tag-guest-category {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   color: var(--gold-dark);
   font-weight: 600;
-  margin-bottom: 14px;
+  margin-top: 1px;
 }
-
-/* Button "Buka Undangan" */
-.btn-open-card {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  padding: 12px 20px;
-  min-height: 46px;
-  font-family: var(--font-lilita);
-  font-size: 1rem;
-  font-weight: 400;
-  letter-spacing: 0.8px;
   color: #ffffff;
   background: var(--burgundy-gradient);
   border: 1px solid var(--gold-primary);

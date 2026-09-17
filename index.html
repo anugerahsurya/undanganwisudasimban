@@ -205,21 +205,6 @@
             <div class="card-hero-degree">Sarjana Pertanian</div>
             <div class="card-hero-faculty">Agroteknologi • Universitas Andalas</div>
           </div>
-
-          <!-- Recipient Invitation Box -->
-          <div class="recipient-tag-envelope">
-            <div class="tag-invitation-label">Kepada Yth. Bapak/Ibu/Saudara/i:</div>
-            <div id="recipient-name" class="tag-guest-name">Tamu Undangan</div>
-            <div id="recipient-category" class="tag-guest-category">Keluarga & Sahabat</div>
-
-            <button id="btn-open-invite" class="btn-open-card" type="button" aria-label="Buka Undangan Wisuda">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
-              <span>Buka Undangan</span>
-            </button>
-          </div>
         </div>
 
         <!-- Envelope Front Pocket (Burgundy with 3D Flaps & Shadows) -->
@@ -229,23 +214,34 @@
           <div class="pocket-flap pocket-bottom"></div>
         </div>
 
-        <!-- Wax Seal Monogram "DK" with Click Sign Cue -->
-        <div class="wax-seal-container" id="wax-seal-container">
-          <div class="wax-seal-badge" id="wax-seal" role="button" tabindex="0"
-            aria-label="Segel Lilin Emas - Klik untuk Membuka Undangan">
-            <div class="wax-seal-outer">
-              <div class="wax-seal-rim">
-                <span class="wax-monogram">DK</span>
-                <span class="wax-year">2026</span>
-              </div>
-            </div>
-            <div class="wax-seal-pulse" aria-hidden="true"></div>
+        <!-- Front of Envelope Pocket: Recipient Plaque & Wax Seal CTA -->
+        <div class="envelope-front-content">
+          <!-- Recipient Invitation Plaque -->
+          <div class="recipient-tag-envelope" id="recipient-badge" role="button" tabindex="0"
+            aria-label="Nama Tamu Undangan - Klik untuk Buka Undangan">
+            <div class="tag-invitation-label">Kepada Yth. Bapak/Ibu/Saudara/i:</div>
+            <div id="recipient-name" class="tag-guest-name">Tamu Undangan</div>
+            <div id="recipient-category" class="tag-guest-category">Keluarga & Sahabat</div>
           </div>
-          <!-- Sign / Petunjuk Buka Undangan -->
-          <div class="wax-seal-cue" id="wax-seal-cue" role="button" tabindex="0" aria-label="Buka Undangan">
-            <span class="cue-icon" aria-hidden="true">👆</span>
-            <span class="cue-text">Buka Undangan</span>
-            <span class="cue-sparkle" aria-hidden="true">✨</span>
+
+          <!-- Wax Seal Monogram "DK" with Click Sign Cue -->
+          <div class="wax-seal-container" id="wax-seal-container">
+            <div class="wax-seal-badge" id="wax-seal" role="button" tabindex="0"
+              aria-label="Segel Lilin Emas - Klik untuk Membuka Undangan">
+              <div class="wax-seal-outer">
+                <div class="wax-seal-rim">
+                  <span class="wax-monogram">DK</span>
+                  <span class="wax-year">2026</span>
+                </div>
+              </div>
+              <div class="wax-seal-pulse" aria-hidden="true"></div>
+            </div>
+            <!-- Sign / Petunjuk Buka Undangan Button -->
+            <button id="btn-open-invite" class="wax-seal-cue" type="button" aria-label="Buka Undangan Wisuda">
+              <span class="cue-icon" aria-hidden="true">👆</span>
+              <span class="cue-text">Buka Undangan</span>
+              <span class="cue-sparkle" aria-hidden="true">✨</span>
+            </button>
           </div>
         </div>
 

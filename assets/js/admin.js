@@ -33,52 +33,303 @@ document.addEventListener('DOMContentLoaded', () => {
       return 'https://wisudadyah.vercel.app';
     }
     // Fallback to origin without admin.html / trailing slash
-    return window.location.href.split('?')[0].replace(/admin\.html\/?$/, '').replace(/index\.html\/?$/, '').replace(/\/+$/, '');
+    return window.location.href.split(/[?#]/)[0].replace(/(?:admin(?:\.html)?|index\.html)\/?$/, '').replace(/\/+$/, '');
   }
 
-  // Clear previous dummy/demo data if present so admin starts completely empty
-  try {
-    const rawStored = localStorage.getItem(STORAGE_KEY);
-    if (rawStored) {
-      const parsed = JSON.parse(rawStored);
-      if (Array.isArray(parsed) && parsed.length > 0 && parsed.some(g => g.name === 'Budi Santoso' && (!g.id || g.phone === '6281234567890'))) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
-      }
-    } else {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+  const BACKUP_KEY = STORAGE_KEY + '_before_sheets';
+  const URL_KEY = 'wisuda_apps_script_url';
+  let connected = false;
+  let busy = false;
+  let remoteGuests = [];
+  let credentials = null;
+
+  const syncPanel = document.createElement('section');
+  syncPanel.className = 'admin-card sheets-panel';
+  syncPanel.setAttribute('aria-labelledby', 'sheets-title');
+  syncPanel.innerHTML = `
+    <h2 id="sheets-title" class="card-title">Penyimpanan Google Sheets</h2>
+    <p class="card-subtitle">Hubungkan Apps Script untuk menyimpan tamu ke Spreadsheet. Data lokal lama tidak dikirim sebelum Anda memilih impor.</p>
+    <form id="sheets-connect-form" class="sheets-form">
+      <div class="form-group">
+        <label for="sheets-url" class="form-label">URL Web App Apps Script</label>
+        <input id="sheets-url" class="form-input" type="url" placeholder="https://script.google.com/macros/s/…/exec" required>
+      </div>
+      <div class="form-group">
+        <label for="sheets-token" class="form-label">Token admin</label>
+        <input id="sheets-token" class="form-input" type="password" autocomplete="off" minlength="32" required aria-describedby="sheets-token-help">
+      </div>
+      <button class="btn-nav" type="submit">Hubungkan</button>
+    </form>
+    <p id="sheets-token-help" class="sheets-help">Token hanya digunakan selama halaman terbuka; tidak disimpan di localStorage.</p>
+    <p id="sheets-status" class="sheets-status" role="status" aria-live="polite">Mode lokal — belum terhubung ke Spreadsheet.</p>
+    <p id="sheets-local-count" class="sheets-help"></p>
+    <div class="sheets-actions">
+      <button id="sheets-import" class="btn-template" type="button">Impor data lokal ke Spreadsheet</button>
+      <button id="sheets-refresh" class="btn-template" type="button">Muat ulang Spreadsheet</button>
+      <button id="sheets-backup" class="btn-template" type="button">Unduh cadangan lokal (JSON)</button>
+      <button id="sheets-disconnect" class="btn-template" type="button">Putuskan koneksi</button>
+    </div>
+    <p class="sheets-help">Petunjuk pemasangan tersedia di apps-script/README.md. Impor mempertahankan kode undangan dan melewati data identik, bukan menimpa isi Spreadsheet.</p>
+  `;
+  document.querySelector('.admin-main').prepend(syncPanel);
+  const connectionForm = document.getElementById('sheets-connect-form');
+  const endpointInput = document.getElementById('sheets-url');
+  const tokenInput = document.getElementById('sheets-token');
+  const syncStatus = document.getElementById('sheets-status');
+
+  endpointInput.value = 'https://script.google.com/macros/s/AKfycbxfns7cgoNA83oYB4Ob-tQJrkjKqSwFJk6VUW1CoqNJ508zdgnFL2nC-tEe8-D0WA1k/exec';
+  try { endpointInput.value = localStorage.getItem(URL_KEY) || endpointInput.value; } catch (_) { }
+
+  function setStatus(message, error = false) {
+    syncStatus.textContent = message;
+    syncStatus.dataset.error = String(error);
+  }
+
+  function readLocalGuests() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    let guests;
+    try { guests = JSON.parse(raw); } catch (_) {
+      throw new Error('Data lokal tidak dapat dibaca. Unduh cadangan JSON; data asli tidak dihapus.');
     }
-  } catch (e) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+    if (!Array.isArray(guests) || guests.some(g => !g || typeof g.name !== 'string' || !g.name.trim())) {
+      throw new Error('Format data lokal tidak valid. Unduh cadangan sebelum memperbaikinya.');
+    }
+    let changed = false;
+    const codes = new Set(guests.filter(g => g.code).map(g => String(g.code)));
+    guests.forEach(g => {
+      if (!g.code) {
+        do { g.code = generateGuestCode(); } while (codes.has(g.code));
+        codes.add(g.code);
+        changed = true;
+      }
+      if (g.id == null) {
+        g.id = createGuestId();
+        changed = true;
+      }
+    });
+    if (changed) {
+      preserveLocalBackup();
+      saveGuests(guests);
+    }
+    return guests;
+  }
+
+  function preserveLocalBackup() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw && !localStorage.getItem(BACKUP_KEY)) localStorage.setItem(BACKUP_KEY, raw);
   }
 
   function getGuests() {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) return [];
-      const guests = JSON.parse(stored);
-      let changed = false;
-      guests.forEach(g => {
-        if (!g.code) {
-          g.code = generateGuestCode();
-          changed = true;
-        }
-      });
-      if (changed) {
-        saveGuests(guests);
-      }
-      return guests;
-    } catch (e) {
-      return [];
-    }
+    return connected ? remoteGuests : readLocalGuests();
   }
 
   function saveGuests(guests) {
+    // Let callers report quota/privacy failures instead of claiming a successful save.
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
+  }
+
+  function createGuestId() {
+    return typeof crypto.randomUUID === 'function' ? crypto.randomUUID() :
+      Date.now() + '-' + generateGuestCode(12);
+  }
+
+  function updateSyncControls() {
+    syncPanel.querySelectorAll('button, input').forEach(element => { element.disabled = busy; });
+    document.getElementById('sheets-import').disabled = busy || !connected;
+    document.getElementById('sheets-refresh').disabled = busy || !connected;
+    document.getElementById('sheets-disconnect').disabled = busy || !connected;
+    endpointInput.disabled = busy || connected;
+    tokenInput.disabled = busy || connected;
+    connectionForm.querySelector('button').disabled = busy || connected;
+    if (quickAddForm) quickAddForm.querySelectorAll('button, input').forEach(el => { el.disabled = busy; });
+    if (btnResetData) btnResetData.disabled = busy;
+    document.querySelectorAll('.btn-delete').forEach(el => { el.disabled = busy; });
+    if (excelFileInput) excelFileInput.disabled = busy;
+    if (excelDropzone) excelDropzone.setAttribute('aria-disabled', String(busy));
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
-    } catch (e) {
-      console.error('Failed to save to localStorage:', e);
+      document.getElementById('sheets-local-count').textContent =
+        `${readLocalGuests().length} tamu di penyimpanan lokal browser ini.`;
+    } catch (error) {
+      setStatus(error.message, true);
+    }
+    syncPanel.setAttribute('aria-busy', String(busy));
+  }
+
+  async function runOperation(work) {
+    if (busy) return;
+    busy = true;
+    updateSyncControls();
+    try {
+      await work();
+    } catch (error) {
+      setStatus(error.message, true);
+      showToast(error.message, 'error');
+    } finally {
+      busy = false;
+      try { renderTable(searchInput ? searchInput.value : ''); } catch (error) {
+        setStatus(error.message, true);
+      }
+      updateSyncControls();
     }
   }
+
+  async function requestSheets(action, payload = {}, auth = credentials) {
+    if (!auth) throw new Error('Hubungkan Apps Script terlebih dahulu.');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60000);
+    try {
+      // text/plain avoids the CORS preflight unsupported by Apps Script web apps.
+      const response = await fetch(auth.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ ...payload, action, token: auth.token }),
+        redirect: 'follow',
+        credentials: 'omit',
+        signal: controller.signal
+      });
+      if (!response.ok) throw new Error('Respons HTTP ' + response.status);
+      let result;
+      try { result = await response.json(); } catch (_) {
+        throw new Error('Respons bukan JSON. Periksa URL /exec, izin deployment, dan versi Apps Script.');
+      }
+      if (!result || result.ok !== true) throw new Error(result && result.error || 'Apps Script menolak permintaan.');
+      return result;
+    } catch (error) {
+      if (error.name === 'AbortError' || error instanceof TypeError) {
+        throw new Error('Koneksi gagal atau waktu habis. Hasil penulisan belum dapat dipastikan. Muat ulang Spreadsheet sebelum mencoba lagi; data kiriman tetap tersedia secara lokal.');
+      }
+      throw error;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  async function refreshSheets() {
+    const result = await requestSheets('list');
+    if (!Array.isArray(result.guests) || result.guests.some(g =>
+      !g || typeof g.name !== 'string' || typeof g.category !== 'string' ||
+      typeof g.code !== 'string' || !/^[A-Za-z0-9_-]{1,80}$/.test(g.code))) {
+      throw new Error('Format daftar tamu dari Apps Script tidak valid.');
+    }
+    remoteGuests = result.guests;
+  }
+
+  function downloadLocalBackup() {
+    const raw = localStorage.getItem(STORAGE_KEY) || '[]';
+    const url = URL.createObjectURL(new Blob([raw], { type: 'application/json;charset=utf-8' }));
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `cadangan-tamu-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+    anchor.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function guestForSheets(guest) {
+    const link = getUniqueLink(guest);
+    return {
+      id: String(guest.id),
+      code: String(guest.code),
+      name: guest.name,
+      category: guest.category || 'Umum',
+      phone: String(guest.phone || ''),
+      link: /^https?:\/\//.test(link) ? link : ''
+    };
+  }
+
+  async function importToSheets(guests) {
+    let added = 0;
+    let skipped = 0;
+    for (let start = 0; start < guests.length; start += 500) {
+      const batch = guests.slice(start, start + 500);
+      setStatus(`Mengirim tamu ${start + 1}–${start + batch.length} dari ${guests.length}…`);
+      const result = await requestSheets('import', { guests: batch.map(guestForSheets) });
+      if (!Number.isInteger(result.added) || !Number.isInteger(result.skipped) ||
+        result.added < 0 || result.skipped < 0 || result.added + result.skipped !== batch.length) {
+        throw new Error('Konfirmasi impor tidak valid. Data lokal dipertahankan; muat ulang Spreadsheet.');
+      }
+      added += result.added;
+      skipped += result.skipped;
+      // Remove only acknowledged records; failed/unsent batches remain retryable.
+      saveGuests(readLocalGuests().filter(local => !batch.some(sent =>
+        String(local.code) === String(sent.code) && String(local.id) === String(sent.id) &&
+        local.name === sent.name && (local.category || 'Umum') === (sent.category || 'Umum') &&
+        String(local.phone || '') === String(sent.phone || ''))));
+    }
+    await refreshSheets();
+    setStatus(`Tersimpan di Spreadsheet: ${added} tamu baru; ${skipped} data identik dilewati.`);
+  }
+
+  async function addGuests(guests, onStaged = () => { }) {
+    const local = readLocalGuests();
+    preserveLocalBackup();
+    saveGuests([...guests, ...local]);
+    onStaged();
+    if (connected) {
+      await importToSheets(guests);
+    } else {
+      setStatus('Tersimpan di browser ini saja. Hubungkan Apps Script lalu impor untuk menyimpan ke Spreadsheet.');
+    }
+  }
+
+  async function deleteGuests(guests) {
+    if (!connected) {
+      preserveLocalBackup();
+      const codes = new Set(guests.map(g => g.code));
+      saveGuests(readLocalGuests().filter(g => !codes.has(g.code)));
+      setStatus('Data dihapus dari penyimpanan lokal.');
+      return;
+    }
+    for (let start = 0; start < guests.length; start += 500) {
+      await requestSheets('delete', { codes: guests.slice(start, start + 500).map(g => g.code) });
+    }
+    await refreshSheets();
+    setStatus('Penghapusan di Spreadsheet berhasil dikonfirmasi.');
+  }
+
+  connectionForm.addEventListener('submit', event => {
+    event.preventDefault();
+    runOperation(async () => {
+      const url = endpointInput.value.trim();
+      if (!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(url)) {
+        throw new Error('Gunakan URL deployment https://script.google.com/macros/s/…/exec.');
+      }
+      const token = tokenInput.value.trim();
+      if (token.length < 32) throw new Error('Token admin minimal 32 karakter.');
+      const auth = { url, token };
+      const previous = credentials;
+      credentials = auth;
+      try { await refreshSheets(); } catch (error) { credentials = previous; throw error; }
+      connected = true;
+      tokenInput.value = '';
+      try { localStorage.setItem(URL_KEY, url); } catch (_) { }
+      setStatus(`Terhubung. ${remoteGuests.length} tamu dimuat dari Spreadsheet. Data lokal belum diimpor.`);
+    });
+  });
+
+  document.getElementById('sheets-import').addEventListener('click', () => runOperation(async () => {
+    const guests = readLocalGuests();
+    if (!guests.length) { setStatus('Tidak ada data lokal yang perlu diimpor.'); return; }
+    if (!confirm(`Impor ${guests.length} tamu lokal ke Spreadsheet? Cadangan JSON akan diunduh. Kode undangan tetap sama; data identik dilewati.`)) return;
+    preserveLocalBackup();
+    downloadLocalBackup();
+    await importToSheets(guests);
+  }));
+  document.getElementById('sheets-refresh').addEventListener('click', () => runOperation(async () => {
+    await refreshSheets();
+    setStatus(`${remoteGuests.length} tamu dimuat dari Spreadsheet.`);
+  }));
+  document.getElementById('sheets-backup').addEventListener('click', () => runOperation(async () => {
+    downloadLocalBackup();
+  }));
+  document.getElementById('sheets-disconnect').addEventListener('click', () => {
+    credentials = null;
+    connected = false;
+    remoteGuests = [];
+    setStatus('Koneksi diputus. Mode lokal aktif; data Spreadsheet tidak dihapus.');
+    try { renderTable(); } catch (error) { setStatus(error.message, true); }
+    updateSyncControls();
+  });
 
   /* ==========================================================================
      2. RANDOM CODE & TOKEN GENERATOR (URL-SAFE BASE64)
@@ -116,6 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getUniqueLink(guest) {
+    if (typeof guest.link === 'string' && /^https?:\/\/[^\s]+$/.test(guest.link)) return guest.link;
     const base = getBaseUrl();
     const token = encodeGuestToken(guest);
     if (window.location.protocol === 'file:') {
@@ -129,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!str) return '';
     const temp = document.createElement('div');
     temp.textContent = str;
-    return temp.innerHTML;
+    return temp.innerHTML.replace(/"/g, '\x26quot;').replace(/'/g, '\x26#39;');
   }
 
   function formatInviteMessage(name, link) {
@@ -177,8 +429,8 @@ See you! 🫶🏻🎓`;
     const query = filterQuery.toLowerCase().trim();
 
     const filtered = guests.filter(g => {
-      return (g.name && g.name.toLowerCase().includes(query)) || 
-             (g.category && g.category.toLowerCase().includes(query));
+      return (g.name && g.name.toLowerCase().includes(query)) ||
+        (g.category && g.category.toLowerCase().includes(query));
     });
 
     // Update Stats
@@ -207,12 +459,13 @@ See you! 🫶🏻🎓`;
     }
 
     guestTableBody.innerHTML = filtered.map((guest, index) => {
-      const link = getUniqueLink(guest);
-      const inviteMessage = formatInviteMessage(guest.name, link);
+      const rawLink = getUniqueLink(guest);
+      const link = sanitize(rawLink);
+      const inviteMessage = formatInviteMessage(guest.name, rawLink);
       const guestCode = guest.code || 'DK-' + String(guest.id).slice(-4);
 
       return `
-        <tr data-id="${guest.id}">
+        <tr data-id="${sanitize(String(guest.id))}">
           <td style="color: var(--text-dim);">${index + 1}</td>
           <td>
             <span class="guest-code-badge">${sanitize(guestCode)}</span>
@@ -246,7 +499,7 @@ See you! 🫶🏻🎓`;
                 <span>Link</span>
               </button>
 
-              <a href="${link}" target="_blank" class="btn-action btn-view" title="Pratinjau Undangan">
+              <a href="${link}" target="_blank" rel="noopener noreferrer" class="btn-action btn-view" title="Pratinjau Undangan">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
@@ -254,7 +507,7 @@ See you! 🫶🏻🎓`;
                 <span>Lihat</span>
               </a>
 
-              <button type="button" class="btn-action btn-delete" data-id="${guest.id}" title="Hapus Tamu">
+              <button type="button" class="btn-action btn-delete" data-code="${sanitize(String(guest.code))}" title="Hapus Tamu" aria-label="Hapus ${sanitize(guest.name)}" ${busy ? 'disabled' : ''}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -307,18 +560,15 @@ See you! 🫶🏻🎓`;
       });
     });
 
-    // Delete buttons
-    document.querySelectorAll('.btn-delete').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = Number(btn.getAttribute('data-id'));
-        if (confirm('Apakah Anda yakin ingin menghapus tamu ini dari daftar?')) {
-          let guests = getGuests();
-          guests = guests.filter(g => g.id !== id);
-          saveGuests(guests);
-          renderTable(searchInput ? searchInput.value : '');
-          showToast('Tamu berhasil dihapus dari daftar.');
+    guestTableBody.querySelectorAll('.btn-delete').forEach(btn => {
+      btn.addEventListener('click', () => runOperation(async () => {
+        const code = btn.getAttribute('data-code');
+        const guests = getGuests().filter(g => String(g.code) === code);
+        if (confirm(`Hapus tamu ini dari ${connected ? 'Spreadsheet' : 'penyimpanan lokal'}?`)) {
+          await deleteGuests(guests);
+          showToast('Tamu berhasil dihapus.');
         }
-      });
+      }));
     });
   }
 
@@ -343,21 +593,22 @@ See you! 🫶🏻🎓`;
 
       if (!nameInput || !nameInput.value.trim()) return;
 
-      const guests = getGuests();
-      const newGuest = {
-        id: Date.now(),
-        code: generateGuestCode(),
-        name: nameInput.value.trim(),
-        category: (catInput && catInput.value.trim()) || 'Umum'
-      };
-
-      guests.unshift(newGuest);
-      saveGuests(guests);
-      renderTable(searchInput ? searchInput.value : '');
-
-      nameInput.value = '';
-      if (catInput) catInput.value = '';
-      showToast(`Tamu "${newGuest.name}" berhasil ditambahkan!`);
+      runOperation(async () => {
+        const newGuest = {
+          id: createGuestId(),
+          code: generateGuestCode(12),
+          name: nameInput.value.trim(),
+          category: (catInput && catInput.value.trim()) || 'Umum'
+        };
+        if (newGuest.name.length > 300 || newGuest.category.length > 150) {
+          throw new Error('Nama maksimal 300 karakter; kategori maksimal 150 karakter.');
+        }
+        await addGuests([newGuest], () => {
+          nameInput.value = '';
+          if (catInput) catInput.value = '';
+        });
+        showToast(connected ? 'Tamu tersimpan di Spreadsheet.' : 'Tamu tersimpan lokal, belum di Spreadsheet.');
+      });
     });
   }
 
@@ -366,23 +617,22 @@ See you! 🫶🏻🎓`;
      ========================================================================== */
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
-      renderTable(e.target.value);
+      try { renderTable(e.target.value); } catch (error) { setStatus(error.message, true); }
     });
   }
 
   if (btnResetData) {
-    btnResetData.addEventListener('click', () => {
+    btnResetData.addEventListener('click', () => runOperation(async () => {
       const guests = getGuests();
       if (guests.length === 0) {
         showToast('Daftar tamu sudah kosong.');
         return;
       }
-      if (confirm('Apakah Anda yakin ingin mengosongkan seluruh daftar tamu undangan?')) {
-        saveGuests([]);
-        renderTable();
-        showToast('Seluruh data tamu berhasil dikosongkan.');
+      if (confirm(`Hapus ${guests.length} tamu yang dimuat dari ${connected ? 'Spreadsheet' : 'penyimpanan lokal'}? Tindakan ini tidak dapat dibatalkan dari laman admin.`)) {
+        await deleteGuests(guests);
+        showToast('Data tamu yang dipilih berhasil dihapus.');
       }
-    });
+    }));
   }
 
   /* ==========================================================================
@@ -419,70 +669,46 @@ See you! 🫶🏻🎓`;
   }
 
   function processExcelFile(file) {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        let importedGuests = [];
-        if (typeof XLSX !== 'undefined') {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          const json = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
-
-          importedGuests = json.map((row, idx) => {
-            const name = row['Nama Tamu'] || row['Nama'] || row['nama'] || row['Name'] || row['name'] || Object.values(row)[0] || '';
-            const category = row['Kategori'] || row['kategori'] || row['Category'] || row['category'] || row['Hubungan'] || Object.values(row)[1] || 'Umum';
-            return {
-              id: Date.now() + idx,
-              code: generateGuestCode(),
-              name: String(name).trim(),
-              category: String(category).trim() || 'Umum'
-            };
-          }).filter(g => g.name.length > 0);
-        } else {
-          const text = new TextDecoder().decode(e.target.result);
-          const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
-          const startIdx = lines[0].toLowerCase().includes('nama') ? 1 : 0;
-          for (let i = startIdx; i < lines.length; i++) {
-            const cols = lines[i].split(',').map(c => c.replace(/^["']|["']$/g, '').trim());
-            if (cols[0]) {
-              importedGuests.push({
-                id: Date.now() + i,
-                code: generateGuestCode(),
-                name: cols[0],
-                category: cols[1] || 'Umum'
-              });
-            }
-          }
-        }
-
-        if (importedGuests.length === 0) {
-          showToast('Tidak ada data nama tamu valid yang ditemukan dalam file.', 'error');
-          return;
-        }
-
-        const currentGuests = getGuests();
-        const updated = [...importedGuests, ...currentGuests];
-        saveGuests(updated);
-        renderTable(searchInput ? searchInput.value : '');
-        showToast(`Berhasil mengimpor ${importedGuests.length} tamu dari file Excel!`);
-      } catch (err) {
-        console.error('Gagal membaca file Excel:', err);
-        showToast('Gagal memproses file. Pastikan format kolom sesuai template.', 'error');
+    if (!file || busy) return;
+    return runOperation(async () => {
+      if (!/\.(xlsx|xls|csv)$/i.test(file.name) || file.size > 5 * 1024 * 1024) {
+        throw new Error('Gunakan file .xlsx, .xls, atau .csv maksimal 5 MB.');
       }
-    };
-    reader.readAsArrayBuffer(file);
+      if (typeof XLSX === 'undefined') throw new Error('Pembaca Excel belum dimuat. Muat ulang halaman sebelum mengimpor.');
+      const data = new Uint8Array(await file.arrayBuffer());
+      const workbook = XLSX.read(data, { type: 'array' });
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      if (!worksheet) throw new Error('File tidak memiliki worksheet.');
+      const rows = XLSX.utils.sheet_to_json(worksheet, { defval: '', raw: false });
+      const importedGuests = rows.map(row => {
+        const name = row['Nama Tamu'] || row['Nama'] || row['nama'] || row['Name'] || row['name'] || '';
+        const category = row['Kategori'] || row['kategori'] || row['Category'] || row['category'] || row['Hubungan'] || 'Umum';
+        return {
+          id: createGuestId(),
+          code: generateGuestCode(12),
+          name: String(name).trim(),
+          category: String(category).trim() || 'Umum',
+          phone: String(row['No_WhatsApp'] || row['phone'] || '').trim()
+        };
+      }).filter(g => g.name.length > 0);
+      if (!importedGuests.length) throw new Error('Tidak ada nama tamu valid. Gunakan kolom Nama Tamu dan Kategori sesuai template.');
+      if (importedGuests.some(g => g.name.length > 300 || g.category.length > 150 || g.phone.length > 80)) {
+        throw new Error('Nama maksimal 300 karakter, kategori 150, dan nomor telepon 80.');
+      }
+      await addGuests(importedGuests);
+      showToast(connected ? `${importedGuests.length} tamu tersimpan di Spreadsheet.` :
+        `${importedGuests.length} tamu tersimpan lokal, belum di Spreadsheet.`);
+    });
   }
 
   if (excelDropzone && excelFileInput) {
-    excelDropzone.addEventListener('click', () => {
+    excelDropzone.addEventListener('click', (event) => {
+      if (busy || event.target === excelFileInput) return;
       excelFileInput.click();
     });
 
     excelDropzone.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+      if (!busy && (e.key === 'Enter' || e.key === ' ')) {
         e.preventDefault();
         excelFileInput.click();
       }
@@ -521,6 +747,6 @@ See you! 🫶🏻🎓`;
     });
   }
 
-  // Initial Render
-  renderTable();
+  try { renderTable(); } catch (error) { setStatus(error.message, true); }
+  updateSyncControls();
 });

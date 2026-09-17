@@ -37,7 +37,9 @@
   --glass-blur: blur(14px);
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -219,7 +221,8 @@ body {
   transition: all 0.2s ease;
 }
 
-.dropzone:hover, .dropzone.dragover {
+.dropzone:hover,
+.dropzone.dragover {
   border-color: var(--gold-dark);
   background: #fef5e6;
 }
@@ -532,14 +535,96 @@ body {
 }
 
 @keyframes slideIn {
-  from { transform: translateX(50px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.sheets-form {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 16px;
+}
+
+.sheets-form .form-group {
+  min-width: 0;
+}
+
+.sheets-panel button,
+.sheets-panel input {
+  min-height: 44px;
+  font: inherit;
+}
+
+.sheets-panel button {
+  cursor: pointer;
+  white-space: normal;
+}
+
+.sheets-help {
+  margin-top: 12px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.sheets-status {
+  margin-top: 16px;
+  padding: 12px;
+  border-left: 3px solid var(--burgundy-primary);
+  background: var(--bg-subtle);
+  color: var(--burgundy-primary);
+  overflow-wrap: anywhere;
+}
+
+.sheets-status[data-error="true"] {
+  border-color: #991b1b;
+  color: #991b1b;
+  background: #fef2f2;
+}
+
+.sheets-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.sheets-panel :focus-visible {
+  outline: 3px solid var(--burgundy-primary);
+  outline-offset: 3px;
+}
+
+button:disabled,
+input:disabled,
+.dropzone[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .sheets-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sheets-actions>button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 900px) {
   .dropzone-container {
     grid-template-columns: 1fr;
   }
+
   .quick-add-form {
     grid-template-columns: 1fr;
   }

@@ -315,6 +315,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const recipientBadge = document.getElementById('recipient-badge');
+  if (recipientBadge) {
+    recipientBadge.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openInvitation();
+    });
+    recipientBadge.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openInvitation();
+      }
+    });
+  }
+
   const waxSealCue = document.getElementById('wax-seal-cue');
   const waxSealContainer = document.getElementById('wax-seal-container');
 
