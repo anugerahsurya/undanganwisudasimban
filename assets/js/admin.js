@@ -48,16 +48,16 @@ document.addEventListener('DOMContentLoaded', () => {
   syncPanel.setAttribute('aria-labelledby', 'sheets-title');
   syncPanel.innerHTML = `
     <h2 id="sheets-title" class="card-title">Penyimpanan Google Sheets</h2>
-    <p class="card-subtitle">Hubungkan Apps Script untuk menyimpan tamu ke Spreadsheet secara terpusat. Data lokal lama tidak dikirim sebelum Anda memilih impor.</p>
+    <p class="card-subtitle">Hubungkan Google Sheets untuk menyinkronkan data tamu dan mengimpor data lokal.</p>
     <form id="sheets-connect-form" class="sheets-form">
       <input id="sheets-url" type="hidden" value="${APPS_SCRIPT_URL}">
-      <div class="form-group">
-        <label for="sheets-token" class="form-label">Token admin</label>
-        <input id="sheets-token" class="form-input" type="password" autocomplete="off" placeholder="Masukkan token admin Apps Script" required aria-describedby="sheets-token-help">
-      </div>
-      <button class="btn-nav" type="submit">Hubungkan</button>
+      <input id="sheets-token" type="hidden" value="">
+      <button class="btn-nav" type="submit">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        Hubungkan ke Google Sheets
+      </button>
     </form>
-    <p id="sheets-token-help" class="sheets-help">Token hanya digunakan selama halaman terbuka; tidak disimpan di localStorage.</p>
+    <p id="sheets-token-help" class="sheets-help" style="display: none;"></p>
     <p id="sheets-status" class="sheets-status" role="status" aria-live="polite">Mode lokal: belum terhubung ke Spreadsheet.</p>
     <p id="sheets-local-count" class="sheets-help"></p>
     <div class="sheets-actions">
@@ -292,14 +292,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(url)) {
         throw new Error('Gunakan URL deployment https://script.google.com/macros/s/…/exec.');
       }
-      const token = tokenInput.value.trim();
-      if (token.length < 32) throw new Error('Token admin minimal 32 karakter.');
+      const token = (tokenInput && tokenInput.value ? tokenInput.value : '').trim();
       const auth = { url, token };
       const previous = credentials;
       credentials = auth;
       try { await refreshSheets(); } catch (error) { credentials = previous; throw error; }
       connected = true;
-      tokenInput.value = '';
+      if (tokenInput) tokenInput.value = '';
       setStatus(`Terhubung. ${remoteGuests.length} tamu dimuat dari Spreadsheet. Data lokal belum diimpor.`);
     });
   });

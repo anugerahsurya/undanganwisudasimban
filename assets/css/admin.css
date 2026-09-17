@@ -547,10 +547,10 @@ body {
 }
 
 .sheets-form {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
+  display: flex;
+  align-items: center;
   gap: 16px;
+  margin-bottom: 8px;
 }
 
 .sheets-form .form-group {

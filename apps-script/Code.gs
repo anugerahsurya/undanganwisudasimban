@@ -8,14 +8,16 @@ function doGet() {
 function doPost(e) {
   let lock;
   try {
-    const properties = PropertiesService.getScriptProperties();
-    const secret = properties.getProperty('ADMIN_TOKEN');
-    if (!secret || secret.length < 32) throw new Error('Konfigurasi ADMIN_TOKEN minimal 32 karakter belum tersedia.');
     const raw = e && e.postData && e.postData.contents;
     if (!raw || raw.length > 1500000) throw new Error('Ukuran permintaan tidak valid.');
     const request = JSON.parse(raw);
-    if (typeof request.token !== 'string' || request.token !== secret) {
-      return jsonResponse_({ ok: false, error: 'Token admin tidak valid.' });
+
+    const properties = PropertiesService.getScriptProperties();
+    const secret = properties.getProperty('ADMIN_TOKEN');
+    if (secret) {
+      if (typeof request.token !== 'string' || request.token !== secret) {
+        return jsonResponse_({ ok: false, error: 'Token admin tidak valid.' });
+      }
     }
     if (!['list', 'import', 'delete'].includes(request.action)) throw new Error('Aksi tidak dikenal.');
 
