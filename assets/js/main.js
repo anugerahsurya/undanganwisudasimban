@@ -823,48 +823,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderWishes();
 
-  /* ==========================================================================
-     8. ADD TO CALENDAR (.ICS FILE GENERATOR)
-     ========================================================================== */
-  const btnCalendar = document.getElementById('btn-save-calendar');
-  if (btnCalendar) {
-    btnCalendar.addEventListener('click', (e) => {
-      e.preventDefault();
 
-      const title = 'Wisuda Sarjana Dyah Kusumaningrum, S.P';
-      const liveUrl = 'https://www.youtube.com/live/_jWPSfdsUa8?si=kjtSIe1Mm1IJH1Px';
-      const description = `Prosesi Wisuda Sarjana Dyah Kusumaningrum, S.P. Program Studi Agroteknologi Universitas Andalas. Siaran langsung YouTube: ${liveUrl}`;
-      const location = 'Auditorium Universitas Andalas, Kampus Limau Manis, Padang';
-      const startDate = '20260919T080000';
-      const endDate = '20260919T140000';
-
-      const icsContent = [
-        'BEGIN:VCALENDAR',
-        'VERSION:2.0',
-        'PRODID:-//Undangan Wisuda//ID',
-        'CALSCALE:GREGORIAN',
-        'METHOD:PUBLISH',
-        'BEGIN:VEVENT',
-        `SUMMARY:${title}`,
-        `DESCRIPTION:${description}`,
-        `LOCATION:${location}`,
-        `URL:${liveUrl}`,
-        `DTSTART:${startDate}`,
-        `DTEND:${endDate}`,
-        'STATUS:CONFIRMED',
-        'END:VEVENT',
-        'END:VCALENDAR'
-      ].join('\r\n');
-
-      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'jadwal-wisuda.ics';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
-  }
 
   /* ==========================================================================
      9. CELEBRATORY CONFETTI SHOWER

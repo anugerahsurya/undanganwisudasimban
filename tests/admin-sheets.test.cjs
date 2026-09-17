@@ -6,11 +6,11 @@ const { webcrypto } = require('node:crypto');
 
 const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxfns7cgoNA83oYB4Ob-tQJrkjKqSwFJk6VUW1CoqNJ508zdgnFL2nC-tEe8-D0WA1k/exec';
 const KEY = 'wisuda_guest_list_db';
-const TOKEN = 'local-test-only-'.repeat(4);
+const TOKEN = '';
 const makeGuest = (code = 'ABC123', name = 'Budi Santoso') =>
     ({ id: 123, code, name, category: 'Keluarga', phone: '6281234567890' });
 
-function backend() {
+function backend(configuredToken = '') {
     const rows = [];
     let locked = false;
     const sheet = {
@@ -39,7 +39,7 @@ function backend() {
     const context = vm.createContext({
         PropertiesService: {
             getScriptProperties: () => ({
-                getProperty: key => ({ ADMIN_TOKEN: TOKEN, SPREADSHEET_ID: 'test-sheet' })[key]
+                getProperty: key => ({ ADMIN_TOKEN: configuredToken, SPREADSHEET_ID: 'test-sheet' })[key]
             })
         },
         LockService: {
@@ -61,7 +61,7 @@ function backend() {
         call(request) {
             const result = JSON.parse(context.doPost({
                 postData: {
-                    contents: JSON.stringify({ token: TOKEN, ...request })
+                    contents: JSON.stringify({ token: configuredToken, ...request })
                 }
             }));
             assert.equal(locked, false);
@@ -120,99 +120,42 @@ function admin(initial = [], server = backend()) {
     ready();
     return {
         get, context, server, storage, calls, api: context.api,
-        local: () => JSON.parse(storage.get(KEY)),
-        async connect() {
-            get('sheets-token').value = TOKEN;
-            get('sheets-connect-form').listeners.submit({ preventDefault() { } });
+        local: () => JSON.parse(storage.get(KEY) || '[]'),
+        async waitInit() {
             await new Promise(resolve => setImmediate(resolve));
-            assert.match(get('sheets-status').textContent, /Terhubung/);
         }
     };
 }
 
-test('existing data and malformed JSON are never reset at startup', () => {
-    const a = admin([makeGuest()]);
-    assert.equal(a.local().length, 1);
-    assert.equal(a.calls.length, 0);
-    const b = admin('{broken');
-    assert.equal(b.storage.get(KEY), '{broken');
-    assert.match(b.get('sheets-status').textContent, /tidak dapat dibaca/);
-});
-
-test('connect then click import: deduplication, stable link, backup, status', async () => {
+test('automatic fetch directly from spreadsheet on startup', async () => {
     const server = backend();
     server.call({ action: 'import', guests: [makeGuest()] });
-    const initial = [makeGuest(), makeGuest('NEW123', 'Siti Ayu')];
-    const a = admin(initial, server);
-    const before = a.api.getUniqueLink(initial[1]);
-    await a.connect();
-    assert.equal(a.local().length, 2);
-    await a.get('sheets-import').listeners.click();
+    const a = admin([], server);
+    await a.waitInit();
+    assert.equal(a.calls.length >= 1, true);
+    assert.equal(a.calls[0].action, 'list');
+    assert.equal(a.get('stat-total').textContent, 1);
+});
+
+test('automatic import: deduplication and stable links', async () => {
+    const server = backend();
+    server.call({ action: 'import', guests: [makeGuest()] });
+    const a = admin([], server);
+    await a.waitInit();
+    const before = a.api.getUniqueLink(makeGuest('NEW123', 'Siti Ayu'));
+    await a.api.addGuests([makeGuest(), makeGuest('NEW123', 'Siti Ayu')]);
     assert.equal(server.rows.length, 3);
-    assert.equal(a.local().length, 0);
-    assert.deepEqual(JSON.parse(a.storage.get(KEY + '_before_sheets')), initial);
-    assert.match(a.get('sheets-status').textContent, /1 tamu baru; 1 data identik dilewati/);
     assert.equal(a.get('stat-total').textContent, 2);
     const saved = server.call({ action: 'list' }).guests[1];
     assert.equal(a.api.getUniqueLink(saved), before);
-    assert.equal([...a.storage.values()].some(value => value.includes(TOKEN)), false);
 });
 
-test('no saved status until server acknowledges; controls disabled while waiting', async () => {
-    const a = admin([makeGuest()]);
-    await a.connect();
-    const normal = a.context.fetch;
-    let release;
-    a.context.fetch = (url, options) => JSON.parse(options.body).action === 'import' ?
-        new Promise(resolve => { release = () => normal(url, options).then(resolve); }) : normal(url, options);
-    const pending = a.get('sheets-import').listeners.click();
-    assert.match(a.get('sheets-status').textContent, /Mengirim/);
-    assert.equal(a.get('sheets-import').disabled, true);
-    assert.equal(a.local().length, 1);
-    release();
-    await pending;
-    assert.match(a.get('sheets-status').textContent, /Tersimpan di Spreadsheet/);
-});
-
-test('lost response retains pending records and retry does not duplicate', async () => {
-    const a = admin([makeGuest()]);
-    await a.connect();
-    const normal = a.context.fetch;
-    a.context.fetch = async (url, options) => {
-        const response = await normal(url, options);
-        if (JSON.parse(options.body).action === 'import') throw new TypeError('offline');
-        return response;
-    };
-    await a.get('sheets-import').listeners.click();
-    assert.equal(a.local().length, 1);
-    assert.match(a.get('sheets-status').textContent, /belum dapat dipastikan/);
-    a.context.fetch = normal;
-    await a.get('sheets-import').listeners.click();
-    assert.equal(a.server.rows.length, 2);
-    assert.match(a.get('sheets-status').textContent, /0 tamu baru; 1 data identik dilewati/);
-});
-
-test('partial batch failure leaves unsent data intact', async () => {
-    const a = admin(Array.from({ length: 501 }, (_, i) => makeGuest('G' + i, 'Guest ' + i)));
-    await a.connect();
-    const normal = a.context.fetch;
-    let batches = 0;
-    a.context.fetch = (url, options) => {
-        if (JSON.parse(options.body).action === 'import' && ++batches === 2) throw new TypeError('offline');
-        return normal(url, options);
-    };
-    await a.get('sheets-import').listeners.click();
-    assert.equal(a.server.rows.length, 501);
-    assert.equal(a.local().length, 1);
-    assert.equal(a.local()[0].code, 'G500');
-});
-
-test('manual add saves remotely; delete does not erase concurrently added guest', async () => {
+test('manual add saves directly to spreadsheet; delete synchronizes', async () => {
     const a = admin();
-    await a.connect();
+    await a.waitInit();
     a.get('add-name').value = 'New Guest';
     a.get('quick-add-form').listeners.submit({ preventDefault() { } });
-    await new Promise(resolve => setImmediate(resolve));
+    await a.waitInit();
     assert.equal(a.server.rows.length, 2);
     assert.equal(a.get('add-name').value, '');
     a.server.call({ action: 'import', guests: [makeGuest('OTHER')] });
@@ -222,27 +165,17 @@ test('manual add saves remotely; delete does not erase concurrently added guest'
 });
 
 test('backend rejects bad token, conflicting codes and oversized batch', () => {
-    const b = backend();
+    const b = backend('secret-token');
     assert.equal(b.call({ action: 'list', token: 'wrong' }).ok, false);
     assert.equal(b.rows.length, 0);
-    b.call({ action: 'import', guests: [makeGuest()] });
+    b.call({ action: 'import', token: 'secret-token', guests: [makeGuest()] });
     assert.equal(b.call({
-        action: 'import', guests: [
+        action: 'import', token: 'secret-token', guests: [
             makeGuest('NEW123'), makeGuest('ABC123', 'Changed name')
         ]
     }).ok, false);
     assert.equal(b.rows.length, 2);
-    assert.equal(b.call({ action: 'import', guests: Array(501).fill(makeGuest()) }).ok, false);
-});
-
-test('storage quota errors keep manual input available', async () => {
-    const a = admin();
-    a.context.localStorage.setItem = () => { throw new Error('Quota exceeded'); };
-    a.get('add-name').value = 'Keep this name';
-    a.get('quick-add-form').listeners.submit({ preventDefault() { } });
-    await new Promise(resolve => setImmediate(resolve));
-    assert.equal(a.get('add-name').value, 'Keep this name');
-    assert.match(a.get('sheets-status').textContent, /Quota exceeded/);
+    assert.equal(b.call({ action: 'import', token: 'secret-token', guests: Array(501).fill(makeGuest()) }).ok, false);
 });
 
 test('live deployment status (opt-in, no guest data)', {

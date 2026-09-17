@@ -38,49 +38,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfns7cgoNA83oYB4Ob-tQJrkjKqSwFJk6VUW1CoqNJ508zdgnFL2nC-tEe8-D0WA1k/exec';
   const BACKUP_KEY = STORAGE_KEY + '_before_sheets';
-  let connected = false;
+  let connected = true;
   let busy = false;
   let remoteGuests = [];
-  let credentials = null;
+  let credentials = { url: APPS_SCRIPT_URL, token: '' };
 
-  const syncPanel = document.createElement('section');
-  syncPanel.className = 'admin-card sheets-panel';
-  syncPanel.setAttribute('aria-labelledby', 'sheets-title');
-  syncPanel.innerHTML = `
-    <h2 id="sheets-title" class="card-title">Penyimpanan Google Sheets</h2>
-    <p class="card-subtitle">Hubungkan Google Sheets untuk menyinkronkan data tamu dan mengimpor data lokal.</p>
-    <form id="sheets-connect-form" class="sheets-form">
-      <input id="sheets-url" type="hidden" value="${APPS_SCRIPT_URL}">
-      <input id="sheets-token" type="hidden" value="">
-      <button class="btn-nav" type="submit">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        Hubungkan ke Google Sheets
-      </button>
-    </form>
-    <p id="sheets-token-help" class="sheets-help" style="display: none;"></p>
-    <p id="sheets-status" class="sheets-status" role="status" aria-live="polite">Mode lokal: belum terhubung ke Spreadsheet.</p>
-    <p id="sheets-local-count" class="sheets-help"></p>
-    <div class="sheets-actions">
-      <button id="sheets-import" class="btn-template" type="button">Impor data lokal ke Spreadsheet</button>
-      <button id="sheets-refresh" class="btn-template" type="button">Muat ulang Spreadsheet</button>
-      <button id="sheets-backup" class="btn-template" type="button">Unduh cadangan lokal (JSON)</button>
-      <button id="sheets-disconnect" class="btn-template" type="button">Putuskan koneksi</button>
-    </div>
-    <p class="sheets-help">Impor mempertahankan kode undangan dan melewati data identik, bukan menimpa isi Spreadsheet.</p>
-  `;
-  document.querySelector('.admin-main').prepend(syncPanel);
-  const connectionForm = document.getElementById('sheets-connect-form');
-  const endpointInput = document.getElementById('sheets-url');
-  const tokenInput = document.getElementById('sheets-token');
-  const syncStatus = document.getElementById('sheets-status');
-
-  if (endpointInput) {
-    endpointInput.value = APPS_SCRIPT_URL;
-  }
+  const sheetsStatusBadge = document.getElementById('sheets-status-badge');
+  const sheetsStatusDot = document.getElementById('sheets-status-dot');
+  const sheetsStatusText = document.getElementById('sheets-status-text');
 
   function setStatus(message, error = false) {
-    syncStatus.textContent = message;
-    syncStatus.dataset.error = String(error);
+    if (sheetsStatusText) {
+      sheetsStatusText.textContent = message;
+    }
+    if (sheetsStatusDot) {
+      sheetsStatusDot.style.background = error ? '#ef4444' : (busy ? '#f59e0b' : '#10b981');
+    }
+    const legacyStatus = document.getElementById('sheets-status');
+    if (legacyStatus) {
+      legacyStatus.textContent = message;
+      legacyStatus.dataset.error = String(error);
+    }
   }
 
   function readLocalGuests() {
@@ -88,27 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!raw) return [];
     let guests;
     try { guests = JSON.parse(raw); } catch (_) {
-      throw new Error('Data lokal tidak dapat dibaca. Unduh cadangan JSON; data asli tidak dihapus.');
+      throw new Error('Data lokal tidak dapat dibaca.');
     }
     if (!Array.isArray(guests) || guests.some(g => !g || typeof g.name !== 'string' || !g.name.trim())) {
-      throw new Error('Format data lokal tidak valid. Unduh cadangan sebelum memperbaikinya.');
-    }
-    let changed = false;
-    const codes = new Set(guests.filter(g => g.code).map(g => String(g.code)));
-    guests.forEach(g => {
-      if (!g.code) {
-        do { g.code = generateGuestCode(); } while (codes.has(g.code));
-        codes.add(g.code);
-        changed = true;
-      }
-      if (g.id == null) {
-        g.id = createGuestId();
-        changed = true;
-      }
-    });
-    if (changed) {
-      preserveLocalBackup();
-      saveGuests(guests);
+      throw new Error('Format data lokal tidak valid.');
     }
     return guests;
   }
@@ -119,12 +80,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getGuests() {
-    return connected ? remoteGuests : readLocalGuests();
+    return remoteGuests;
   }
 
   function saveGuests(guests) {
-    // Let callers report quota/privacy failures instead of claiming a successful save.
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
+    } catch (_) {
+      // Ignored for storage quota or restricted environments
+    }
   }
 
   function createGuestId() {
@@ -133,31 +97,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateSyncControls() {
-    syncPanel.querySelectorAll('button, input').forEach(element => { element.disabled = busy; });
-    document.getElementById('sheets-import').disabled = busy || !connected;
-    document.getElementById('sheets-refresh').disabled = busy || !connected;
-    document.getElementById('sheets-disconnect').disabled = busy || !connected;
-    endpointInput.disabled = busy || connected;
-    tokenInput.disabled = busy || connected;
-    connectionForm.querySelector('button').disabled = busy || connected;
     if (quickAddForm) quickAddForm.querySelectorAll('button, input').forEach(el => { el.disabled = busy; });
     if (btnResetData) btnResetData.disabled = busy;
     document.querySelectorAll('.btn-delete').forEach(el => { el.disabled = busy; });
     if (excelFileInput) excelFileInput.disabled = busy;
     if (excelDropzone) excelDropzone.setAttribute('aria-disabled', String(busy));
-    try {
-      document.getElementById('sheets-local-count').textContent =
-        `${readLocalGuests().length} tamu di penyimpanan lokal browser ini.`;
-    } catch (error) {
-      setStatus(error.message, true);
-    }
-    syncPanel.setAttribute('aria-busy', String(busy));
   }
 
   async function runOperation(work) {
     if (busy) return;
     busy = true;
     updateSyncControls();
+    setStatus('Sinkronisasi...', false);
     try {
       await work();
     } catch (error) {
@@ -173,15 +124,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function requestSheets(action, payload = {}, auth = credentials) {
-    if (!auth) throw new Error('Hubungkan Apps Script terlebih dahulu.');
+    const targetAuth = auth || { url: APPS_SCRIPT_URL, token: '' };
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 60000);
     try {
       // text/plain avoids the CORS preflight unsupported by Apps Script web apps.
-      const response = await fetch(auth.url, {
+      const response = await fetch(targetAuth.url, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ ...payload, action, token: auth.token }),
+        body: JSON.stringify({ ...payload, action, token: targetAuth.token }),
         redirect: 'follow',
         credentials: 'omit',
         signal: controller.signal
@@ -195,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return result;
     } catch (error) {
       if (error.name === 'AbortError' || error instanceof TypeError) {
-        throw new Error('Koneksi gagal atau waktu habis. Hasil penulisan belum dapat dipastikan. Muat ulang Spreadsheet sebelum mencoba lagi; data kiriman tetap tersedia secara lokal.');
+        throw new Error('Koneksi gagal atau waktu habis. Muat ulang halaman.');
       }
       throw error;
     } finally {
@@ -211,16 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
       throw new Error('Format daftar tamu dari Apps Script tidak valid.');
     }
     remoteGuests = result.guests;
-  }
-
-  function downloadLocalBackup() {
-    const raw = localStorage.getItem(STORAGE_KEY) || '[]';
-    const url = URL.createObjectURL(new Blob([raw], { type: 'application/json;charset=utf-8' }));
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = `cadangan-tamu-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
-    anchor.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    saveGuests(remoteGuests);
+    renderTable(searchInput ? searchInput.value : '');
+    setStatus(`Tersinkron: ${remoteGuests.length} tamu`, false);
   }
 
   function guestForSheets(guest) {
@@ -240,92 +184,31 @@ document.addEventListener('DOMContentLoaded', () => {
     let skipped = 0;
     for (let start = 0; start < guests.length; start += 500) {
       const batch = guests.slice(start, start + 500);
-      setStatus(`Mengirim tamu ${start + 1}–${start + batch.length} dari ${guests.length}…`);
+      setStatus(`Menyimpan ${start + 1}–${start + batch.length} dari ${guests.length} ke Spreadsheet…`);
       const result = await requestSheets('import', { guests: batch.map(guestForSheets) });
       if (!Number.isInteger(result.added) || !Number.isInteger(result.skipped) ||
         result.added < 0 || result.skipped < 0 || result.added + result.skipped !== batch.length) {
-        throw new Error('Konfirmasi impor tidak valid. Data lokal dipertahankan; muat ulang Spreadsheet.');
+        throw new Error('Konfirmasi impor tidak valid. Muat ulang halaman.');
       }
       added += result.added;
       skipped += result.skipped;
-      // Remove only acknowledged records; failed/unsent batches remain retryable.
-      saveGuests(readLocalGuests().filter(local => !batch.some(sent =>
-        String(local.code) === String(sent.code) && String(local.id) === String(sent.id) &&
-        local.name === sent.name && (local.category || 'Umum') === (sent.category || 'Umum') &&
-        String(local.phone || '') === String(sent.phone || ''))));
     }
     await refreshSheets();
-    setStatus(`Tersimpan di Spreadsheet: ${added} tamu baru; ${skipped} data identik dilewati.`);
+    setStatus(`Tersimpan di Spreadsheet: ${added} tamu baru; ${skipped} dilewati.`);
   }
 
   async function addGuests(guests, onStaged = () => { }) {
-    const local = readLocalGuests();
-    preserveLocalBackup();
-    saveGuests([...guests, ...local]);
     onStaged();
-    if (connected) {
-      await importToSheets(guests);
-    } else {
-      setStatus('Tersimpan di browser ini saja. Hubungkan Apps Script lalu impor untuk menyimpan ke Spreadsheet.');
-    }
+    await importToSheets(guests);
   }
 
   async function deleteGuests(guests) {
-    if (!connected) {
-      preserveLocalBackup();
-      const codes = new Set(guests.map(g => g.code));
-      saveGuests(readLocalGuests().filter(g => !codes.has(g.code)));
-      setStatus('Data dihapus dari penyimpanan lokal.');
-      return;
-    }
     for (let start = 0; start < guests.length; start += 500) {
       await requestSheets('delete', { codes: guests.slice(start, start + 500).map(g => g.code) });
     }
     await refreshSheets();
-    setStatus('Penghapusan di Spreadsheet berhasil dikonfirmasi.');
+    setStatus('Penghapusan di Spreadsheet berhasil.');
   }
-
-  connectionForm.addEventListener('submit', event => {
-    event.preventDefault();
-    runOperation(async () => {
-      const url = (endpointInput && endpointInput.value ? endpointInput.value : APPS_SCRIPT_URL).trim();
-      if (!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(url)) {
-        throw new Error('Gunakan URL deployment https://script.google.com/macros/s/…/exec.');
-      }
-      const token = (tokenInput && tokenInput.value ? tokenInput.value : '').trim();
-      const auth = { url, token };
-      const previous = credentials;
-      credentials = auth;
-      try { await refreshSheets(); } catch (error) { credentials = previous; throw error; }
-      connected = true;
-      if (tokenInput) tokenInput.value = '';
-      setStatus(`Terhubung. ${remoteGuests.length} tamu dimuat dari Spreadsheet. Data lokal belum diimpor.`);
-    });
-  });
-
-  document.getElementById('sheets-import').addEventListener('click', () => runOperation(async () => {
-    const guests = readLocalGuests();
-    if (!guests.length) { setStatus('Tidak ada data lokal yang perlu diimpor.'); return; }
-    if (!confirm(`Impor ${guests.length} tamu lokal ke Spreadsheet? Cadangan JSON akan diunduh. Kode undangan tetap sama; data identik dilewati.`)) return;
-    preserveLocalBackup();
-    downloadLocalBackup();
-    await importToSheets(guests);
-  }));
-  document.getElementById('sheets-refresh').addEventListener('click', () => runOperation(async () => {
-    await refreshSheets();
-    setStatus(`${remoteGuests.length} tamu dimuat dari Spreadsheet.`);
-  }));
-  document.getElementById('sheets-backup').addEventListener('click', () => runOperation(async () => {
-    downloadLocalBackup();
-  }));
-  document.getElementById('sheets-disconnect').addEventListener('click', () => {
-    credentials = null;
-    connected = false;
-    remoteGuests = [];
-    setStatus('Koneksi diputus. Mode lokal aktif; data Spreadsheet tidak dihapus.');
-    try { renderTable(); } catch (error) { setStatus(error.message, true); }
-    updateSyncControls();
-  });
 
   /* ==========================================================================
      2. RANDOM CODE & TOKEN GENERATOR (URL-SAFE BASE64)
@@ -560,9 +443,9 @@ See you! 🫶🏻🎓`;
       btn.addEventListener('click', () => runOperation(async () => {
         const code = btn.getAttribute('data-code');
         const guests = getGuests().filter(g => String(g.code) === code);
-        if (confirm(`Hapus tamu ini dari ${connected ? 'Spreadsheet' : 'penyimpanan lokal'}?`)) {
+        if (confirm(`Hapus tamu ini dari Spreadsheet?`)) {
           await deleteGuests(guests);
-          showToast('Tamu berhasil dihapus.');
+          showToast('Tamu berhasil dihapus dari Spreadsheet.');
         }
       }));
     });
@@ -603,7 +486,7 @@ See you! 🫶🏻🎓`;
           nameInput.value = '';
           if (catInput) catInput.value = '';
         });
-        showToast(connected ? 'Tamu tersimpan di Spreadsheet.' : 'Tamu tersimpan lokal, belum di Spreadsheet.');
+        showToast('Tamu berhasil ditambahkan ke Spreadsheet.');
       });
     });
   }
@@ -624,9 +507,9 @@ See you! 🫶🏻🎓`;
         showToast('Daftar tamu sudah kosong.');
         return;
       }
-      if (confirm(`Hapus ${guests.length} tamu yang dimuat dari ${connected ? 'Spreadsheet' : 'penyimpanan lokal'}? Tindakan ini tidak dapat dibatalkan dari laman admin.`)) {
+      if (confirm(`Hapus seluruh ${guests.length} tamu dari Spreadsheet? Tindakan ini tidak dapat dibatalkan.`)) {
         await deleteGuests(guests);
-        showToast('Data tamu yang dipilih berhasil dihapus.');
+        showToast('Semua data tamu berhasil dihapus dari Spreadsheet.');
       }
     }));
   }
@@ -692,8 +575,7 @@ See you! 🫶🏻🎓`;
         throw new Error('Nama maksimal 300 karakter, kategori 150, dan nomor telepon 80.');
       }
       await addGuests(importedGuests);
-      showToast(connected ? `${importedGuests.length} tamu tersimpan di Spreadsheet.` :
-        `${importedGuests.length} tamu tersimpan lokal, belum di Spreadsheet.`);
+      showToast(`${importedGuests.length} tamu berhasil disimpan ke Spreadsheet.`);
     });
   }
 
@@ -743,6 +625,21 @@ See you! 🫶🏻🎓`;
     });
   }
 
-  try { renderTable(); } catch (error) { setStatus(error.message, true); }
-  updateSyncControls();
+  // Otomatis ambil data langsung dari spreadsheet saat admin.html dibuka
+  runOperation(async () => {
+    if (guestTableBody) {
+      guestTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 40px 20px; color: var(--text-dim);">
+            <div style="display: inline-flex; align-items: center; justify-content: center; gap: 10px;">
+              <span style="display: inline-block; width: 16px; height: 16px; border: 2px solid var(--gold-dark); border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+              <span>Mengambil data langsung dari Google Sheets...</span>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+    await refreshSheets();
+    showToast(`${remoteGuests.length} data tamu berhasil dimuat dari Spreadsheet.`);
+  });
 });

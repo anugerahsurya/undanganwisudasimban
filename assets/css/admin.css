@@ -609,17 +609,6 @@ input:disabled,
   cursor: not-allowed;
 }
 
-@media (max-width: 700px) {
-  .sheets-form {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .sheets-actions>button {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
 @media (max-width: 900px) {
   .dropzone-container {
     grid-template-columns: 1fr;
@@ -627,5 +616,14 @@ input:disabled,
 
   .quick-add-form {
     grid-template-columns: 1fr;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
