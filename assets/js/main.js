@@ -818,7 +818,8 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
 
       const title = 'Wisuda Sarjana Dyah Kusumaningrum, S.P';
-      const description = 'Prosesi Wisuda Sarjana Dyah Kusumaningrum, S.P. Program Studi Agroteknologi Universitas Andalas.';
+      const liveUrl = 'https://www.youtube.com/live/_jWPSfdsUa8?si=kjtSIe1Mm1IJH1Px';
+      const description = `Prosesi Wisuda Sarjana Dyah Kusumaningrum, S.P. Program Studi Agroteknologi Universitas Andalas. Siaran langsung YouTube: ${liveUrl}`;
       const location = 'Auditorium Universitas Andalas, Kampus Limau Manis, Padang';
       const startDate = '20260919T080000';
       const endDate = '20260919T140000';
@@ -833,6 +834,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `SUMMARY:${title}`,
         `DESCRIPTION:${description}`,
         `LOCATION:${location}`,
+        `URL:${liveUrl}`,
         `DTSTART:${startDate}`,
         `DTEND:${endDate}`,
         'STATUS:CONFIRMED',
