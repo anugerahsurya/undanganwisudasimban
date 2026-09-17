@@ -36,8 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return window.location.href.split(/[?#]/)[0].replace(/(?:admin(?:\.html)?|index\.html)\/?$/, '').replace(/\/+$/, '');
   }
 
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfns7cgoNA83oYB4Ob-tQJrkjKqSwFJk6VUW1CoqNJ508zdgnFL2nC-tEe8-D0WA1k/exec';
   const BACKUP_KEY = STORAGE_KEY + '_before_sheets';
-  const URL_KEY = 'wisuda_apps_script_url';
   let connected = false;
   let busy = false;
   let remoteGuests = [];
@@ -48,20 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
   syncPanel.setAttribute('aria-labelledby', 'sheets-title');
   syncPanel.innerHTML = `
     <h2 id="sheets-title" class="card-title">Penyimpanan Google Sheets</h2>
-    <p class="card-subtitle">Hubungkan Apps Script untuk menyimpan tamu ke Spreadsheet. Data lokal lama tidak dikirim sebelum Anda memilih impor.</p>
+    <p class="card-subtitle">Hubungkan Apps Script untuk menyimpan tamu ke Spreadsheet secara terpusat. Data lokal lama tidak dikirim sebelum Anda memilih impor.</p>
     <form id="sheets-connect-form" class="sheets-form">
-      <div class="form-group">
-        <label for="sheets-url" class="form-label">URL Web App Apps Script</label>
-        <input id="sheets-url" class="form-input" type="url" placeholder="https://script.google.com/macros/s/…/exec" required>
-      </div>
+      <input id="sheets-url" type="hidden" value="${APPS_SCRIPT_URL}">
       <div class="form-group">
         <label for="sheets-token" class="form-label">Token admin</label>
-        <input id="sheets-token" class="form-input" type="password" autocomplete="off" minlength="32" required aria-describedby="sheets-token-help">
+        <input id="sheets-token" class="form-input" type="password" autocomplete="off" placeholder="Masukkan token admin Apps Script" required aria-describedby="sheets-token-help">
       </div>
       <button class="btn-nav" type="submit">Hubungkan</button>
     </form>
     <p id="sheets-token-help" class="sheets-help">Token hanya digunakan selama halaman terbuka; tidak disimpan di localStorage.</p>
-    <p id="sheets-status" class="sheets-status" role="status" aria-live="polite">Mode lokal — belum terhubung ke Spreadsheet.</p>
+    <p id="sheets-status" class="sheets-status" role="status" aria-live="polite">Mode lokal: belum terhubung ke Spreadsheet.</p>
     <p id="sheets-local-count" class="sheets-help"></p>
     <div class="sheets-actions">
       <button id="sheets-import" class="btn-template" type="button">Impor data lokal ke Spreadsheet</button>
@@ -69,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <button id="sheets-backup" class="btn-template" type="button">Unduh cadangan lokal (JSON)</button>
       <button id="sheets-disconnect" class="btn-template" type="button">Putuskan koneksi</button>
     </div>
-    <p class="sheets-help">Petunjuk pemasangan tersedia di apps-script/README.md. Impor mempertahankan kode undangan dan melewati data identik, bukan menimpa isi Spreadsheet.</p>
+    <p class="sheets-help">Impor mempertahankan kode undangan dan melewati data identik, bukan menimpa isi Spreadsheet.</p>
   `;
   document.querySelector('.admin-main').prepend(syncPanel);
   const connectionForm = document.getElementById('sheets-connect-form');
@@ -77,8 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const tokenInput = document.getElementById('sheets-token');
   const syncStatus = document.getElementById('sheets-status');
 
-  endpointInput.value = 'https://script.google.com/macros/s/AKfycbxfns7cgoNA83oYB4Ob-tQJrkjKqSwFJk6VUW1CoqNJ508zdgnFL2nC-tEe8-D0WA1k/exec';
-  try { endpointInput.value = localStorage.getItem(URL_KEY) || endpointInput.value; } catch (_) { }
+  if (endpointInput) {
+    endpointInput.value = APPS_SCRIPT_URL;
+  }
 
   function setStatus(message, error = false) {
     syncStatus.textContent = message;
@@ -290,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
   connectionForm.addEventListener('submit', event => {
     event.preventDefault();
     runOperation(async () => {
-      const url = endpointInput.value.trim();
+      const url = (endpointInput && endpointInput.value ? endpointInput.value : APPS_SCRIPT_URL).trim();
       if (!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(url)) {
         throw new Error('Gunakan URL deployment https://script.google.com/macros/s/…/exec.');
       }
@@ -302,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
       try { await refreshSheets(); } catch (error) { credentials = previous; throw error; }
       connected = true;
       tokenInput.value = '';
-      try { localStorage.setItem(URL_KEY, url); } catch (_) { }
       setStatus(`Terhubung. ${remoteGuests.length} tamu dimuat dari Spreadsheet. Data lokal belum diimpor.`);
     });
   });

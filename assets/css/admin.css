@@ -274,7 +274,7 @@ body {
 }
 
 .btn-template:hover {
-  background: var(--gold-primary);
+  background: var(--burgundy-primary);
   color: #ffffff;
 }
 
@@ -548,7 +548,7 @@ body {
 
 .sheets-form {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   gap: 16px;
 }

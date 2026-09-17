@@ -84,9 +84,18 @@ function doPost(e) {
 
 function getGuestSheet_(properties) {
   const spreadsheetId = properties.getProperty('SPREADSHEET_ID');
-  if (!spreadsheetId) throw new Error('SPREADSHEET_ID belum diatur.');
   const name = properties.getProperty('SHEET_NAME') || 'Tamu';
-  const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+  let spreadsheet = null;
+  if (spreadsheetId) {
+    spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+  } else {
+    try {
+      spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    } catch (_) { }
+  }
+  if (!spreadsheet) {
+    throw new Error('SPREADSHEET_ID belum diatur di Script Properties dan Apps Script belum terikat ke Spreadsheet.');
+  }
   const sheet = spreadsheet.getSheetByName(name) || spreadsheet.insertSheet(name);
   if (sheet.getLastRow() === 0) {
     sheet.getRange(1, 1, 1, GUEST_HEADERS.length).setValues([GUEST_HEADERS]);
